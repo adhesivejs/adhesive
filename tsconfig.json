@@ -1,0 +1,6 @@
+{
+  "extends": "@tsconfig/node22",
+  "compilerOptions": {
+    "lib": ["ES2024", "DOM", "DOM.Iterable"]
+  }
+}

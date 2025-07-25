@@ -1,0 +1,52 @@
+{
+  "name": "@adhesivejs/vue",
+  "version": "0.0.0",
+  "description": "Vue adapter for Adhesive - A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements",
+  "type": "module",
+  "keywords": [
+    "sticky",
+    "position",
+    "elements",
+    "vue"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adhesivejs/adhesive.git"
+  },
+  "author": {
+    "name": "Daniel Waltz",
+    "email": "danielbwaltz@gmail.com",
+    "url": "https://danielwaltz.me/"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "automd": "automd",
+    "build": "tsdown",
+    "lint": "eslint",
+    "prepack": "pnpm build && pnpm automd",
+    "release": "changelogen",
+    "test:attw": "attw --pack --profile esm-only",
+    "test:publint": "publint",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@adhesivejs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "unplugin-vue": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}

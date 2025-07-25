@@ -1,0 +1,40 @@
+{
+  "name": "@adhesivejs/monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.13.1",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adhesivejs/adhesive.git"
+  },
+  "scripts": {
+    "automd": "pnpm -r automd",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "playground:react": "pnpm --filter @adhesivejs/playground-react run dev",
+    "playground:vue": "pnpm --filter @adhesivejs/playground-vue run dev",
+    "release": "pnpm -r release --bump && git add . && changelogen --release --push",
+    "test": "pnpm build && pnpm lint && pnpm type-check && pnpm test:attw && pnpm test:publint",
+    "test:attw": "pnpm -r test:attw",
+    "test:publint": "pnpm -r test:publint",
+    "type-check": "pnpm -r type-check"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "catalog:",
+    "@danielwaltz/eslint-config": "catalog:",
+    "@tsconfig/node22": "catalog:",
+    "@types/node": "catalog:",
+    "automd": "catalog:",
+    "changelogen": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "publint": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}

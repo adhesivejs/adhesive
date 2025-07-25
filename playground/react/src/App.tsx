@@ -1,0 +1,45 @@
+import { AdhesiveContainer, useAdhesive } from "@adhesivejs/react";
+import { useRef, useState } from "react";
+import reactLogo from "./assets/react.svg";
+import "./App.css";
+import viteLogo from "/vite.svg";
+
+export function App() {
+  const [count, setCount] = useState(0);
+
+  const targetEl = useRef<HTMLDivElement>(null);
+  const boundingEl = useRef<HTMLDivElement>(null);
+
+  useAdhesive({ target: targetEl, bounding: boundingEl });
+
+  return (
+    <div>
+      <div ref={boundingEl}>
+        <div ref={targetEl}>Sticky Element</div>
+        <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
+      <AdhesiveContainer position="bottom">
+        <div className="sticky-container">
+          <div className="sticky-content">Sticky Component</div>
+        </div>
+      </AdhesiveContainer>
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
+    </div>
+  );
+}
