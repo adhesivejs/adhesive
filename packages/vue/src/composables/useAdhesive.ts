@@ -107,9 +107,7 @@ export function useAdhesive(
     () => {
       if (!adhesive) return;
 
-      const { targetEl, boundingEl, ...optionsToUpdate } =
-        getValidatedOptions();
-      adhesive.updateOptions(optionsToUpdate);
+      adhesive.updateOptions(getValidatedOptions());
     },
   );
 

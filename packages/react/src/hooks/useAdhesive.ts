@@ -78,7 +78,6 @@ export function useAdhesive(
   useEffect(() => {
     if (!adhesive.current) return;
 
-    const { targetEl, boundingEl, ...optionsToUpdate } = getValidatedOptions();
-    adhesive.current.updateOptions(optionsToUpdate);
+    adhesive.current.updateOptions(getValidatedOptions());
   }, [options]);
 }

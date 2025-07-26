@@ -377,7 +377,7 @@ function validateElement(
 }
 
 /**
- * Creates validated and frozen options with proper type safety
+ * Creates validated options with proper type safety
  * @internal
  */
 function createValidatedOptions(
@@ -395,7 +395,7 @@ function createValidatedOptions(
     selector: options.boundingEl,
   });
 
-  return Object.freeze({
+  return {
     targetEl,
     boundingEl,
     enabled: options.enabled ?? DEFAULT_CONFIG.ENABLED,
@@ -410,7 +410,7 @@ function createValidatedOptions(
       options.activeClassName ?? DEFAULT_CONFIG.CLASS_NAMES.ACTIVE,
     releasedClassName:
       options.releasedClassName ?? DEFAULT_CONFIG.CLASS_NAMES.RELEASED,
-  });
+  };
 }
 
 /**
@@ -1190,7 +1190,9 @@ export class Adhesive {
 
     for (const [key, value] of optionsToUpdate) {
       if (key === "enabled") {
-        return value ? this.enable() : this.disable();
+        const isDisabling = value === false;
+        if (isDisabling) return this.disable();
+        this.enable();
       }
       if (key in this.#options) {
         (this.#options as any)[key] = value;

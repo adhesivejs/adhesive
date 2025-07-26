@@ -7,6 +7,7 @@ import viteLogo from "/vite.svg";
 
 export function App() {
   const [count, setCount] = useState(0);
+  const [enabled, setEnabled] = useState(true);
   const [position, setPosition] = useState<AdhesivePosition>("top");
 
   const targetEl = useRef<HTMLDivElement>(null);
@@ -16,6 +17,15 @@ export function App() {
 
   return (
     <div>
+      <button onClick={() => setEnabled((prev) => !prev)}>
+        Toggle Enabled ({enabled ? "On" : "Off"})
+      </button>
+      <button onClick={() => setPosition("top")}>Change Position to Top</button>
+      <button onClick={() => setPosition("bottom")}>
+        Change Position to Bottom
+      </button>
+      <br />
+      <br />
       <div ref={boundingEl}>
         <div ref={targetEl}>Sticky Element</div>
         <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
@@ -44,10 +54,6 @@ export function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <button onClick={() => setPosition("top")}>Change Position to Top</button>
-      <button onClick={() => setPosition("bottom")}>
-        Change Position to Bottom
-      </button>
       <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>

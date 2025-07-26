@@ -4,6 +4,7 @@ import { ref, useTemplateRef } from "vue";
 import type { AdhesivePosition } from "@adhesivejs/core";
 
 const count = ref(0);
+const enabled = ref(true);
 const position = ref<AdhesivePosition>("top");
 
 const targetEl = useTemplateRef("target");
@@ -14,6 +15,17 @@ useAdhesive({ target: targetEl, bounding: boundingEl });
 
 <template>
   <div>
+    <button type="button" @click="enabled = !enabled">
+      Toggle Enabled ({{ enabled ? "On" : "Off" }})
+    </button>
+    <button type="button" @click="position = 'top'">
+      Change Position to Top
+    </button>
+    <button type="button" @click="position = 'bottom'">
+      Change Position to Bottom
+    </button>
+    <br />
+    <br />
     <div ref="bounding">
       <div ref="target">Sticky Element</div>
       <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
@@ -26,6 +38,7 @@ useAdhesive({ target: targetEl, bounding: boundingEl });
   </div>
   <div className="adhesive-container">
     <AdhesiveContainer
+      :enabled
       :position
       bounding-el=".adhesive-container"
       class="my-classname"
@@ -43,12 +56,6 @@ useAdhesive({ target: targetEl, bounding: boundingEl });
       <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
     </a>
   </div>
-  <button type="button" @click="position = 'top'">
-    Change Position to Top
-  </button>
-  <button type="button" @click="position = 'bottom'">
-    Change Position to Bottom
-  </button>
   <h1>Vite + Vue</h1>
   <div class="card">
     <button type="button" @click="count++">count is {{ count }}</button>
