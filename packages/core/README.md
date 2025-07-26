@@ -2,6 +2,14 @@
 
 A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements.
 
+<!-- automd:badges name="@adhesivejs/core" color="orange" bundlephobia license no-npmDownloads -->
+
+[![npm version](https://img.shields.io/npm/v/@adhesivejs/core?color=orange)](https://npmjs.com/package/@adhesivejs/core)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@adhesivejs/core?color=orange)](https://bundlephobia.com/package/@adhesivejs/core)
+[![license](https://img.shields.io/github/license/adhesivejs/adhesive?color=orange)](https://github.com/adhesivejs/adhesive/blob/main/LICENSE)
+
+<!-- /automd -->
+
 ## 🛠️ Installation
 
 <!-- automd:pm-install name="@adhesivejs/core" -->

@@ -2,6 +2,14 @@
 
 Vue adapter for Adhesive - A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements.
 
+<!-- automd:badges name="@adhesivejs/vue" color="orange" bundlephobia license no-npmDownloads -->
+
+[![npm version](https://img.shields.io/npm/v/@adhesivejs/vue?color=orange)](https://npmjs.com/package/@adhesivejs/vue)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@adhesivejs/vue?color=orange)](https://bundlephobia.com/package/@adhesivejs/vue)
+[![license](https://img.shields.io/github/license/adhesivejs/adhesive?color=orange)](https://github.com/adhesivejs/adhesive/blob/main/LICENSE)
+
+<!-- /automd -->
+
 <!-- Warning -->
 
 > [!WARNING]

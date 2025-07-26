@@ -1,12 +1,11 @@
 # Adhesive
 
-> A modern, performant, lightweight, dependency-free, cross-platform solution for flexible sticky positioned elements.
-
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Ts](https://img.shields.io/badge/Ts-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![Framework Agnostic](https://img.shields.io/badge/Framework-Agnostic-green.svg)](#-packages)
-
 Adhesive is a modern, performant, lightweight, dependency free library that provides smooth, performant sticky positioning for web elements with cross-platform compatibility and framework-specific adapters.
+
+[![npm version](https://img.shields.io/npm/v/@adhesivejs/core?color=orange)](https://npmjs.com/package/@adhesivejs/core)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/@adhesivejs/core?color=orange)](https://bundlephobia.com/package/@adhesivejs/core)
+[![license](https://img.shields.io/github/license/adhesivejs/adhesive?color=orange)](https://github.com/adhesivejs/adhesive/blob/main/LICENSE)
+[![Framework Agnostic](https://img.shields.io/badge/Framework-Agnostic-green.svg)](#-packages)
 
 ## ✨ Features
 
