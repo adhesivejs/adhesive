@@ -143,6 +143,7 @@ For more control over the sticky behavior.
 | `offset` | `number` | `0` | Offset in pixels from the position |
 | `zIndex` | `number` | `1` | Z-index for the fixed element |
 | `enabled` | `boolean` | `true` | Whether to enable sticky behavior |
-| `className` | `string` | `''` | Extra CSS class for wrapper |
+| `outerClassName` | `string` | `'adhesive__outer'` | Class for the outer wrapper |
+| `innerClassName` | `string` | `'adhesive__inner'` | Class for the inner wrapper |
 | `activeClassName` | `string` | `'adhesive--active'` | Class when element is sticky |
 | `releasedClassName` | `string` | `'adhesive--released'` | Class when element returns to normal |

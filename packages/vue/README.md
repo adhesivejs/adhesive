@@ -143,6 +143,9 @@ A simple wrapper component that automatically applies sticky positioning to its 
 
 - All props from `UseAdhesiveOptions` (see below)
 
+> [!INFO]
+> Class props like `outerClassName`, `innerClassName`, `activeClassName`, and `releasedClassName` are renamed to `outerClass`, `innerClass`, `activeClass`, and `releasedClass` in Vue for brevity.
+
 ```vue
 <AdhesiveContainer
   position="bottom"
@@ -170,7 +173,8 @@ For more control over the sticky behavior with full Vue reactivity support.
 | `offset` | `number` | `0` | Offset in pixels from the position |
 | `zIndex` | `number` | `1` | Z-index for the fixed element |
 | `enabled` | `boolean` | `true` | Whether to enable sticky behavior |
-| `className` | `string` | `''` | Extra CSS class for wrapper |
+| `outerClassName` | `string` | `'adhesive__outer'` | Class for the outer wrapper |
+| `innerClassName` | `string` | `'adhesive__inner'` | Class for the inner wrapper |
 | `activeClassName` | `string` | `'adhesive--active'` | Class when element is sticky |
 | `releasedClassName` | `string` | `'adhesive--released'` | Class when element returns to normal |
 
