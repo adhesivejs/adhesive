@@ -651,29 +651,15 @@ export class Adhesive {
   // DOM Manipulation Methods
   // =============================================================================
 
-  /**
-   * Gets the class name for the outer wrapper element.
-   * @internal
-   */
-  #getOuterClassName(): string {
-    return this.#options.outerClassName;
-  }
-
-  /**
-   * Gets the class name for the inner wrapper element.
-   * @internal
-   */
-  #getInnerClassName(): string {
-    return this.#options.innerClassName;
-  }
-
   /** Creates wrapper elements around the target element */
   #createWrappers(): void {
+    const { outerClassName, innerClassName } = this.#options;
+
     this.#outerWrapper = document.createElement("div");
-    this.#outerWrapper.className = this.#getOuterClassName();
+    this.#outerWrapper.className = outerClassName;
 
     this.#innerWrapper = document.createElement("div");
-    this.#innerWrapper.className = this.#getInnerClassName();
+    this.#innerWrapper.className = innerClassName;
 
     const parent = this.#targetEl.parentNode;
     if (!parent) {
@@ -841,9 +827,10 @@ export class Adhesive {
     if (!this.#outerWrapper) return;
 
     const { status } = this.#state;
-    const { activeClassName, releasedClassName } = this.#options;
+    const { outerClassName, activeClassName, releasedClassName } =
+      this.#options;
 
-    const classes: string[] = [this.#getOuterClassName()];
+    const classes: string[] = [outerClassName];
     if (status === ADHESIVE_STATUS.FIXED) classes.push(activeClassName);
     if (status === ADHESIVE_STATUS.RELATIVE) classes.push(releasedClassName);
     this.#outerWrapper.className = classes.join(" ").trim();
