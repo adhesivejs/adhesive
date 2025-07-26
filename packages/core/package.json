@@ -30,6 +30,7 @@
     "build": "tsdown",
     "lint": "eslint",
     "prepack": "pnpm build",
+    "publish": "pnpm publish",
     "release": "changelogen",
     "test:attw": "attw --pack --profile esm-only",
     "test:publint": "publint",
