@@ -31,8 +31,8 @@
     "build": "tsdown",
     "lint": "eslint",
     "prepack": "pnpm build",
-    "publish": "pnpm publish",
     "release": "changelogen",
+    "release:publish": "pnpm publish",
     "test:attw": "attw --pack --profile esm-only",
     "test:publint": "publint",
     "type-check": "vue-tsc --noEmit"
