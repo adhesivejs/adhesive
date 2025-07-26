@@ -17,8 +17,9 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
-      contents: write
       actions: read
+      contents: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
