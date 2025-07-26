@@ -10,6 +10,7 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@adhesivejs/core": "workspace:*",
     "@adhesivejs/vue": "workspace:*",
     "vue": "catalog:"
   },

@@ -150,6 +150,9 @@ importers:
 
   playground/react:
     dependencies:
+      '@adhesivejs/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@adhesivejs/react':
         specifier: workspace:*
         version: link:../../packages/react
@@ -181,6 +184,9 @@ importers:
 
   playground/vue:
     dependencies:
+      '@adhesivejs/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@adhesivejs/vue':
         specifier: workspace:*
         version: link:../../packages/vue

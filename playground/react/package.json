@@ -10,6 +10,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@adhesivejs/core": "workspace:*",
     "@adhesivejs/react": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"

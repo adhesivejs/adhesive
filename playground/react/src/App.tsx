@@ -1,11 +1,13 @@
 import { AdhesiveContainer, useAdhesive } from "@adhesivejs/react";
 import { useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
+import type { AdhesivePosition } from "@adhesivejs/core";
 import "./App.css";
 import viteLogo from "/vite.svg";
 
 export function App() {
   const [count, setCount] = useState(0);
+  const [position, setPosition] = useState<AdhesivePosition>("top");
 
   const targetEl = useRef<HTMLDivElement>(null);
   const boundingEl = useRef<HTMLDivElement>(null);
@@ -25,7 +27,7 @@ export function App() {
       </div>
       <div className="adhesive-container">
         <AdhesiveContainer
-          position="top"
+          position={position}
           boundingEl=".adhesive-container"
           className="my-classname"
           outerClassName="my-outer-classname"
@@ -42,6 +44,10 @@ export function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
+      <button onClick={() => setPosition("top")}>Change Position to Top</button>
+      <button onClick={() => setPosition("bottom")}>
+        Change Position to Bottom
+      </button>
       <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>

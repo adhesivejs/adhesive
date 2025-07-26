@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { AdhesiveContainer, useAdhesive } from "@adhesivejs/vue";
 import { ref, useTemplateRef } from "vue";
+import type { AdhesivePosition } from "@adhesivejs/core";
 
 const count = ref(0);
+const position = ref<AdhesivePosition>("top");
 
 const targetEl = useTemplateRef("target");
 const boundingEl = useTemplateRef("bounding");
@@ -24,7 +26,7 @@ useAdhesive({ target: targetEl, bounding: boundingEl });
   </div>
   <div className="adhesive-container">
     <AdhesiveContainer
-      position="top"
+      :position
       bounding-el=".adhesive-container"
       class="my-classname"
       outer-class="my-outer-classname"
@@ -41,6 +43,12 @@ useAdhesive({ target: targetEl, bounding: boundingEl });
       <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
     </a>
   </div>
+  <button type="button" @click="position = 'top'">
+    Change Position to Top
+  </button>
+  <button type="button" @click="position = 'bottom'">
+    Change Position to Bottom
+  </button>
   <h1>Vite + Vue</h1>
   <div class="card">
     <button type="button" @click="count++">count is {{ count }}</button>
