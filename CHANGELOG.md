@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.1
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.1.0...v0.1.1)
+
+### 🚀 Enhancements
+
+- Support updating width on resize ([0d96edf](https://github.com/adhesivejs/adhesive/commit/0d96edf))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.1.0
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.0.6...v0.1.0)
