@@ -4,7 +4,7 @@ import { useEffect, useRef, type RefObject } from "react";
 /**
  * Template ref objects for React elements used by the Adhesive hook.
  */
-export interface UseAdhesiveTemplateRefs {
+export interface UseAdhesiveElements {
   /** React ref to the element that should become sticky */
   target: RefObject<HTMLDivElement | null | undefined>;
   /** Optional React ref to the element that defines sticky boundaries */
@@ -24,7 +24,7 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * handling initialization, updates, and cleanup. It integrates seamlessly
  * with React's ref system and component lifecycle.
  *
- * @param templateRefs - Object containing React refs for target and optional bounding elements
+ * @param elements - Object containing React refs for target and optional bounding elements
  * @param options - Configuration options for sticky behavior (excluding element references)
  *
  * @example
@@ -50,12 +50,12 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * ```
  */
 export function useAdhesive(
-  templateRefs: UseAdhesiveTemplateRefs,
+  elements: UseAdhesiveElements,
   options?: UseAdhesiveOptions,
 ) {
   function getValidatedOptions() {
-    const targetEl = templateRefs.target.current;
-    const boundingEl = templateRefs.bounding?.current ?? options?.boundingEl;
+    const targetEl = elements.target.current;
+    const boundingEl = elements.bounding?.current ?? options?.boundingEl;
 
     if (!targetEl) {
       throw new Error("@adhesivejs/react: sticky element is not defined");
@@ -73,7 +73,7 @@ export function useAdhesive(
       adhesive.current?.cleanup();
       adhesive.current = null;
     };
-  }, [templateRefs.target]);
+  }, [elements.target]);
 
   useEffect(() => {
     if (!adhesive.current) return;

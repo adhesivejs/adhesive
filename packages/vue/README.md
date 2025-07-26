@@ -162,7 +162,7 @@ For more control over the sticky behavior with full Vue reactivity support.
 
 **Parameters:**
 
-- `templateRefs`: Object with `target` (required) and `bounding` (optional) template refs
+- `elements`: Object with `target` (required) and `bounding` (optional) template refs
 - `options`: Reactive configuration options (optional, can be a ref or getter function)
 
 **UseAdhesiveOptions:**

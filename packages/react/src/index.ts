@@ -1,7 +1,7 @@
 export {
   useAdhesive,
+  type UseAdhesiveElements,
   type UseAdhesiveOptions,
-  type UseAdhesiveTemplateRefs,
 } from "./hooks/useAdhesive.js";
 
 export {

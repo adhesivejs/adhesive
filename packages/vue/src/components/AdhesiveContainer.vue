@@ -2,8 +2,8 @@
 import { computed, useTemplateRef } from "vue";
 import {
   useAdhesive,
+  type UseAdhesiveElements,
   type UseAdhesiveOptions,
-  type UseAdhesiveTemplateRefs,
 } from "../composables/useAdhesive";
 
 type BaseProps = Omit<
@@ -49,9 +49,9 @@ const {
 
 const targetEl = useTemplateRef("target");
 
-const templateRefs = {
+const elements = {
   target: targetEl,
-} satisfies UseAdhesiveTemplateRefs;
+} satisfies UseAdhesiveElements;
 
 const options = computed<UseAdhesiveOptions>(() => ({
   boundingEl,
@@ -65,7 +65,7 @@ const options = computed<UseAdhesiveOptions>(() => ({
   releasedClassName: releasedClass,
 }));
 
-useAdhesive(templateRefs, options);
+useAdhesive(elements, options);
 </script>
 
 <template>

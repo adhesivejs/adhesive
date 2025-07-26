@@ -14,7 +14,7 @@ import {
 /**
  * Template ref objects for Vue elements used by the Adhesive composable.
  */
-export interface UseAdhesiveTemplateRefs {
+export interface UseAdhesiveElements {
   /** Vue template ref or element that should become sticky */
   target: MaybeComputedElementRef;
   /** Optional Vue template ref or element that defines sticky boundaries */
@@ -34,7 +34,7 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * handling initialization, updates, and cleanup. It integrates seamlessly
  * with Vue's reactivity system and component lifecycle.
  *
- * @param templateRefs - Object containing Vue refs for target and optional bounding elements
+ * @param elements - Object containing Vue refs for target and optional bounding elements
  * @param options - Reactive configuration options for sticky behavior (excluding element references)
  *
  * @example
@@ -79,15 +79,15 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * ```
  */
 export function useAdhesive(
-  templateRefs: UseAdhesiveTemplateRefs,
+  elements: UseAdhesiveElements,
   options?: MaybeRefOrGetter<UseAdhesiveOptions>,
 ) {
   function getValidatedOptions() {
     const optionsValue = toValue(options);
 
-    const targetEl = unrefElement(templateRefs.target);
+    const targetEl = unrefElement(elements.target);
     const boundingEl =
-      unrefElement(templateRefs.bounding) ?? optionsValue?.boundingEl;
+      unrefElement(elements.bounding) ?? optionsValue?.boundingEl;
 
     if (!targetEl) {
       throw new Error("@adhesivejs/vue: sticky element is not defined");

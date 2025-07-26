@@ -132,7 +132,7 @@ For more control over the sticky behavior.
 
 **Parameters:**
 
-- `templateRefs`: Object with `target` (required) and `bounding` (optional) refs
+- `elements`: Object with `target` (required) and `bounding` (optional) refs
 - `options`: Configuration options (optional)
 
 **UseAdhesiveOptions:**

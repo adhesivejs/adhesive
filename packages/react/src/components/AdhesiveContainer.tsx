@@ -1,8 +1,8 @@
 import { useMemo, useRef, type ComponentProps } from "react";
 import {
   useAdhesive,
+  type UseAdhesiveElements,
   type UseAdhesiveOptions,
-  type UseAdhesiveTemplateRefs,
 } from "../hooks/useAdhesive.js";
 
 export type AdhesiveContainerProps = Partial<UseAdhesiveOptions> &
@@ -34,7 +34,7 @@ export function AdhesiveContainer({
 }: AdhesiveContainerProps) {
   const targetEl = useRef<HTMLDivElement>(null);
 
-  const templateRefs = useMemo<UseAdhesiveTemplateRefs>(
+  const elements = useMemo<UseAdhesiveElements>(
     () => ({ target: targetEl }),
     [],
   );
@@ -64,7 +64,7 @@ export function AdhesiveContainer({
     ],
   );
 
-  useAdhesive(templateRefs, options);
+  useAdhesive(elements, options);
 
   return (
     <div ref={targetEl} {...rest}>
