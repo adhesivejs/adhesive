@@ -53,32 +53,32 @@ export function useAdhesive(
   templateRefs: UseAdhesiveTemplateRefs,
   options?: UseAdhesiveOptions,
 ) {
-  const adhesive = useRef<Adhesive | null>(null);
+  function getValidatedOptions() {
+    const targetEl = templateRefs.target.current;
+    const boundingEl = templateRefs.bounding?.current ?? options?.boundingEl;
 
-  useEffect(() => {
-    const _targetEl = templateRefs.target.current;
-    const _boundingEl = templateRefs.bounding?.current ?? options?.boundingEl;
-
-    if (!_targetEl) {
+    if (!targetEl) {
       throw new Error("@adhesivejs/react: sticky element is not defined");
     }
 
-    const _options = {
-      ...options,
-      targetEl: _targetEl,
-      boundingEl: _boundingEl,
-    } satisfies AdhesiveOptions;
+    return { ...options, targetEl, boundingEl } satisfies AdhesiveOptions;
+  }
 
-    if (adhesive.current) {
-      adhesive.current.updateOptions(_options);
-      return;
-    }
+  const adhesive = useRef<Adhesive | null>(null);
 
-    adhesive.current ??= Adhesive.create(_options);
+  useEffect(() => {
+    adhesive.current ??= Adhesive.create(getValidatedOptions());
 
     return () => {
       adhesive.current?.cleanup();
       adhesive.current = null;
     };
+  }, [templateRefs.target]);
+
+  useEffect(() => {
+    if (!adhesive.current) return;
+
+    const { targetEl, boundingEl, ...optionsToUpdate } = getValidatedOptions();
+    adhesive.current.updateOptions(optionsToUpdate);
   }, [options]);
 }

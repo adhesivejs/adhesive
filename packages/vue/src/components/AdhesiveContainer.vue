@@ -1,8 +1,9 @@
 <script lang="ts">
-import { useTemplateRef } from "vue";
+import { computed, useTemplateRef } from "vue";
 import {
   useAdhesive,
   type UseAdhesiveOptions,
+  type UseAdhesiveTemplateRefs,
 } from "../composables/useAdhesive";
 
 type BaseProps = Omit<
@@ -48,7 +49,11 @@ const {
 
 const targetEl = useTemplateRef("target");
 
-useAdhesive({ target: targetEl }, () => ({
+const templateRefs = {
+  target: targetEl,
+} satisfies UseAdhesiveTemplateRefs;
+
+const options = computed<UseAdhesiveOptions>(() => ({
   boundingEl,
   enabled,
   offset,
@@ -59,6 +64,8 @@ useAdhesive({ target: targetEl }, () => ({
   activeClassName: activeClass,
   releasedClassName: releasedClass,
 }));
+
+useAdhesive(templateRefs, options);
 </script>
 
 <template>

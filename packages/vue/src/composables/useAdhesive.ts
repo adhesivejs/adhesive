@@ -1,9 +1,9 @@
 import { Adhesive, type AdhesiveOptions } from "@adhesivejs/core";
 import {
+  onMounted,
   onUnmounted,
-  shallowRef,
   toValue,
-  watchPostEffect,
+  watch,
   type MaybeRefOrGetter,
 } from "vue";
 import {
@@ -82,35 +82,39 @@ export function useAdhesive(
   templateRefs: UseAdhesiveTemplateRefs,
   options?: MaybeRefOrGetter<UseAdhesiveOptions>,
 ) {
-  const adhesive = shallowRef<Adhesive>();
-
-  watchPostEffect(() => {
+  function getValidatedOptions() {
     const optionsValue = toValue(options);
 
-    const _targetEl = unrefElement(templateRefs.target);
-    const _boundingEl =
+    const targetEl = unrefElement(templateRefs.target);
+    const boundingEl =
       unrefElement(templateRefs.bounding) ?? optionsValue?.boundingEl;
 
-    if (!_targetEl) {
+    if (!targetEl) {
       throw new Error("@adhesivejs/vue: sticky element is not defined");
     }
 
-    const _options = {
-      ...optionsValue,
-      targetEl: _targetEl,
-      boundingEl: _boundingEl,
-    } satisfies AdhesiveOptions;
+    return { ...optionsValue, targetEl, boundingEl } satisfies AdhesiveOptions;
+  }
 
-    if (adhesive.value) {
-      adhesive.value.updateOptions(_options);
-      return;
-    }
+  let adhesive: Adhesive | null = null;
 
-    adhesive.value ??= Adhesive.create(_options);
+  onMounted(() => {
+    adhesive ??= Adhesive.create(getValidatedOptions());
   });
 
+  watch(
+    () => toValue(options),
+    () => {
+      if (!adhesive) return;
+
+      const { targetEl, boundingEl, ...optionsToUpdate } =
+        getValidatedOptions();
+      adhesive.updateOptions(optionsToUpdate);
+    },
+  );
+
   onUnmounted(() => {
-    adhesive.value?.cleanup();
-    adhesive.value = undefined;
+    adhesive?.cleanup();
+    adhesive = null;
   });
 }
