@@ -5,13 +5,16 @@ import {
   type UseAdhesiveOptions,
 } from "../composables/useAdhesive";
 
-type BaseProps = Omit<Partial<UseAdhesiveOptions>, 'outerClassName' | 'innerClassName' | 'activeClassName' | 'releasedClassName'>;
+type BaseProps = Omit<
+  Partial<UseAdhesiveOptions>,
+  "outerClassName" | "innerClassName" | "activeClassName" | "releasedClassName"
+>;
 
 export interface AdhesiveContainerProps extends BaseProps {
-  outerClass?: UseAdhesiveOptions['outerClassName'];
-  innerClass?: UseAdhesiveOptions['innerClassName'];
-  activeClass?: UseAdhesiveOptions['activeClassName'];
-  releasedClass?: UseAdhesiveOptions['releasedClassName'];
+  outerClass?: UseAdhesiveOptions["outerClassName"];
+  innerClass?: UseAdhesiveOptions["innerClassName"];
+  activeClass?: UseAdhesiveOptions["activeClassName"];
+  releasedClass?: UseAdhesiveOptions["releasedClassName"];
 }
 
 /**

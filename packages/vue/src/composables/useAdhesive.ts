@@ -65,7 +65,7 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * import { ref } from 'vue';
  * import { useAdhesive } from '@adhesivejs/vue';
  *
- * const targetEl = useTemplateRef('sticky');
+ * const targetEl = useTemplateRef('target');
  * const enabled = ref(true);
  * const offset = ref(10);
  *
