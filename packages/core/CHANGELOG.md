@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.0.5...v0.0.6)
+
+### 🚀 Enhancements
+
+- Support inner class name ([d982f3d](https://github.com/adhesivejs/adhesive/commit/d982f3d))
+- Update default zindex value ([93d389d](https://github.com/adhesivejs/adhesive/commit/93d389d))
+
+### 🩹 Fixes
+
+- Apply outer and inner classes on init ([23d3afd](https://github.com/adhesivejs/adhesive/commit/23d3afd))
+- Drop name from class props for vue ([870d582](https://github.com/adhesivejs/adhesive/commit/870d582))
+
+### 📖 Documentation
+
+- Update option defs ([2c73175](https://github.com/adhesivejs/adhesive/commit/2c73175))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.0.5
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.0.4...v0.0.5)
