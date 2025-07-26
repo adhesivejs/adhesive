@@ -30,7 +30,7 @@
     "automd": "automd",
     "build": "tsdown",
     "lint": "eslint",
-    "prepack": "pnpm build && pnpm automd",
+    "prepack": "pnpm build",
     "release": "changelogen",
     "test:attw": "attw --pack --profile esm-only",
     "test:publint": "publint",
