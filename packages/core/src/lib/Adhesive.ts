@@ -82,7 +82,7 @@ export interface AdhesiveOptions<
 
   /**
    * The z-index value for the sticky element when fixed.
-   * @defaultValue `1000`
+   * @defaultValue `1`
    */
   readonly zIndex?: number;
 
@@ -150,7 +150,7 @@ export type AdhesiveStatus =
 const DEFAULT_CONFIG = {
   OFFSET: 0,
   POSITION: "top" as const satisfies AdhesivePosition,
-  Z_INDEX: 1000,
+  Z_INDEX: 1,
   ENABLED: true,
   CLASS_NAMES: {
     OUTER_WRAPPER: "adhesive__outer",

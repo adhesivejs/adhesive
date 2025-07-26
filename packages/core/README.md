@@ -99,7 +99,7 @@ adhesive.cleanup();
 | `boundingEl` | `HTMLElement \| string \| null` | `document.body` | Container that defines sticky boundaries |
 | `position` | `'top' \| 'bottom'` | `'top'` | Where the element should stick |
 | `offset` | `number` | `0` | Offset in pixels from the position |
-| `zIndex` | `number` | `1000` | Z-index for the fixed element |
+| `zIndex` | `number` | `1` | Z-index for the fixed element |
 | `enabled` | `boolean` | `true` | Whether to enable sticky behavior |
 | `className` | `string` | `''` | Extra CSS class for wrapper |
 | `activeClassName` | `string` | `'adhesive--active'` | Class when element is sticky |
