@@ -25,9 +25,7 @@ export interface UseAdhesiveTemplateRefs {
  * Configuration options for the `useAdhesive` composable.
  * Excludes `targetEl` and `boundingEl` since they're provided via template refs.
  */
-export type UseAdhesiveOptions = Partial<
-  Omit<AdhesiveOptions, "targetEl" | "boundingEl">
->;
+export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
 
 /**
  * Vue composable for adding sticky positioning behavior to DOM elements.
@@ -87,15 +85,18 @@ export function useAdhesive(
   const adhesive = shallowRef<Adhesive>();
 
   watchPostEffect(() => {
+    const optionsValue = toValue(options);
+
     const _targetEl = unrefElement(templateRefs.target);
-    const _boundingEl = unrefElement(templateRefs.bounding);
+    const _boundingEl =
+      unrefElement(templateRefs.bounding) ?? optionsValue?.boundingEl;
 
     if (!_targetEl) {
       throw new Error("@adhesivejs/vue: sticky element is not defined");
     }
 
     const _options = {
-      ...toValue(options),
+      ...optionsValue,
       targetEl: _targetEl,
       boundingEl: _boundingEl,
     } satisfies AdhesiveOptions;

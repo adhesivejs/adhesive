@@ -15,9 +15,7 @@ export interface UseAdhesiveTemplateRefs {
  * Configuration options for the `useAdhesive` hook.
  * Excludes `targetEl` and `boundingEl` since they're provided via template refs.
  */
-export type UseAdhesiveOptions = Partial<
-  Omit<AdhesiveOptions, "targetEl" | "boundingEl">
->;
+export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
 
 /**
  * React hook for adding sticky positioning behavior to DOM elements.
@@ -59,7 +57,7 @@ export function useAdhesive(
 
   useEffect(() => {
     const _targetEl = templateRefs.target.current;
-    const _boundingEl = templateRefs.bounding?.current;
+    const _boundingEl = templateRefs.bounding?.current ?? options?.boundingEl;
 
     if (!_targetEl) {
       throw new Error("@adhesivejs/react: sticky element is not defined");

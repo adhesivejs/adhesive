@@ -22,11 +22,17 @@ useAdhesive({ target: targetEl, bounding: boundingEl });
       </a>
     </div>
   </div>
-  <AdhesiveContainer position="bottom">
-    <div class="sticky-container">
-      <div class="sticky-content">Sticky Component</div>
-    </div>
-  </AdhesiveContainer>
+  <div className="adhesive-container">
+    <AdhesiveContainer position="top" bounding-el=".adhesive-container">
+      Sticky Element
+    </AdhesiveContainer>
+    <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
+      <img src="/vite.svg" class="logo" alt="Vite logo" />
+    </a>
+    <a href="https://vuejs.org/" target="_blank" rel="noopener noreferrer">
+      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
+    </a>
+  </div>
   <h1>Vite + Vue</h1>
   <div class="card">
     <button type="button" @click="count++">count is {{ count }}</button>

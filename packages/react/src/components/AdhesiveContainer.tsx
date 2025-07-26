@@ -16,6 +16,7 @@ export type AdhesiveContainerProps = Partial<UseAdhesiveOptions> &
  * ```
  */
 export function AdhesiveContainer({
+  boundingEl,
   enabled = true,
   offset,
   position,
@@ -31,6 +32,7 @@ export function AdhesiveContainer({
   useAdhesive(
     { target: targetEl },
     {
+      boundingEl,
       enabled,
       offset,
       position,
