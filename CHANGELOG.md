@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v0.1.0
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.0.6...v0.1.0)
+
+### 🩹 Fixes
+
+- Be explicit about when to update options and memoize ([0188f38](https://github.com/adhesivejs/adhesive/commit/0188f38))
+- Support updating options in-place ([6d5f192](https://github.com/adhesivejs/adhesive/commit/6d5f192))
+
+### 💅 Refactors
+
+- Simplify wrapper class names ([5555bf3](https://github.com/adhesivejs/adhesive/commit/5555bf3))
+- ⚠️  Rename template refs to elements ([9bfa91b](https://github.com/adhesivejs/adhesive/commit/9bfa91b))
+
+### 🏡 Chore
+
+- Lint and update jsdoc ([be29e82](https://github.com/adhesivejs/adhesive/commit/be29e82))
+
+### ✅ Tests
+
+- Add dynamic position to playgrounds ([ea21637](https://github.com/adhesivejs/adhesive/commit/ea21637))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Rename template refs to elements ([9bfa91b](https://github.com/adhesivejs/adhesive/commit/9bfa91b))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.0.6
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.0.5...v0.0.6)
