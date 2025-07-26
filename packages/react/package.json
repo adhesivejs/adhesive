@@ -19,6 +19,9 @@
     "email": "danielbwaltz@gmail.com",
     "url": "https://danielwaltz.me/"
   },
+  "files": [
+    "dist"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
