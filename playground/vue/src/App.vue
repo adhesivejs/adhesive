@@ -10,7 +10,10 @@ const position = ref<AdhesivePosition>("top");
 const targetEl = useTemplateRef("target");
 const boundingEl = useTemplateRef("bounding");
 
-useAdhesive({ target: targetEl, bounding: boundingEl });
+useAdhesive({ target: targetEl, bounding: boundingEl }, () => ({
+  enabled: enabled.value,
+  position: position.value,
+}));
 </script>
 
 <template>
@@ -46,6 +49,7 @@ useAdhesive({ target: targetEl, bounding: boundingEl });
       inner-class="my-inner-classname"
       active-class="my-active-classname"
       released-class="my-released-classname"
+      style="width: 100%; height: 100px; background-color: lightblue"
     >
       Sticky Element
     </AdhesiveContainer>

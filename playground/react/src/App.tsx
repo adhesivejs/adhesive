@@ -13,7 +13,10 @@ export function App() {
   const targetEl = useRef<HTMLDivElement>(null);
   const boundingEl = useRef<HTMLDivElement>(null);
 
-  useAdhesive({ target: targetEl, bounding: boundingEl });
+  useAdhesive(
+    { target: targetEl, bounding: boundingEl },
+    { enabled, position },
+  );
 
   return (
     <div>
@@ -37,6 +40,7 @@ export function App() {
       </div>
       <div className="adhesive-container">
         <AdhesiveContainer
+          enabled={enabled}
           position={position}
           boundingEl=".adhesive-container"
           className="my-classname"
@@ -44,6 +48,11 @@ export function App() {
           innerClassName="my-inner-classname"
           activeClassName="my-active-classname"
           releasedClassName="my-released-classname"
+          style={{
+            width: "100%",
+            height: "100px",
+            backgroundColor: "lightblue",
+          }}
         >
           Sticky Element
         </AdhesiveContainer>

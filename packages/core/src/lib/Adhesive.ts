@@ -529,6 +529,7 @@ export class Adhesive {
   // Request Animation Frame optimization for smooth updates
   #rafId: number | null = null;
   #pendingUpdate = false;
+  #pendingResizeUpdate = false;
 
   /**
    * Static factory method for convenient instance creation and initialization
@@ -710,8 +711,14 @@ export class Adhesive {
     const innerRect = this.#innerWrapper.getBoundingClientRect();
 
     // Calculate dimensions with fallbacks for browser compatibility
-    const width = outerRect.width || outerRect.right - outerRect.left;
-    const height = innerRect.height || innerRect.bottom - innerRect.top;
+    const width =
+      outerRect.width ||
+      outerRect.right - outerRect.left ||
+      this.#outerWrapper.offsetWidth;
+    const height =
+      innerRect.height ||
+      innerRect.bottom - innerRect.top ||
+      this.#innerWrapper.offsetHeight;
     const outerY = outerRect.top + this.#scrollTop;
 
     // Batch update state for better performance
@@ -723,6 +730,72 @@ export class Adhesive {
       topBoundary: outerY,
       bottomBoundary: this.#getBottomBoundary(),
     });
+  }
+
+  /**
+   * Updates only the width dimensions for resize scenarios
+   * This method is optimized for responsive width changes without full recalculation
+   * @internal
+   */
+  #updateWidthDimensions(): void {
+    if (!this.#outerWrapper || !this.#innerWrapper) return;
+
+    // For width updates, we need to temporarily reset positioning to get accurate measurements
+    const wasFixed = this.#state.status === ADHESIVE_STATUS.FIXED;
+    const wasRelative = this.#state.status === ADHESIVE_STATUS.RELATIVE;
+
+    if (wasFixed || wasRelative) {
+      // Temporarily clear positioning styles to get natural width
+      const innerStyle = this.#innerWrapper.style;
+      const originalPosition = innerStyle.position;
+      const originalTransform = innerStyle.transform;
+      const originalTop = innerStyle.top;
+      const originalBottom = innerStyle.bottom;
+
+      innerStyle.position = "static";
+      innerStyle.transform = "";
+      innerStyle.top = "";
+      innerStyle.bottom = "";
+
+      // Force reflow to get accurate measurements
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      this.#outerWrapper.offsetHeight;
+
+      const outerRect = this.#outerWrapper.getBoundingClientRect();
+      const newWidth =
+        outerRect.width ||
+        outerRect.right - outerRect.left ||
+        this.#outerWrapper.offsetWidth;
+
+      // Restore positioning styles
+      innerStyle.position = originalPosition;
+      innerStyle.transform = originalTransform;
+      innerStyle.top = originalTop;
+      innerStyle.bottom = originalBottom;
+
+      // Update state with new width
+      this.#state.width = newWidth;
+      this.#state.x = outerRect.left;
+    } else {
+      // For initial state, simple measurement is sufficient
+      const outerRect = this.#outerWrapper.getBoundingClientRect();
+      const newWidth =
+        outerRect.width ||
+        outerRect.right - outerRect.left ||
+        this.#outerWrapper.offsetWidth;
+      this.#state.width = newWidth;
+      this.#state.x = outerRect.left;
+    }
+  }
+
+  /**
+   * Forces an immediate width update and style refresh
+   * Useful for responsive design scenarios where width changes need immediate application
+   * @internal
+   */
+  #forceWidthUpdate(): void {
+    this.#updateWidthDimensions();
+    this.#updateStyles();
   }
 
   // =============================================================================
@@ -787,7 +860,6 @@ export class Adhesive {
     };
 
     const isFixed = this.#state.status === ADHESIVE_STATUS.FIXED;
-    const isNotInitial = this.#state.status !== ADHESIVE_STATUS.INITIAL;
     const { position } = this.#options;
 
     // Clear all positioning styles first
@@ -798,8 +870,8 @@ export class Adhesive {
 
     // Set common styles
     innerWrapper.style.zIndex = String(this.#options.zIndex);
-    innerWrapper.style.width = isNotInitial ? `${this.#state.width}px` : "";
-    outerWrapper.style.height = isNotInitial ? `${this.#state.height}px` : "";
+    innerWrapper.style.width = isFixed ? `${this.#state.width}px` : "";
+    outerWrapper.style.height = isFixed ? `${this.#state.height}px` : "";
 
     // Apply positioning based on state
     if (isFixed) {
@@ -1069,10 +1141,11 @@ export class Adhesive {
   };
 
   /**
-   * Optimized resize handler with RAF throttling
+   * Optimized window resize handler with RAF throttling
+   * Handles viewport dimension changes
    * @internal
    */
-  readonly #onResize = (): void => {
+  readonly #onWindowResize = (): void => {
     if (!this.#isEnabled || this.#pendingUpdate) return;
 
     this.#pendingUpdate = true;
@@ -1084,6 +1157,47 @@ export class Adhesive {
     });
   };
 
+  /**
+   * ResizeObserver callback for element dimension changes
+   * Handles width updates with immediate style application and debouncing for performance
+   * @internal
+   */
+  readonly #onElementResize = (entries: ResizeObserverEntry[]): void => {
+    if (!this.#isEnabled) return;
+
+    if (this.#pendingResizeUpdate) return;
+
+    this.#pendingResizeUpdate = true;
+    this.#rafId = requestAnimationFrame(() => {
+      this.#pendingResizeUpdate = false;
+
+      // Check if this is a width-affecting resize
+      let needsWidthUpdate = false;
+      let needsFullUpdate = false;
+
+      for (const entry of entries) {
+        if (entry.target === this.#outerWrapper) {
+          // Outer wrapper resize affects width
+          needsWidthUpdate = true;
+        } else if (entry.target === this.#boundingEl) {
+          // Bounding element resize affects boundaries
+          needsFullUpdate = true;
+        } else if (entry.target === this.#targetEl) {
+          // Target element content changes might affect height
+          needsFullUpdate = true;
+        }
+      }
+
+      if (needsFullUpdate) {
+        this.#updateInitialDimensions();
+      } else if (needsWidthUpdate) {
+        this.#updateWidthDimensions();
+      }
+
+      this.#updateStyles();
+      this.#update();
+    });
+  };
   // =============================================================================
   // Public API Methods
   // =============================================================================
@@ -1116,15 +1230,17 @@ export class Adhesive {
 
     // Add event listeners with optimal performance settings
     window.addEventListener("scroll", this.#onScroll, { passive: true });
-    window.addEventListener("resize", this.#onResize, { passive: true });
+    window.addEventListener("resize", this.#onWindowResize, { passive: true });
 
     // Modern ResizeObserver for better performance
     if ("ResizeObserver" in window) {
-      this.#observer = new ResizeObserver(this.#onResize);
+      this.#observer = new ResizeObserver(this.#onElementResize);
       this.#observer.observe(this.#boundingEl);
       if (this.#outerWrapper) {
         this.#observer.observe(this.#outerWrapper);
       }
+      // Also observe the target element for content changes
+      this.#observer.observe(this.#targetEl);
     } else {
       const error = ERROR_REGISTRY.RESIZE_OBSERVER_NOT_SUPPORTED;
       console.warn(`@adhesivejs/core: ${error.message}`);
@@ -1223,6 +1339,25 @@ export class Adhesive {
   }
 
   /**
+   * Manually triggers a width update for the sticky element.
+   * This is useful when the element's container width changes due to external factors
+   * that might not be detected by the ResizeObserver (e.g., CSS changes via JavaScript).
+   *
+   * @returns The Adhesive instance for method chaining
+   *
+   * @example
+   * ```ts
+   * // After programmatically changing container width
+   * adhesive.refreshWidth();
+   * ```
+   */
+  refreshWidth(): this {
+    if (!this.#isEnabled) return this;
+    this.#forceWidthUpdate();
+    return this;
+  }
+
+  /**
    * Cleans up the Adhesive instance by removing event listeners, disconnecting observers,
    * canceling pending animations, and restoring the original DOM structure.
    *
@@ -1236,16 +1371,18 @@ export class Adhesive {
    * ```
    */
   cleanup(): void {
-    // Cancel any pending RAF operations
+    // Cancel any pending RAF operations and timeouts
     if (this.#rafId !== null) {
       cancelAnimationFrame(this.#rafId);
       this.#rafId = null;
     }
+
     this.#pendingUpdate = false;
+    this.#pendingResizeUpdate = false;
 
     // Remove event listeners
     window.removeEventListener("scroll", this.#onScroll);
-    window.removeEventListener("resize", this.#onResize);
+    window.removeEventListener("resize", this.#onWindowResize);
 
     // Disconnect observers
     this.#observer?.disconnect();
