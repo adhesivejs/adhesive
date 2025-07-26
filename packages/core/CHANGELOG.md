@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.0.5
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.0.4...v0.0.5)
+
+### 🚀 Enhancements
+
+- Support bounding el prop on components ([aaf89a3](https://github.com/adhesivejs/adhesive/commit/aaf89a3))
+
+### 🏡 Chore
+
+- Avoid conflict with pnpm publish ([1dd807f](https://github.com/adhesivejs/adhesive/commit/1dd807f))
+- Limit distributed files ([5343dc3](https://github.com/adhesivejs/adhesive/commit/5343dc3))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.0.4
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.0.3...v0.0.4)
