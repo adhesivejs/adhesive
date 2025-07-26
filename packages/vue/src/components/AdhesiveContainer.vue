@@ -30,7 +30,8 @@ const {
   offset,
   position,
   zIndex,
-  className,
+  outerClassName,
+  innerClassName,
   activeClassName,
   releasedClassName,
 } = defineProps<AdhesiveContainerProps>();
@@ -43,7 +44,8 @@ useAdhesive({ target: targetEl }, () => ({
   offset,
   position,
   zIndex,
-  className,
+  outerClassName,
+  innerClassName,
   activeClassName,
   releasedClassName,
 }));

@@ -87,13 +87,22 @@ export interface AdhesiveOptions<
   readonly zIndex?: number;
 
   /**
-   * Additional CSS class to add to the wrapper element.
+   * Additional CSS class to add to the outer element.
    * @example
    * ```ts
-   * className: "my-sticky-wrapper"
+   * outerClassName: "my-sticky-outer"
    * ```
    */
-  readonly className?: string;
+  readonly outerClassName?: string;
+
+  /**
+   * Additional CSS class to add to the inner element.
+   * @example
+   * ```ts
+   * innerClassName: "my-sticky-inner"
+   * ```
+   */
+  readonly innerClassName?: string;
 
   /**
    * CSS class to add when the element is in active (fixed) state.
@@ -238,7 +247,8 @@ interface InternalAdhesiveOptions {
   offset: number;
   position: AdhesivePosition;
   zIndex: number;
-  className: string;
+  outerClassName: string;
+  innerClassName: string;
   activeClassName: string;
   releasedClassName: string;
 }
@@ -392,7 +402,8 @@ function createValidatedOptions(
     offset: options.offset ?? DEFAULT_CONFIG.OFFSET,
     position: options.position ?? DEFAULT_CONFIG.POSITION,
     zIndex: options.zIndex ?? DEFAULT_CONFIG.Z_INDEX,
-    className: options.className ?? "",
+    outerClassName: options.outerClassName ?? "",
+    innerClassName: options.innerClassName ?? "",
     activeClassName:
       options.activeClassName ?? DEFAULT_CONFIG.CLASS_NAMES.ACTIVE,
     releasedClassName:
@@ -625,7 +636,8 @@ export class Adhesive {
       offset: DEFAULT_CONFIG.OFFSET,
       position: DEFAULT_CONFIG.POSITION,
       zIndex: 1,
-      className: "",
+      outerClassName: "",
+      innerClassName: "",
       activeClassName: DEFAULT_CONFIG.CLASS_NAMES.ACTIVE,
       releasedClassName: DEFAULT_CONFIG.CLASS_NAMES.RELEASED,
     });
@@ -809,16 +821,23 @@ export class Adhesive {
     if (!this.#outerWrapper || !this.#innerWrapper) return;
 
     const { status } = this.#state;
-    const { className, activeClassName, releasedClassName } = this.#options;
+    const {
+      outerClassName,
+      innerClassName,
+      activeClassName,
+      releasedClassName,
+    } = this.#options;
 
     const outerClasses: string[] = [DEFAULT_CONFIG.CLASS_NAMES.OUTER_WRAPPER];
-    if (className) outerClasses.push(className);
+    if (outerClassName) outerClasses.push(outerClassName);
     if (status === ADHESIVE_STATUS.FIXED) outerClasses.push(activeClassName);
     if (status === ADHESIVE_STATUS.RELATIVE)
       outerClasses.push(releasedClassName);
-
     this.#outerWrapper.className = outerClasses.join(" ");
-    this.#innerWrapper.className = DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER;
+
+    const innerClasses: string[] = [DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER];
+    if (innerClassName) innerClasses.push(innerClassName);
+    this.#innerWrapper.className = innerClasses.join(" ");
   }
 
   // =============================================================================
