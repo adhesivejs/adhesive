@@ -30,6 +30,8 @@ export function App() {
           className="my-classname"
           outerClassName="my-outer-classname"
           innerClassName="my-inner-classname"
+          activeClassName="my-active-classname"
+          releasedClassName="my-released-classname"
         >
           Sticky Element
         </AdhesiveContainer>

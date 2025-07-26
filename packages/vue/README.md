@@ -147,7 +147,7 @@ A simple wrapper component that automatically applies sticky positioning to its 
 <AdhesiveContainer
   position="bottom"
   :offset="30"
-  class-name="my-sticky"
+  class="my-sticky"
 >
   Content to make sticky
 </AdhesiveContainer>

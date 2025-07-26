@@ -27,8 +27,10 @@ useAdhesive({ target: targetEl, bounding: boundingEl });
       position="top"
       bounding-el=".adhesive-container"
       class="my-classname"
-      outer-class-name="my-outer-classname"
-      inner-class-name="my-inner-classname"
+      outer-class="my-outer-classname"
+      inner-class="my-inner-classname"
+      active-class="my-active-classname"
+      released-class="my-released-classname"
     >
       Sticky Element
     </AdhesiveContainer>

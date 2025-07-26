@@ -5,7 +5,14 @@ import {
   type UseAdhesiveOptions,
 } from "../composables/useAdhesive";
 
-export type AdhesiveContainerProps = Partial<UseAdhesiveOptions>;
+type BaseProps = Omit<Partial<UseAdhesiveOptions>, 'outerClassName' | 'innerClassName' | 'activeClassName' | 'releasedClassName'>;
+
+export interface AdhesiveContainerProps extends BaseProps {
+  outerClass?: UseAdhesiveOptions['outerClassName'];
+  innerClass?: UseAdhesiveOptions['innerClassName'];
+  activeClass?: UseAdhesiveOptions['activeClassName'];
+  releasedClass?: UseAdhesiveOptions['releasedClassName'];
+}
 
 /**
  * Automatically applies sticky positioning to its content.
@@ -30,10 +37,10 @@ const {
   offset,
   position,
   zIndex,
-  outerClassName,
-  innerClassName,
-  activeClassName,
-  releasedClassName,
+  outerClass,
+  innerClass,
+  activeClass,
+  releasedClass,
 } = defineProps<AdhesiveContainerProps>();
 
 const targetEl = useTemplateRef("target");
@@ -44,10 +51,10 @@ useAdhesive({ target: targetEl }, () => ({
   offset,
   position,
   zIndex,
-  outerClassName,
-  innerClassName,
-  activeClassName,
-  releasedClassName,
+  outerClassName: outerClass,
+  innerClassName: innerClass,
+  activeClassName: activeClass,
+  releasedClassName: releasedClass,
 }));
 </script>
 
