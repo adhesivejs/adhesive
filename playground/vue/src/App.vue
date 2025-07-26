@@ -23,7 +23,13 @@ useAdhesive({ target: targetEl, bounding: boundingEl });
     </div>
   </div>
   <div className="adhesive-container">
-    <AdhesiveContainer position="top" bounding-el=".adhesive-container">
+    <AdhesiveContainer
+      position="top"
+      bounding-el=".adhesive-container"
+      class="my-classname"
+      outer-class-name="my-outer-classname"
+      inner-class-name="my-inner-classname"
+    >
       Sticky Element
     </AdhesiveContainer>
     <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">

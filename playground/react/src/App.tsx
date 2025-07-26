@@ -24,7 +24,13 @@ export function App() {
         </a>
       </div>
       <div className="adhesive-container">
-        <AdhesiveContainer position="top" boundingEl=".adhesive-container">
+        <AdhesiveContainer
+          position="top"
+          boundingEl=".adhesive-container"
+          className="my-classname"
+          outerClassName="my-outer-classname"
+          innerClassName="my-inner-classname"
+        >
           Sticky Element
         </AdhesiveContainer>
         <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">

@@ -402,8 +402,10 @@ function createValidatedOptions(
     offset: options.offset ?? DEFAULT_CONFIG.OFFSET,
     position: options.position ?? DEFAULT_CONFIG.POSITION,
     zIndex: options.zIndex ?? DEFAULT_CONFIG.Z_INDEX,
-    outerClassName: options.outerClassName ?? "",
-    innerClassName: options.innerClassName ?? "",
+    outerClassName:
+      options.outerClassName ?? DEFAULT_CONFIG.CLASS_NAMES.OUTER_WRAPPER,
+    innerClassName:
+      options.innerClassName ?? DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER,
     activeClassName:
       options.activeClassName ?? DEFAULT_CONFIG.CLASS_NAMES.ACTIVE,
     releasedClassName:
@@ -605,11 +607,13 @@ export class Adhesive {
     });
     this.#boundingEl = boundingEl;
 
+    // Initialize options
+    this.#options = createValidatedOptions(options);
+
     // Create DOM structure
     this.#createWrappers();
 
-    // Initialize configuration and state
-    this.#options = createValidatedOptions(options);
+    // Initialize state
     this.#state = createInitialState(this.#innerWrapper);
     this.#state.bottomBoundary = this.#getBottomBoundary();
 
@@ -636,8 +640,8 @@ export class Adhesive {
       offset: DEFAULT_CONFIG.OFFSET,
       position: DEFAULT_CONFIG.POSITION,
       zIndex: 1,
-      outerClassName: "",
-      innerClassName: "",
+      outerClassName: DEFAULT_CONFIG.CLASS_NAMES.OUTER_WRAPPER,
+      innerClassName: DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER,
       activeClassName: DEFAULT_CONFIG.CLASS_NAMES.ACTIVE,
       releasedClassName: DEFAULT_CONFIG.CLASS_NAMES.RELEASED,
     });
@@ -647,13 +651,29 @@ export class Adhesive {
   // DOM Manipulation Methods
   // =============================================================================
 
+  /**
+   * Gets the class name for the outer wrapper element.
+   * @internal
+   */
+  #getOuterClassName(): string {
+    return this.#options.outerClassName;
+  }
+
+  /**
+   * Gets the class name for the inner wrapper element.
+   * @internal
+   */
+  #getInnerClassName(): string {
+    return this.#options.innerClassName;
+  }
+
   /** Creates wrapper elements around the target element */
   #createWrappers(): void {
     this.#outerWrapper = document.createElement("div");
-    this.#outerWrapper.className = DEFAULT_CONFIG.CLASS_NAMES.OUTER_WRAPPER;
+    this.#outerWrapper.className = this.#getOuterClassName();
 
     this.#innerWrapper = document.createElement("div");
-    this.#innerWrapper.className = DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER;
+    this.#innerWrapper.className = this.#getInnerClassName();
 
     const parent = this.#targetEl.parentNode;
     if (!parent) {
@@ -818,26 +838,15 @@ export class Adhesive {
 
   /** Updates CSS classes based on current state */
   #updateClassNames(): void {
-    if (!this.#outerWrapper || !this.#innerWrapper) return;
+    if (!this.#outerWrapper) return;
 
     const { status } = this.#state;
-    const {
-      outerClassName,
-      innerClassName,
-      activeClassName,
-      releasedClassName,
-    } = this.#options;
+    const { activeClassName, releasedClassName } = this.#options;
 
-    const outerClasses: string[] = [DEFAULT_CONFIG.CLASS_NAMES.OUTER_WRAPPER];
-    if (outerClassName) outerClasses.push(outerClassName);
-    if (status === ADHESIVE_STATUS.FIXED) outerClasses.push(activeClassName);
-    if (status === ADHESIVE_STATUS.RELATIVE)
-      outerClasses.push(releasedClassName);
-    this.#outerWrapper.className = outerClasses.join(" ");
-
-    const innerClasses: string[] = [DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER];
-    if (innerClassName) innerClasses.push(innerClassName);
-    this.#innerWrapper.className = innerClasses.join(" ");
+    const classes: string[] = [this.#getOuterClassName()];
+    if (status === ADHESIVE_STATUS.FIXED) classes.push(activeClassName);
+    if (status === ADHESIVE_STATUS.RELATIVE) classes.push(releasedClassName);
+    this.#outerWrapper.className = classes.join(" ").trim();
   }
 
   // =============================================================================
