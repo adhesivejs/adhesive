@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.0.4
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.0.3...v0.0.4)
+
+### 📖 Documentation
+
+- Use purple badge color ([e9dfa2e](https://github.com/adhesivejs/adhesive/commit/e9dfa2e))
+
+### 🏡 Chore
+
+- Use pnpm directly to publish ([3b57ed3](https://github.com/adhesivejs/adhesive/commit/3b57ed3))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.0.3
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.0.2...v0.0.3)
