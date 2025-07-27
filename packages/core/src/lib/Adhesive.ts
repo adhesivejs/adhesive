@@ -1,7 +1,25 @@
 type ElementSelector = HTMLElement | string;
 
+/**
+ * Defines the position where the element should stick when activated.
+ *
+ * @example
+ * ```ts
+ * // Stick to the top of the viewport/container
+ * position: "top"
+ *
+ * // Stick to the bottom of the viewport/container
+ * position: "bottom"
+ * ```
+ */
 export type AdhesivePosition = "top" | "bottom";
 
+/**
+ * Configuration options for the Adhesive sticky positioning behavior.
+ *
+ * Provides comprehensive control over how elements stick within their boundaries,
+ * including positioning, offsets, styling, and boundary constraints.
+ */
 export interface AdhesiveOptions {
   /**
    * The element to make sticky. Can be an HTMLElement instance or a CSS selector string.
@@ -103,6 +121,22 @@ const DEFAULT_CONFIG = {
   },
 } as const;
 
+/**
+ * Constants representing the different states an Adhesive element can be in.
+ *
+ * These states track the current positioning behavior of the sticky element
+ * as it responds to scroll events and boundary constraints.
+ *
+ * @example
+ * ```ts
+ * import { ADHESIVE_STATUS } from '@adhesivejs/core';
+ *
+ * const state = adhesive.getState();
+ * if (state.status === ADHESIVE_STATUS.FIXED) {
+ *   console.log('Element is currently stuck to viewport');
+ * }
+ * ```
+ */
 export const ADHESIVE_STATUS = {
   /** Element is in its original position, not affected by sticky positioning */
   INITIAL: "initial",
@@ -112,23 +146,57 @@ export const ADHESIVE_STATUS = {
   FIXED: "fixed",
 } as const;
 
+/**
+ * Union type representing all possible Adhesive status values.
+ *
+ * @see {@link ADHESIVE_STATUS} for available status constants
+ */
 export type AdhesiveStatus =
   (typeof ADHESIVE_STATUS)[keyof typeof ADHESIVE_STATUS];
 
+/**
+ * Read-only state information for an Adhesive instance.
+ *
+ * Provides comprehensive information about the current positioning state,
+ * dimensions, boundaries, and behavior of the sticky element.
+ *
+ * @example
+ * ```ts
+ * const state = adhesive.getState();
+ * console.log(`Status: ${state.status}`);
+ * console.log(`Is currently sticky: ${state.isSticky}`);
+ * console.log(`Element dimensions: ${state.width}x${state.height}`);
+ * console.log(`Current position: (${state.x}, ${state.y})`);
+ * ```
+ */
 export interface AdhesiveState {
+  /** Current positioning status of the element */
   readonly status: AdhesiveStatus;
+  /** Whether the element is currently in a sticky state (fixed or relative positioning) */
   readonly isSticky: boolean;
+  /** Original CSS position value before Adhesive was applied */
   readonly originalPosition: string;
+  /** Original CSS top value before Adhesive was applied */
   readonly originalTop: string;
+  /** Original CSS z-index value before Adhesive was applied */
   readonly originalZIndex: string;
+  /** Original CSS transform value before Adhesive was applied */
   readonly originalTransform: string;
+  /** Current width of the element in pixels */
   readonly width: number;
+  /** Current height of the element in pixels */
   readonly height: number;
+  /** Current horizontal position (left offset) in pixels */
   readonly x: number;
+  /** Current vertical position (top offset) in pixels */
   readonly y: number;
+  /** Top boundary position where sticky behavior begins */
   readonly topBoundary: number;
+  /** Bottom boundary position where sticky behavior ends */
   readonly bottomBoundary: number;
+  /** Current positioning offset applied to the element */
   readonly pos: number;
+  /** Whether the Adhesive instance has been activated (initialized) */
   readonly activated: boolean;
 }
 
@@ -149,10 +217,37 @@ interface InternalAdhesiveState {
   activated: boolean;
 }
 
+/**
+ * Custom error class for Adhesive-related errors.
+ *
+ * Provides structured error information with error codes and context
+ * to help developers diagnose and fix configuration or runtime issues.
+ *
+ * @example
+ * ```ts
+ * try {
+ *   const adhesive = new Adhesive({ targetEl: '#non-existent' });
+ * } catch (error) {
+ *   if (error instanceof AdhesiveError) {
+ *     console.log(`Error code: ${error.code}`);
+ *     console.log(`Context:`, error.context);
+ *   }
+ * }
+ * ```
+ */
 export class AdhesiveError extends Error {
+  /** Specific error code for programmatic error handling */
   public readonly code: string;
+  /** Additional context information about the error */
   public readonly context: Record<string, unknown>;
 
+  /**
+   * Creates a new AdhesiveError instance.
+   *
+   * @param message - Human-readable error message
+   * @param code - Specific error code for programmatic handling
+   * @param context - Additional context information about the error
+   */
   constructor(message: string, code: string, context: Record<string, unknown>) {
     super(`@adhesivejs/core: ${message}`);
     this.name = "AdhesiveError";

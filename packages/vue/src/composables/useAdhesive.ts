@@ -11,7 +11,14 @@ import {
   type MaybeElementOrSelectorRef,
 } from "../utils/unrefElement.js";
 
+/**
+ * Configuration options for the useAdhesive composable.
+ *
+ * Extends the core AdhesiveOptions but omits targetEl since it's provided via the composable parameter.
+ * Adds Vue-specific boundingRef option for convenient ref-based boundary selection.
+ */
 export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
+  /** Vue template ref for the element that defines sticky boundaries */
   boundingRef?: MaybeElementOrSelectorRef;
 };
 

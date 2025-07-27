@@ -5,7 +5,14 @@ import {
   type MaybeElementOrSelectorRef,
 } from "../utils/unrefElement.js";
 
+/**
+ * Configuration options for the useAdhesive hook.
+ *
+ * Extends the core AdhesiveOptions but omits targetEl since it's provided via the hook parameter.
+ * Adds React-specific boundingRef option for convenient ref-based boundary selection.
+ */
 export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
+  /** React ref for the element that defines sticky boundaries */
   boundingRef?: MaybeElementOrSelectorRef;
 };
 

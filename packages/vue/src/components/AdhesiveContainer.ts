@@ -17,26 +17,49 @@ type BaseProps = Omit<
   "outerClassName" | "innerClassName" | "activeClassName" | "releasedClassName"
 >;
 
+/**
+ * Props interface for the AdhesiveContainer component.
+ *
+ * Combines sticky positioning options with Vue component flexibility.
+ * Uses Vue-specific naming conventions (e.g., outerClass instead of outerClassName).
+ */
 export interface AdhesiveContainerProps extends BaseProps {
+  /** CSS class for the outer wrapper element */
   outerClass?: UseAdhesiveOptions["outerClassName"];
+  /** CSS class for the inner wrapper element */
   innerClass?: UseAdhesiveOptions["innerClassName"];
+  /** CSS class applied when the element is in active (sticky) state */
   activeClass?: UseAdhesiveOptions["activeClassName"];
+  /** CSS class applied when the element is in released (relative) state */
   releasedClass?: UseAdhesiveOptions["releasedClassName"];
 }
 
 /**
- * Automatically applies sticky positioning to its content.
- * Internally uses the `useAdhesive` composable.
+ * Vue component that automatically applies sticky positioning to its content.
+ *
+ * Provides a declarative way to create sticky elements in Vue applications.
+ * Internally uses the useAdhesive composable to manage the sticky behavior.
  *
  * @example
  * ```vue
- * <script setup lang="ts">
- * import { AdhesiveContainer } from '@adhesivejs/vue';
- * </script>
- *
  * <template>
- *   <AdhesiveContainer position="top">
- *     Content to make sticky
+ *   <AdhesiveContainer position="top" :offset="20">
+ *     <h1>Sticky Header</h1>
+ *   </AdhesiveContainer>
+ * </template>
+ * ```
+ *
+ * @example
+ * ```vue
+ * <template>
+ *   <AdhesiveContainer
+ *     position="bottom"
+ *     :offset="10"
+ *     :z-index="1000"
+ *     outer-class="my-sticky-outer"
+ *     active-class="is-stuck"
+ *   >
+ *     <nav>Sticky Navigation</nav>
  *   </AdhesiveContainer>
  * </template>
  * ```
