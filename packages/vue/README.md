@@ -82,19 +82,19 @@ useAdhesive(
     offset: 20,
     enabled: enabled.value,
     zIndex: 999,
-    activeClassName: 'is-sticky',
-    releasedClassName: 'is-normal'
+    activeClassName: 'custom-active',
+    releasedClassName: 'custom-released'
   })
 );
 </script>
 
 <template>
   <div ref="bounding" style="height: 200vh">
-    <button type="button" @click="enabled.value = !enabled.value">
+    <button type="button" @click="enabled = !enabled">
       {{ enabled ? 'Disable' : 'Enable' }} Sticky
     </button>
 
-    <button type="button" @click="position.value === 'top' ? 'bottom' : 'top'">
+    <button type="button" @click="position === 'top' ? 'bottom' : 'top'">
       Switch to {{ position === 'top' ? 'bottom' : 'top' }}
     </button>
 
@@ -127,7 +127,7 @@ A simple wrapper component that automatically applies sticky positioning to its 
 <AdhesiveContainer
   position="bottom"
   :offset="30"
-  class="my-sticky"
+  className="custom-class"
 >
   Content to make sticky
 </AdhesiveContainer>

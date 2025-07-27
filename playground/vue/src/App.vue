@@ -22,13 +22,10 @@ useAdhesive({ target: targetEl, bounding: boundingEl }, () => ({
 <template>
   <div>
     <button type="button" @click="enabled = !enabled">
-      Toggle Enabled ({{ enabled ? "On" : "Off" }})
+      {{ enabled ? "Disable" : "Enable" }} Sticky
     </button>
-    <button type="button" @click="position = 'top'">
-      Change Position to Top
-    </button>
-    <button type="button" @click="position = 'bottom'">
-      Change Position to Bottom
+    <button type="button" @click="position === 'top' ? 'bottom' : 'top'">
+      Switch to {{ position === "top" ? "bottom" : "top" }}
     </button>
     <br />
     <br />
@@ -47,11 +44,11 @@ useAdhesive({ target: targetEl, bounding: boundingEl }, () => ({
       :enabled
       :position
       bounding-el=".adhesive-container"
-      class="my-classname"
-      outer-class="my-outer-classname"
-      inner-class="my-inner-classname"
-      active-class="my-active-classname"
-      released-class="my-released-classname"
+      class="custom-class"
+      outer-class="custom-outer"
+      inner-class="custom-inner"
+      active-class="custom-active"
+      released-class="custom-released"
       style="width: 100%; height: 100px; background-color: lightblue"
     >
       Sticky Element

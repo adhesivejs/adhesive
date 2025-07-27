@@ -23,12 +23,14 @@ export function App() {
 
   return (
     <div>
-      <button onClick={() => setEnabled((prev) => !prev)}>
-        Toggle Enabled ({enabled ? "On" : "Off"})
+      <button onClick={() => setEnabled(!enabled)}>
+        {enabled ? "Disable" : "Enable"} Sticky
       </button>
-      <button onClick={() => setPosition("top")}>Change Position to Top</button>
-      <button onClick={() => setPosition("bottom")}>
-        Change Position to Bottom
+
+      <button
+        onClick={() => setPosition(position === "top" ? "bottom" : "top")}
+      >
+        Switch to {position === "top" ? "bottom" : "top"}
       </button>
       <br />
       <br />
@@ -46,11 +48,11 @@ export function App() {
           enabled={enabled}
           position={position}
           boundingEl=".adhesive-container"
-          className="my-classname"
-          outerClassName="my-outer-classname"
-          innerClassName="my-inner-classname"
-          activeClassName="my-active-classname"
-          releasedClassName="my-released-classname"
+          className="custom-class"
+          outerClassName="custom-outer"
+          innerClassName="custom-inner"
+          activeClassName="custom-active"
+          releasedClassName="custom-released"
           style={{
             width: "100%",
             height: "100px",

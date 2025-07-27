@@ -60,8 +60,8 @@ const adhesive = new Adhesive({
   offset: 20,
   zIndex: 999,
   className: 'custom-sticky',
-  activeClassName: 'is-stuck',
-  releasedClassName: 'is-released'
+  activeClassName: 'custom-active',
+  releasedClassName: 'custom-released'
 });
 
 // Initialize the sticky behavior

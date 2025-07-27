@@ -32,8 +32,8 @@ export interface AdhesiveOptions<
    * The element to make sticky. Can be an HTMLElement instance or a CSS selector string.
    * @example
    * ```ts
-   * targetEl: '#my-element' // CSS selector
-   * targetEl: document.querySelector('#my-element') // HTMLElement
+   * targetEl: '#target-element' // CSS selector
+   * targetEl: document.querySelector('#target-element') // HTMLElement
    * ```
    */
   readonly targetEl: ElementSelector<TTargetEl>;
@@ -466,7 +466,8 @@ function createInitialState(
  *   offset: 20,
  *   zIndex: 999,
  *   className: 'custom-sticky',
- *   activeClassName: 'is-stuck',
+ *   activeClassName: 'custom-active',
+ *   releasedClassName: 'custom-released',
  * });
  * ```
  *
@@ -564,7 +565,8 @@ export class Adhesive {
    *   offset: 20,
    *   zIndex: 999,
    *   className: 'custom-sticky',
-   *   activeClassName: 'is-stuck',
+   *   activeClassName: 'custom-active',
+   *   releasedClassName: 'custom-released',
    * });
    * ```
    */

@@ -77,8 +77,8 @@ export function App() {
       offset: 20,
       enabled,
       zIndex: 999,
-      activeClassName: 'is-sticky',
-      releasedClassName: 'is-normal'
+      activeClassName: 'custom-active',
+      releasedClassName: 'custom-released'
     }
   );
 
@@ -120,7 +120,7 @@ A simple wrapper component that automatically applies sticky positioning to its 
 <AdhesiveContainer
   position="bottom"
   offset={30}
-  className="my-sticky"
+  className="custom-class"
 >
   Content to make sticky
 </AdhesiveContainer>
