@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.2.1
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.2.0...v0.2.1)
+
+### 💅 Refactors
+
+- Rename init options function ([bfd6ca2](https://github.com/adhesivejs/adhesive/commit/bfd6ca2))
+
+### 📖 Documentation
+
+- Add download count to root readme ([5907f4e](https://github.com/adhesivejs/adhesive/commit/5907f4e))
+
+### 🏡 Chore
+
+- Add core playground ([3e7918e](https://github.com/adhesivejs/adhesive/commit/3e7918e))
+- Support publishing to jsr ([15b72b2](https://github.com/adhesivejs/adhesive/commit/15b72b2))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.2.0
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.1.1...v0.2.0)
