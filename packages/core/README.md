@@ -10,8 +10,6 @@ A modern, performant, lightweight, dependency free, cross platform solution for 
 
 ## 🛠️ Installation
 
-<!-- automd:pm-install name="@adhesivejs/core" -->
-
 ```sh
 # ✨ Auto-detect
 npx nypm install @adhesivejs/core
@@ -31,8 +29,6 @@ bun install @adhesivejs/core
 # deno
 deno install @adhesivejs/core
 ```
-
-<!-- /automd -->
 
 ## 🎨 Usage
 

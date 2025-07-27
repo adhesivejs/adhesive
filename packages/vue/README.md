@@ -15,8 +15,6 @@ Vue adapter for Adhesive - A modern, performant, lightweight, dependency free, c
 
 ## 🛠️ Installation
 
-<!-- automd:pm-install name="@adhesivejs/vue" -->
-
 ```sh
 # ✨ Auto-detect
 npx nypm install @adhesivejs/vue
@@ -36,8 +34,6 @@ bun install @adhesivejs/vue
 # deno
 deno install @adhesivejs/vue
 ```
-
-<!-- /automd -->
 
 ## 🎨 Usage
 

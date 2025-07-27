@@ -29,7 +29,6 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "automd": "automd",
     "build": "tsdown",
     "lint": "eslint",
     "prepack": "pnpm build",

@@ -10,8 +10,6 @@ React adapter for Adhesive - A modern, performant, lightweight, dependency free,
 
 ## 🛠️ Installation
 
-<!-- automd:pm-install name="@adhesivejs/react" -->
-
 ```sh
 # ✨ Auto-detect
 npx nypm install @adhesivejs/react
@@ -32,7 +30,7 @@ bun install @adhesivejs/react
 deno install @adhesivejs/react
 ```
 
-<!-- /automd -->
+
 
 ## 🎨 Usage
 
