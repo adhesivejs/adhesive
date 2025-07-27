@@ -120,11 +120,11 @@ import { AdhesiveContainer } from '@adhesivejs/vue';
 ```vue
 <script setup lang="ts">
 import { useAdhesive } from '@adhesivejs/vue';
-import { ref, useTemplateRef } from 'vue';
+import { useTemplateRef } from 'vue';
 
 const targetEl = useTemplateRef('target');
 
-useAdhesive({ target: targetEl, position: 'top' });
+useAdhesive({ target: targetEl }, { position: 'top' });
 </script>
 
 <template>
@@ -177,16 +177,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-## 👨‍💻 Author
-
-**Daniel Waltz**
-
-- Website: [danielwaltz.me](https://danielwaltz.me/)
-- Email: <danielbwaltz@gmail.com>
-- GitHub: [@danielwaltz](https://github.com/danielwaltz)
-
----
-
-<div align="center">
-  <sub>Built with ❤️ by <a href="https://danielwaltz.me">Daniel Waltz</a></sub>
-</div>

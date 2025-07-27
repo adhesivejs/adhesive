@@ -465,7 +465,8 @@ function createInitialState(
  *   position: 'bottom',
  *   offset: 20,
  *   zIndex: 999,
- *   className: 'custom-sticky',
+ *   outerClassName: 'custom-outer',
+ *   innerClassName: 'custom-inner',
  *   activeClassName: 'custom-active',
  *   releasedClassName: 'custom-released',
  * });
@@ -564,7 +565,8 @@ export class Adhesive {
    *   position: 'bottom',
    *   offset: 20,
    *   zIndex: 999,
-   *   className: 'custom-sticky',
+   *   outerClassName: 'custom-outer',
+   *   innerClassName: 'custom-inner',
    *   activeClassName: 'custom-active',
    *   releasedClassName: 'custom-released',
    * });

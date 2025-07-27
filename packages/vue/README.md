@@ -95,7 +95,7 @@ useAdhesive(
       {{ enabled ? 'Disable' : 'Enable' }} Sticky
     </button>
 
-    <button type="button" @click="position === 'top' ? 'bottom' : 'top'">
+    <button type="button" @click="position = position === 'top' ? 'bottom' : 'top'">
       Switch to {{ position === 'top' ? 'bottom' : 'top' }}
     </button>
 
