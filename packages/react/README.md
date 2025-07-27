@@ -61,14 +61,14 @@ export function App() {
 ### Advanced Example with `useAdhesive` Hook
 
 ```tsx
-import { useAdhesive } from '@adhesivejs/react';
+import { useAdhesive, type AdhesivePosition } from '@adhesivejs/react';
 import { useRef, useState } from 'react';
 
 export function App() {
   const targetEl = useRef<HTMLDivElement>(null);
   const boundingEl = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(true);
-  const [position, setPosition] = useState<'top' | 'bottom'>('top');
+  const [position, setPosition] = useState<AdhesivePosition>('top');
 
   useAdhesive(
     { target: targetEl, bounding: boundingEl },

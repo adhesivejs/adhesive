@@ -1,7 +1,10 @@
-import { AdhesiveContainer, useAdhesive } from "@adhesivejs/react";
+import {
+  AdhesiveContainer,
+  useAdhesive,
+  type AdhesivePosition,
+} from "@adhesivejs/react";
 import { useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
-import type { AdhesivePosition } from "@adhesivejs/core";
 import "./App.css";
 import viteLogo from "/vite.svg";
 

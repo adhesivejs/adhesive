@@ -67,13 +67,13 @@ import { AdhesiveContainer } from '@adhesivejs/vue';
 
 ```vue
 <script setup lang="ts">
-import { useAdhesive } from '@adhesivejs/vue';
+import { useAdhesive, type AdhesivePosition } from '@adhesivejs/vue';
 import { ref, useTemplateRef } from 'vue';
 
 const targetEl = useTemplateRef('target');
 const boundingEl = useTemplateRef('bounding');
 const enabled = ref(true);
-const position = ref<'top' | 'bottom'>('top');
+const position = ref<AdhesivePosition>('top');
 
 useAdhesive(
   { target: targetEl, bounding: boundingEl },
