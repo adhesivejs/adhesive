@@ -7,9 +7,9 @@ import {
   type MaybeRefOrGetter,
 } from "vue";
 import {
-  unrefElement,
+  unwrapElement,
   type MaybeElementOrSelectorRef,
-} from "../utils/unrefElement.js";
+} from "../utils/unwrapElement.js";
 
 /**
  * Configuration options for the useAdhesive composable.
@@ -80,9 +80,9 @@ export function useAdhesive(
   function getValidatedOptions() {
     const optionsValue = toValue(options);
 
-    const targetEl = unrefElement(target);
+    const targetEl = unwrapElement(target);
     const boundingEl =
-      unrefElement(optionsValue?.boundingRef) ?? optionsValue?.boundingEl;
+      unwrapElement(optionsValue?.boundingRef) ?? optionsValue?.boundingEl;
 
     if (!targetEl) {
       throw new Error("@adhesivejs/vue: sticky element is not defined");

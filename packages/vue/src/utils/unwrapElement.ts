@@ -17,11 +17,11 @@ export type MaybeElementOrSelectorRef<
   T extends MaybeElementOrSelector = MaybeElementOrSelector,
 > = MaybeRefOrGetter<T>;
 
-type UnRefElementReturn = HTMLElement | string | null | undefined;
+type UnwrapElementReturn = HTMLElement | string | null | undefined;
 
-export function unrefElement(
+export function unwrapElement(
   elOrSelectorRef: MaybeElementOrSelectorRef,
-): UnRefElementReturn {
+): UnwrapElementReturn {
   const elOrSelectorValue = toValue(elOrSelectorRef);
   return (elOrSelectorValue as VueInstance)?.$el ?? elOrSelectorValue;
 }

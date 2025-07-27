@@ -7,11 +7,11 @@ export type MaybeElementOrSelectorRef =
   | null
   | undefined;
 
-type UnRefElementReturn = HTMLElement | string | null | undefined;
+type UnwrapElementReturn = HTMLElement | string | null | undefined;
 
-export function unrefElement(
+export function unwrapElement(
   elOrSelectorRef: MaybeElementOrSelectorRef,
-): UnRefElementReturn {
+): UnwrapElementReturn {
   // Handle React ref objects by accessing their .current property
   // For non-ref values, return them as-is
   if (
@@ -21,5 +21,5 @@ export function unrefElement(
   ) {
     return elOrSelectorRef.current;
   }
-  return elOrSelectorRef as UnRefElementReturn;
+  return elOrSelectorRef as UnwrapElementReturn;
 }

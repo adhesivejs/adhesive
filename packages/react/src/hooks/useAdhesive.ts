@@ -1,9 +1,9 @@
 import { Adhesive, type AdhesiveOptions } from "@adhesivejs/core";
 import { useEffect, useRef } from "react";
 import {
-  unrefElement,
+  unwrapElement,
   type MaybeElementOrSelectorRef,
-} from "../utils/unrefElement.js";
+} from "../utils/unwrapElement.js";
 
 /**
  * Configuration options for the useAdhesive hook.
@@ -53,9 +53,9 @@ export function useAdhesive(
   options?: UseAdhesiveOptions,
 ) {
   function getValidatedOptions() {
-    const targetEl = unrefElement(target);
+    const targetEl = unwrapElement(target);
     const boundingEl =
-      unrefElement(options?.boundingRef) ?? options?.boundingEl;
+      unwrapElement(options?.boundingRef) ?? options?.boundingEl;
 
     if (!targetEl) {
       throw new Error("@adhesivejs/react: sticky element is not defined");

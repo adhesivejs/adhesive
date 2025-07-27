@@ -10,7 +10,7 @@ import {
   useAdhesive,
   type UseAdhesiveOptions,
 } from "../composables/useAdhesive.js";
-import type { MaybeElementOrSelectorRef } from "../utils/unrefElement.js";
+import type { MaybeElementOrSelectorRef } from "../utils/unwrapElement.js";
 
 type BaseProps = Omit<
   Partial<UseAdhesiveOptions>,
