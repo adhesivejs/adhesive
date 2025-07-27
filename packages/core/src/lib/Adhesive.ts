@@ -1,33 +1,8 @@
-// =============================================================================
-// TYPE DEFINITIONS & INTERFACES
-// =============================================================================
+type ElementSelector = HTMLElement | string;
 
-/**
- * Modern element selector type supporting both HTMLElement instances and CSS selectors
- * @template T - The specific HTMLElement type
- */
-type ElementSelector<T extends HTMLElement = HTMLElement> = T | string;
-
-/**
- * Position types for sticky behavior with enhanced type safety
- * @public
- */
 export type AdhesivePosition = "top" | "bottom";
 
-/**
- * Configuration options for creating a Adhesive instance.
- *
- * Uses modern TypeScript features for enhanced type safety and better DX.
- * All properties are readonly by default to prevent accidental mutations.
- *
- * @template TTargetEl - The type of the sticky element (extends HTMLElement)
- * @template TBoundingEl - The type of the bounding element (extends HTMLElement)
- * @public
- */
-export interface AdhesiveOptions<
-  TTargetEl extends HTMLElement = HTMLElement,
-  TBoundingEl extends HTMLElement = HTMLElement,
-> {
+export interface AdhesiveOptions {
   /**
    * The element to make sticky. Can be an HTMLElement instance or a CSS selector string.
    * @example
@@ -36,7 +11,7 @@ export interface AdhesiveOptions<
    * targetEl: document.querySelector('#target-element') // HTMLElement
    * ```
    */
-  readonly targetEl: ElementSelector<TTargetEl>;
+  readonly targetEl: ElementSelector;
 
   /**
    * The element that defines the boundaries for the sticky behavior.
@@ -50,7 +25,7 @@ export interface AdhesiveOptions<
    * boundingEl: null // Use document.body
    * ```
    */
-  readonly boundingEl?: ElementSelector<TBoundingEl> | null;
+  readonly boundingEl?: ElementSelector | null;
 
   /**
    * Whether the sticky behavior is enabled.
@@ -61,10 +36,6 @@ export interface AdhesiveOptions<
   /**
    * The offset from the top or bottom of the bounding element in pixels.
    * @default 0
-   * @example
-   * ```ts
-   * offset: 20 // 20px offset from the position
-   * ```
    */
   readonly offset?: number;
 
@@ -72,11 +43,6 @@ export interface AdhesiveOptions<
    * The position where the element should stick.
    *
    * @default "top"
-   * @example
-   * ```ts
-   * position: "top"    // Element sticks to the top
-   * position: "bottom" // Element sticks to the bottom
-   * ```
    */
   readonly position?: AdhesivePosition;
 
@@ -111,36 +77,19 @@ export interface AdhesiveOptions<
   readonly releasedClassName?: string;
 }
 
-// =============================================================================
-// CONSTANTS & ENUMS
-// =============================================================================
+interface InternalAdhesiveOptions {
+  targetEl: HTMLElement;
+  boundingEl: HTMLElement;
+  enabled: boolean;
+  offset: number;
+  position: AdhesivePosition;
+  zIndex: number;
+  outerClassName: string;
+  innerClassName: string;
+  activeClassName: string;
+  releasedClassName: string;
+}
 
-/**
- * Constants representing the different states of a sticky element.
- * Uses modern const assertion for better type inference and immutability.
- * @public
- */
-export const ADHESIVE_STATUS = {
-  /** Element is in its original position, not affected by sticky positioning */
-  INITIAL: "initial",
-  /** Element is positioned relative within its boundaries, following scroll */
-  RELATIVE: "relative",
-  /** Element is stuck to the bounding element (top or bottom) */
-  FIXED: "fixed",
-} as const;
-
-/**
- * Union type representing the possible sticky status values.
- * Automatically derived from ADHESIVE_STATUS for type safety.
- * @public
- */
-export type AdhesiveStatus =
-  (typeof ADHESIVE_STATUS)[keyof typeof ADHESIVE_STATUS];
-
-/**
- * Default configuration values with enhanced type safety
- * @internal
- */
 const DEFAULT_CONFIG = {
   OFFSET: 0,
   POSITION: "top" as const satisfies AdhesivePosition,
@@ -154,64 +103,35 @@ const DEFAULT_CONFIG = {
   },
 } as const;
 
-// =============================================================================
-// STATE INTERFACES
-// =============================================================================
+export const ADHESIVE_STATUS = {
+  /** Element is in its original position, not affected by sticky positioning */
+  INITIAL: "initial",
+  /** Element is positioned relative within its boundaries, following scroll */
+  RELATIVE: "relative",
+  /** Element is stuck to the bounding element (top or bottom) */
+  FIXED: "fixed",
+} as const;
 
-/**
- * Comprehensive read-only state interface representing the current state of a Adhesive instance.
- *
- * This interface provides complete access to all internal state properties without allowing
- * modification, ensuring immutability from the public API perspective.
- *
- * @example
- * ```ts
- * const adhesive = Adhesive.create({ targetEl: '#header' });
- * const state = adhesive.getState();
- *
- * // Type-safe access to all state properties
- * console.log(`Status: ${state.status}`);
- * console.log(`Is sticky: ${state.isSticky}`);
- * console.log(`Dimensions: ${state.width}x${state.height}`);
- * ```
- * @public
- */
+export type AdhesiveStatus =
+  (typeof ADHESIVE_STATUS)[keyof typeof ADHESIVE_STATUS];
+
 export interface AdhesiveState {
-  /** Current sticky status of the element */
   readonly status: AdhesiveStatus;
-  /** Whether the element is currently in a sticky (fixed) state */
   readonly isSticky: boolean;
-  /** Original CSS position value before sticky positioning was applied */
   readonly originalPosition: string;
-  /** Original CSS top value before sticky positioning was applied */
   readonly originalTop: string;
-  /** Original CSS z-index value before sticky positioning was applied */
   readonly originalZIndex: string;
-  /** Original CSS transform value before sticky positioning was applied */
   readonly originalTransform: string;
-  /** Current width of the element in pixels */
   readonly width: number;
-  /** Current height of the element in pixels */
   readonly height: number;
-  /** X-coordinate of the element relative to the bounding element */
   readonly x: number;
-  /** Y-coordinate of the element relative to the bounding element */
   readonly y: number;
-  /** Top boundary for sticky behavior (element's initial position) */
   readonly topBoundary: number;
-  /** Bottom boundary for sticky behavior (end of bounding container) */
   readonly bottomBoundary: number;
-  /** Current position offset applied to the element */
   readonly pos: number;
-  /** Whether the sticky behavior has been activated via init() */
   readonly activated: boolean;
 }
 
-/**
- * Internal mutable state interface for implementation details.
- * Mirrors AdhesiveState but allows mutations for internal operations.
- * @internal
- */
 interface InternalAdhesiveState {
   status: AdhesiveStatus;
   isSticky: boolean;
@@ -229,32 +149,6 @@ interface InternalAdhesiveState {
   activated: boolean;
 }
 
-/**
- * Internal mutable options interface for implementation details.
- * Contains resolved and validated options with proper defaults applied.
- * @internal
- */
-interface InternalAdhesiveOptions {
-  targetEl: HTMLElement;
-  boundingEl: HTMLElement;
-  enabled: boolean;
-  offset: number;
-  position: AdhesivePosition;
-  zIndex: number;
-  outerClassName: string;
-  innerClassName: string;
-  activeClassName: string;
-  releasedClassName: string;
-}
-
-// =============================================================================
-// ERROR HANDLING & VALIDATION
-// =============================================================================
-
-/**
- * Custom error class for Adhesive-specific errors with enhanced debugging capabilities
- * @public
- */
 export class AdhesiveError extends Error {
   public readonly code: string;
   public readonly context: Record<string, unknown>;
@@ -272,10 +166,6 @@ export class AdhesiveError extends Error {
   }
 }
 
-/**
- * Error codes and messages for better debugging and internationalization support
- * @internal
- */
 const ERROR_REGISTRY = {
   TARGET_EL_REQUIRED: {
     code: "TARGET_EL_REQUIRED",
@@ -303,10 +193,6 @@ const ERROR_REGISTRY = {
   },
 } as const;
 
-/**
- * Creates a AdhesiveError with proper context
- * @internal
- */
 function createAdhesiveError(
   errorKey: keyof typeof ERROR_REGISTRY,
   context: Record<string, unknown>,
@@ -315,14 +201,6 @@ function createAdhesiveError(
   return new AdhesiveError(error.message, error.code, context);
 }
 
-// =============================================================================
-// UTILITY FUNCTIONS
-// =============================================================================
-
-/**
- * Modern element resolution with enhanced error handling
- * @internal
- */
 function resolveElement(element: HTMLElement | string): HTMLElement | null {
   if (typeof element === "string") {
     const resolved = document.querySelector(element);
@@ -331,10 +209,6 @@ function resolveElement(element: HTMLElement | string): HTMLElement | null {
   return element;
 }
 
-/**
- * Gets the current scroll position with modern fallbacks and type safety
- * @internal
- */
 function getScrollTop(): number {
   return (
     window.scrollY ??
@@ -344,18 +218,10 @@ function getScrollTop(): number {
   );
 }
 
-/**
- * Gets the current viewport height with modern fallbacks and type safety
- * @internal
- */
 function getViewportHeight(): number {
   return window.innerHeight ?? document.documentElement.clientHeight ?? 0;
 }
 
-/**
- * Type-safe element validation with enhanced error reporting
- * @internal
- */
 function validateElement(
   element: HTMLElement | null,
   errorKey: keyof typeof ERROR_REGISTRY,
@@ -366,10 +232,6 @@ function validateElement(
   }
 }
 
-/**
- * Creates validated options with proper type safety
- * @internal
- */
 function createValidatedOptions(
   options: AdhesiveOptions,
 ): InternalAdhesiveOptions {
@@ -403,10 +265,6 @@ function createValidatedOptions(
   };
 }
 
-/**
- * Creates initial state for a Adhesive instance with enhanced type safety
- * @internal
- */
 function createInitialState(
   innerWrapper?: HTMLElement | null,
 ): InternalAdhesiveState {
@@ -497,11 +355,8 @@ function createInitialState(
  * const state = adhesive.getState();
  * console.log(`Status: ${state.status}, Sticky: ${state.isSticky}`);
  * ```
- *
- * @public
  */
 export class Adhesive {
-  // Private fields with enhanced type safety
   #observer: ResizeObserver | null = null;
   #targetEl!: HTMLElement;
   #boundingEl!: HTMLElement;
@@ -616,7 +471,6 @@ export class Adhesive {
     this.#scrollTop = getScrollTop();
   }
 
-  /** Initializes instance in disabled state */
   #initializeDisabledInstance(): void {
     this.#isEnabled = false;
     this.#targetEl = document.createElement("div");
@@ -625,7 +479,6 @@ export class Adhesive {
     this.#state = createInitialState();
   }
 
-  /** Creates frozen options object for disabled instances */
   #createDisabledOptions(): InternalAdhesiveOptions {
     return Object.freeze({
       targetEl: this.#targetEl,
@@ -645,7 +498,6 @@ export class Adhesive {
   // DOM Manipulation Methods
   // =============================================================================
 
-  /** Creates wrapper elements around the target element */
   #createWrappers(): void {
     const { outerClassName, innerClassName } = this.#options;
 
@@ -667,11 +519,6 @@ export class Adhesive {
     this.#innerWrapper.append(this.#targetEl);
   }
 
-  /**
-   * Applies hardware-accelerated CSS transform for smooth element movement
-   * Uses translate3d to leverage GPU acceleration for optimal performance
-   * @internal
-   */
   #translate(style: CSSStyleDeclaration, pos: number): void {
     // Use translate3d for hardware acceleration and smooth animations
     const roundedPos = Math.round(pos * 100) / 100; // Round to 2 decimal places for precision
@@ -682,7 +529,6 @@ export class Adhesive {
   // Calculation and Measurement Methods
   // =============================================================================
 
-  /** Calculates the bottom boundary for sticky behavior */
   #getBottomBoundary(): number {
     if (!this.#boundingEl || this.#boundingEl === document.body) {
       return Number.POSITIVE_INFINITY;
@@ -691,11 +537,6 @@ export class Adhesive {
     return getScrollTop() + rect.bottom;
   }
 
-  /**
-   * Updates element dimensions and boundaries with enhanced precision
-   * Uses modern getBoundingClientRect for accurate measurements
-   * @internal
-   */
   #updateInitialDimensions(): void {
     if (!this.#outerWrapper || !this.#innerWrapper) return;
 
@@ -725,11 +566,6 @@ export class Adhesive {
     });
   }
 
-  /**
-   * Updates only the width dimensions for resize scenarios
-   * This method is optimized for responsive width changes without full recalculation
-   * @internal
-   */
   #updateWidthDimensions(): void {
     if (!this.#outerWrapper || !this.#innerWrapper) return;
 
@@ -781,11 +617,6 @@ export class Adhesive {
     }
   }
 
-  /**
-   * Forces an immediate width update and style refresh
-   * Useful for responsive design scenarios where width changes need immediate application
-   * @internal
-   */
   #forceWidthUpdate(): void {
     this.#updateWidthDimensions();
     this.#updateStyles();
@@ -795,11 +626,6 @@ export class Adhesive {
   // State Management Methods
   // =============================================================================
 
-  /**
-   * Updates internal state with type safety and triggers optimized style updates
-   * Only triggers style updates when status actually changes for better performance
-   * @internal
-   */
   #setState(newState: Partial<InternalAdhesiveState>): void {
     const prevStatus = this.#state.status;
 
@@ -812,7 +638,6 @@ export class Adhesive {
     }
   }
 
-  /** Sets element to initial (non-sticky) state */
   #reset(): void {
     this.#setState({
       status: ADHESIVE_STATUS.INITIAL,
@@ -821,7 +646,6 @@ export class Adhesive {
     });
   }
 
-  /** Sets element to relative positioning with specified offset */
   #release(pos: number): void {
     this.#setState({
       status: ADHESIVE_STATUS.RELATIVE,
@@ -830,7 +654,6 @@ export class Adhesive {
     });
   }
 
-  /** Sets element to fixed positioning with specified offset */
   #fix(pos: number): void {
     this.#setState({
       status: ADHESIVE_STATUS.FIXED,
@@ -843,7 +666,6 @@ export class Adhesive {
   // Style and CSS Management Methods
   // =============================================================================
 
-  /** Updates element styles based on current state */
   #updateStyles(): void {
     if (!this.#innerWrapper || !this.#outerWrapper) return;
 
@@ -887,7 +709,6 @@ export class Adhesive {
     this.#updateClassNames();
   }
 
-  /** Updates CSS classes based on current state */
   #updateClassNames(): void {
     if (!this.#outerWrapper) return;
 
@@ -905,7 +726,6 @@ export class Adhesive {
   // Positioning Logic Methods
   // =============================================================================
 
-  /** Main update method that determines positioning based on scroll state */
   #update(): void {
     const { bottomBoundary, topBoundary, height, width } = this.#state;
 
@@ -930,7 +750,6 @@ export class Adhesive {
     }
   }
 
-  /** Updates positioning logic for top-stick behavior */
   #updateForTopPosition(offset: number): void {
     const { bottomBoundary, topBoundary, height } = this.#state;
     const top = this.#scrollTop + offset;
@@ -949,7 +768,6 @@ export class Adhesive {
     }
   }
 
-  /** Updates positioning logic for bottom-stick behavior */
   #updateForBottomPosition(offset: number): void {
     const { bottomBoundary, topBoundary, height } = this.#state;
 
@@ -996,7 +814,6 @@ export class Adhesive {
   // Tall Element Handling Methods
   // =============================================================================
 
-  /** Handles positioning for elements taller than viewport (top positioning) */
   #handleTallElement(top: number, bottom: number): void {
     const { status, y, height } = this.#state;
     const { offset } = this.#options;
@@ -1025,7 +842,6 @@ export class Adhesive {
     }
   }
 
-  /** Handles positioning for elements taller than viewport (bottom positioning) */
   #handleTallElementBottom(elementTop: number, elementBottom: number): void {
     const { status, y, height } = this.#state;
     const { offset } = this.#options;
@@ -1073,7 +889,6 @@ export class Adhesive {
     }
   }
 
-  /** Determines if an element should be released from fixed positioning for bottom positioning */
   #shouldReleaseFromFixedBottom(
     elementTop: number,
     elementBottom: number,
@@ -1094,7 +909,6 @@ export class Adhesive {
     return { release: false, position: 0 };
   }
 
-  /** Determines if an element should be released from fixed positioning for top positioning */
   #shouldReleaseFromFixed(
     top: number,
     bottom: number,
@@ -1117,10 +931,6 @@ export class Adhesive {
   // Event Handlers
   // =============================================================================
 
-  /**
-   * Optimized scroll handler using RAF for smooth performance
-   * @internal
-   */
   readonly #onScroll = (): void => {
     if (!this.#isEnabled || this.#pendingUpdate) return;
 
@@ -1133,11 +943,6 @@ export class Adhesive {
     });
   };
 
-  /**
-   * Optimized window resize handler with RAF throttling
-   * Handles viewport dimension changes
-   * @internal
-   */
   readonly #onWindowResize = (): void => {
     if (!this.#isEnabled || this.#pendingUpdate) return;
 
@@ -1150,11 +955,6 @@ export class Adhesive {
     });
   };
 
-  /**
-   * ResizeObserver callback for element dimension changes
-   * Handles width updates with immediate style application and debouncing for performance
-   * @internal
-   */
   readonly #onElementResize = (entries: ResizeObserverEntry[]): void => {
     if (!this.#isEnabled) return;
 
@@ -1191,6 +991,7 @@ export class Adhesive {
       this.#update();
     });
   };
+
   // =============================================================================
   // Public API Methods
   // =============================================================================
