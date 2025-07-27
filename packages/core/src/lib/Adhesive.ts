@@ -232,7 +232,7 @@ function validateElement(
   }
 }
 
-function createValidatedOptions(
+function createInitialOptions(
   options: AdhesiveOptions,
 ): InternalAdhesiveOptions {
   const targetEl = resolveElement(options.targetEl);
@@ -457,7 +457,7 @@ export class Adhesive {
     this.#boundingEl = boundingEl;
 
     // Initialize options
-    this.#options = createValidatedOptions(options);
+    this.#options = createInitialOptions(options);
 
     // Create DOM structure
     this.#createWrappers();
