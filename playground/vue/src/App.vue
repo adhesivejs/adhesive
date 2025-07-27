@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { AdhesiveContainer, useAdhesive, type AdhesivePosition } from "@adhesivejs/vue";
+import {
+  AdhesiveContainer,
+  useAdhesive,
+  type AdhesivePosition,
+} from "@adhesivejs/vue";
 import { ref, useTemplateRef } from "vue";
 
 const count = ref(0);
