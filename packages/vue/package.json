@@ -47,7 +47,6 @@
     "@adhesivejs/core": "workspace:*"
   },
   "devDependencies": {
-    "unplugin-vue": "catalog:",
     "vue-tsc": "catalog:"
   },
   "engines": {

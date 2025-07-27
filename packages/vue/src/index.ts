@@ -14,6 +14,6 @@ export {
 } from "./composables/useAdhesive.js";
 
 export {
-  default as AdhesiveContainer,
+  AdhesiveContainer,
   type AdhesiveContainerProps,
-} from "./components/AdhesiveContainer.vue";
+} from "./components/AdhesiveContainer.js";
