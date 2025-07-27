@@ -1381,6 +1381,7 @@ export class Adhesive {
 
     // Reset state
     this.#reset();
+    this.#state.activated = false;
 
     // Restore original DOM structure
     if (this.#outerWrapper?.parentNode) {
