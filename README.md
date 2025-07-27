@@ -20,11 +20,22 @@ Adhesive is a modern, performant, lightweight, dependency free library that prov
 
 This monorepo contains multiple packages for different use cases:
 
-| Package | Description | README |
-|---------|-------------|---------|
-| [`@adhesivejs/core`](./packages/core) | Core vanilla JavaScript/TypeScript library | [📖 Core README](./packages/core/README.md) |
-| [`@adhesivejs/react`](./packages/react) | React hooks and components adapter | [📖 React README](./packages/react/README.md) |
-| [`@adhesivejs/vue`](./packages/vue) | Vue composables and components adapter | [📖 Vue README](./packages/vue/README.md) |
+| Package | Description | README | NPM |
+|---------|-------------|---------|-----|
+| [`@adhesivejs/core`](./packages/core) | Core vanilla JavaScript/TypeScript library | [📖 Core README](./packages/core/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/core?color=4c207d)](https://npmjs.com/package/@adhesivejs/core) |
+| [`@adhesivejs/react`](./packages/react) | React hooks and components adapter | [📖 React README](./packages/react/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/react?color=4c207d)](https://npmjs.com/package/@adhesivejs/react) |
+| [`@adhesivejs/vue`](./packages/vue) | Vue composables and components adapter | [📖 Vue README](./packages/vue/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/vue?color=4c207d)](https://npmjs.com/package/@adhesivejs/vue) |
+
+## 🏎️ Quick Install
+
+```sh
+# Core
+npx nypm install @adhesivejs/core
+# React
+npx nypm install @adhesivejs/react
+# Vue
+npx nypm install @adhesivejs/vue
+```
 
 ## 🎨 Usage
 
