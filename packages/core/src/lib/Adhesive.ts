@@ -257,13 +257,9 @@ interface InternalAdhesiveOptions {
  */
 export class AdhesiveError extends Error {
   public readonly code: string;
-  public readonly context?: Record<string, unknown>;
+  public readonly context: Record<string, unknown>;
 
-  constructor(
-    message: string,
-    code: string,
-    context?: Record<string, unknown>,
-  ) {
+  constructor(message: string, code: string, context: Record<string, unknown>) {
     super(`@adhesivejs/core: ${message}`);
     this.name = "AdhesiveError";
     this.code = code;
@@ -313,7 +309,7 @@ const ERROR_REGISTRY = {
  */
 function createAdhesiveError(
   errorKey: keyof typeof ERROR_REGISTRY,
-  context?: Record<string, unknown>,
+  context: Record<string, unknown>,
 ): AdhesiveError {
   const error = ERROR_REGISTRY[errorKey];
   return new AdhesiveError(error.message, error.code, context);
@@ -363,7 +359,7 @@ function getViewportHeight(): number {
 function validateElement(
   element: HTMLElement | null,
   errorKey: keyof typeof ERROR_REGISTRY,
-  context?: Record<string, unknown>,
+  context: Record<string, unknown>,
 ): asserts element is HTMLElement {
   if (!element) {
     throw createAdhesiveError(errorKey, context);
@@ -581,7 +577,9 @@ export class Adhesive {
 
     // Validate required options
     if (!options.targetEl) {
-      throw createAdhesiveError("TARGET_EL_REQUIRED");
+      throw createAdhesiveError("TARGET_EL_REQUIRED", {
+        selector: options.targetEl,
+      });
     }
 
     // Resolve and validate elements
