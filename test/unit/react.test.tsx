@@ -32,7 +32,7 @@ function TestHookComponent() {
   const [offset, setOffset] = useState(10);
 
   useAdhesive(targetRef, {
-    boundingEl: boundingRef,
+    boundingRef,
     enabled,
     position,
     offset,
@@ -189,7 +189,7 @@ describe("React Integration", () => {
           const targetRef = useRef<HTMLDivElement>(null);
           const boundingRef = useRef<HTMLDivElement>(null);
 
-          useAdhesive(targetRef, { boundingEl: boundingRef, enabled: false });
+          useAdhesive(targetRef, { boundingRef, enabled: false });
 
           return (
             <div ref={boundingRef}>

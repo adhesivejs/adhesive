@@ -71,15 +71,15 @@ import { AdhesiveContainer } from '@adhesivejs/vue';
 import { useAdhesive, type AdhesivePosition } from '@adhesivejs/vue';
 import { ref, useTemplateRef } from 'vue';
 
-const targetEl = useTemplateRef('target');
-const boundingEl = useTemplateRef('bounding');
+const targetRef = useTemplateRef('target');
+const boundingRef = useTemplateRef('bounding');
 const enabled = ref(true);
 const position = ref<AdhesivePosition>('top');
 
 useAdhesive(
-  targetEl,
+  targetRef,
   () => ({
-    boundingEl: boundingEl.value,
+    boundingRef: boundingRef.value,
     position: position.value,
     offset: 20,
     enabled: enabled.value,
@@ -148,7 +148,8 @@ For more control over the sticky behavior with full Vue reactivity support.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `boundingEl` | `TemplateRef` \| `string` | `undefined` | The element that defines the sticky boundaries |
+| `boundingRef` | `TemplateRef` \| `HTMLElement` \| `string` | `document.body` | The element that defines the sticky boundaries |
+| `boundingEl` | `HTMLElement` \| `string` | `document.body` | Alternative way to specify bounding element (for compatibility) |
 | `position` | `'top' \| 'bottom'` | `'top'` | Where the element should stick |
 | `offset` | `number` | `0` | Offset in pixels from the position |
 | `zIndex` | `number` | `1` | Z-index for the fixed element |

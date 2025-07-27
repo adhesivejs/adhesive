@@ -5,10 +5,8 @@ import {
   type MaybeElementOrSelectorRef,
 } from "../utils/unrefElement.js";
 
-export type UseAdhesiveOptions = Partial<
-  Omit<AdhesiveOptions, "targetEl" | "boundingEl">
-> & {
-  boundingEl?: AdhesiveOptions["boundingEl"] | MaybeElementOrSelectorRef;
+export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
+  boundingRef?: MaybeElementOrSelectorRef;
 };
 
 /**
@@ -27,17 +25,17 @@ export type UseAdhesiveOptions = Partial<
  * import { useAdhesive } from '@adhesivejs/react';
  *
  * function Component() {
- *   const targetEl = useRef<HTMLDivElement>(null);
- *   const boundingEl = useRef<HTMLDivElement>(null);
+ *   const targetRef = useRef<HTMLDivElement>(null);
+ *   const boundingRef = useRef<HTMLDivElement>(null);
  *
  *   useAdhesive(
- *     targetEl,
- *     { boundingEl, position: 'top' }
+ *     targetRef,
+ *     { boundingRef, position: 'top' }
  *   );
  *
  *   return (
- *     <div ref={boundingEl}>
- *       <div ref={targetEl}>Sticky content</div>
+ *     <div ref={boundingRef}>
+ *       <div ref={targetRef}>Sticky content</div>
  *     </div>
  *   );
  * }
@@ -49,7 +47,8 @@ export function useAdhesive(
 ) {
   function getValidatedOptions() {
     const targetEl = unrefElement(target);
-    const boundingEl = unrefElement(options?.boundingEl);
+    const boundingEl =
+      unrefElement(options?.boundingRef) ?? options?.boundingEl;
 
     if (!targetEl) {
       throw new Error("@adhesivejs/react: sticky element is not defined");

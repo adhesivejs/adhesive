@@ -77,13 +77,13 @@ import { useAdhesive } from '@adhesivejs/react';
 import { useRef } from 'react';
 
 export function App() {
-  const targetEl = useRef<HTMLElement>(null);
+  const targetRef = useRef<HTMLElement>(null);
 
-  useAdhesive(targetEl, { position: 'top' });
+  useAdhesive(targetRef, { position: 'top' });
 
   return (
     <div>
-      <header ref={targetEl}>This header will stick to the top</header>
+      <header ref={targetRef}>This header will stick to the top</header>
 
       <main>
         <p>Your main content here...</p>
@@ -122,9 +122,9 @@ import { AdhesiveContainer } from '@adhesivejs/vue';
 import { useAdhesive } from '@adhesivejs/vue';
 import { useTemplateRef } from 'vue';
 
-const targetEl = useTemplateRef('target');
+const targetRef = useTemplateRef('target');
 
-useAdhesive(targetEl, { position: 'top' });
+useAdhesive(targetRef, { position: 'top' });
 </script>
 
 <template>
@@ -176,4 +176,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-

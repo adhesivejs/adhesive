@@ -16,6 +16,7 @@ export type AdhesiveContainerProps = Partial<UseAdhesiveOptions> &
  * ```
  */
 export function AdhesiveContainer({
+  boundingRef,
   boundingEl,
   enabled = true,
   offset,
@@ -32,6 +33,7 @@ export function AdhesiveContainer({
 
   const options = useMemo<UseAdhesiveOptions>(
     () => ({
+      boundingRef,
       boundingEl,
       enabled,
       offset,
@@ -43,6 +45,7 @@ export function AdhesiveContainer({
       releasedClassName,
     }),
     [
+      boundingRef,
       boundingEl,
       enabled,
       offset,

@@ -10,11 +10,11 @@ const count = ref(0);
 const enabled = ref(true);
 const position = ref<AdhesivePosition>("top");
 
-const targetEl = useTemplateRef("target");
-const boundingEl = useTemplateRef("bounding");
+const targetRef = useTemplateRef("target");
+const boundingRef = useTemplateRef("bounding");
 
-useAdhesive(targetEl, () => ({
-  boundingEl: boundingEl.value,
+useAdhesive(targetRef, () => ({
+  boundingRef: boundingRef.value,
   enabled: enabled.value,
   position: position.value,
 }));
@@ -25,7 +25,10 @@ useAdhesive(targetEl, () => ({
     <button type="button" @click="enabled = !enabled">
       {{ enabled ? "Disable" : "Enable" }} Sticky
     </button>
-    <button type="button" @click="position === 'top' ? 'bottom' : 'top'">
+    <button
+      type="button"
+      @click="position = position === 'top' ? 'bottom' : 'top'"
+    >
       Switch to {{ position === "top" ? "bottom" : "top" }}
     </button>
     <br />

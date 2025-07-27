@@ -35,6 +35,7 @@ export default { name: "AdhesiveContainer" };
 
 <script setup lang="ts">
 const {
+  boundingRef,
   boundingEl,
   enabled = true,
   offset,
@@ -49,6 +50,7 @@ const {
 const targetRef = useTemplateRef("target");
 
 const options = computed<UseAdhesiveOptions>(() => ({
+  boundingRef,
   boundingEl,
   enabled,
   offset,

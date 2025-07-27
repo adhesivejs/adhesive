@@ -13,10 +13,10 @@ export function App() {
   const [enabled, setEnabled] = useState(true);
   const [position, setPosition] = useState<AdhesivePosition>("top");
 
-  const targetEl = useRef<HTMLDivElement>(null);
-  const boundingEl = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLDivElement>(null);
+  const boundingRef = useRef<HTMLDivElement>(null);
 
-  useAdhesive(targetEl, { boundingEl, enabled, position });
+  useAdhesive(targetRef, { boundingRef, enabled, position });
 
   return (
     <div>
@@ -31,8 +31,8 @@ export function App() {
       </button>
       <br />
       <br />
-      <div ref={boundingEl}>
-        <div ref={targetEl}>Sticky Element</div>
+      <div ref={boundingRef}>
+        <div ref={targetRef}>Sticky Element</div>
         <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>

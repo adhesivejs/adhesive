@@ -66,15 +66,15 @@ import { useAdhesive, type AdhesivePosition } from '@adhesivejs/react';
 import { useRef, useState } from 'react';
 
 export function App() {
-  const targetEl = useRef<HTMLDivElement>(null);
-  const boundingEl = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLDivElement>(null);
+  const boundingRef = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(true);
   const [position, setPosition] = useState<AdhesivePosition>('top');
 
   useAdhesive(
-    targetEl,
+    targetRef,
     {
-      boundingEl,
+      boundingRef,
       position,
       offset: 20,
       enabled,
@@ -85,7 +85,7 @@ export function App() {
   );
 
   return (
-    <div ref={boundingEl} style={{ height: '200vh' }}>
+    <div ref={boundingRef} style={{ height: '200vh' }}>
       <button onClick={() => setEnabled(!enabled)}>
         {enabled ? 'Disable' : 'Enable'} Sticky
       </button>
@@ -94,7 +94,7 @@ export function App() {
         Switch to {position === 'top' ? 'bottom' : 'top'}
       </button>
 
-      <div ref={targetEl} className="sticky-element">
+      <div ref={targetRef} className="sticky-element">
         <h2>Dynamic Sticky Element</h2>
         <p>Position: {position} | Enabled: {enabled ? 'Yes' : 'No'}</p>
       </div>
@@ -141,7 +141,8 @@ For more control over the sticky behavior.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `boundingEl` | `React.RefObject` \| `string` | `undefined` | The element that defines the sticky boundaries |
+| `boundingRef` | `React.RefObject` \| `HTMLElement` \| `string` | `document.body` | The element that defines the sticky boundaries |
+| `boundingEl` | `HTMLElement` \| `string` | `document.body` | Alternative way to specify bounding element (for compatibility) |
 | `position` | `'top' \| 'bottom'` | `'top'` | Where the element should stick |
 | `offset` | `number` | `0` | Offset in pixels from the position |
 | `zIndex` | `number` | `1` | Z-index for the fixed element |

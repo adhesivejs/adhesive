@@ -11,10 +11,8 @@ import {
   type MaybeElementOrSelectorRef,
 } from "../utils/unrefElement.js";
 
-export type UseAdhesiveOptions = Partial<
-  Omit<AdhesiveOptions, "targetEl" | "boundingEl">
-> & {
-  boundingEl?: AdhesiveOptions["boundingEl"] | MaybeElementOrSelectorRef;
+export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
+  boundingRef?: MaybeElementOrSelectorRef;
 };
 
 /**
@@ -33,12 +31,12 @@ export type UseAdhesiveOptions = Partial<
  * import { useTemplateRef } from 'vue';
  * import { useAdhesive } from '@adhesivejs/vue';
  *
- * const targetEl = useTemplateRef('target');
- * const boundingEl = useTemplateRef('bounding');
+ * const targetRef = useTemplateRef('target');
+ * const boundingRef = useTemplateRef('bounding');
  *
  * useAdhesive(
- *   targetEl,
- *   () => ({ boundingEl: boundingEl.value, position: 'top' })
+ *   targetRef,
+ *   () => ({ boundingRef: boundingRef.value, position: 'top' })
  * );
  * </script>
  *
@@ -55,12 +53,12 @@ export type UseAdhesiveOptions = Partial<
  * import { ref } from 'vue';
  * import { useAdhesive } from '@adhesivejs/vue';
  *
- * const targetEl = useTemplateRef('target');
+ * const targetRef = useTemplateRef('target');
  * const enabled = ref(true);
  * const offset = ref(10);
  *
  * // Reactive options
- * useAdhesive(targetEl, () => ({
+ * useAdhesive(targetRef, () => ({
  *   position: 'top',
  *   enabled: enabled.value,
  *   offset: offset.value,
@@ -76,7 +74,8 @@ export function useAdhesive(
     const optionsValue = toValue(options);
 
     const targetEl = unrefElement(target);
-    const boundingEl = unrefElement(optionsValue?.boundingEl);
+    const boundingEl =
+      unrefElement(optionsValue?.boundingRef) ?? optionsValue?.boundingEl;
 
     if (!targetEl) {
       throw new Error("@adhesivejs/vue: sticky element is not defined");

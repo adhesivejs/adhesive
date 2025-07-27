@@ -1,9 +1,7 @@
 import type { RefObject } from "react";
 
-type MaybeElementRefObject = RefObject<HTMLElement | HTMLDivElement | null>;
-
 export type MaybeElementOrSelectorRef =
-  | MaybeElementRefObject
+  | RefObject<HTMLElement | null>
   | HTMLElement
   | string
   | null
