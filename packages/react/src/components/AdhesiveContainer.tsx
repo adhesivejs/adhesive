@@ -1,4 +1,4 @@
-import { useMemo, useRef, type ComponentProps } from "react";
+import { useMemo, useRef, type ComponentProps, type ReactNode } from "react";
 import { useAdhesive, type UseAdhesiveOptions } from "../hooks/useAdhesive.js";
 
 export type AdhesiveContainerProps = Partial<UseAdhesiveOptions> &
@@ -28,7 +28,7 @@ export function AdhesiveContainer({
   releasedClassName,
   children,
   ...rest
-}: AdhesiveContainerProps) {
+}: AdhesiveContainerProps): ReactNode {
   const targetRef = useRef<HTMLDivElement>(null);
 
   const options = useMemo<UseAdhesiveOptions>(

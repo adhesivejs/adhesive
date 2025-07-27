@@ -1,19 +1,39 @@
+import { execSync } from "node:child_process";
+import { writeFile } from "node:fs/promises";
 import { defineConfig } from "tsdown";
 import Vue from "unplugin-vue/rolldown";
 
 export default defineConfig({
   entry: "src/index.ts",
   platform: "neutral",
-  exports: {
-    customExports: (exports) => ({
-      ...exports,
-      ".": {
-        jsr: "./src/index.ts",
-        types: "./dist/index.d.ts",
-        import: "./dist/index.js",
-      },
-    }),
-  },
+  exports: true,
   plugins: [Vue({ isProduction: true })],
   dts: { vue: true },
+  hooks: {
+    "build:done": async (ctx) => {
+      const pkg = ctx.options.pkg;
+      if (!pkg) throw new Error("pkg is missing");
+
+      const vueVersion = pkg.peerDependencies?.vue;
+      if (!vueVersion) throw new Error("vue version is missing");
+
+      await writeFile(
+        "jsr.json",
+        JSON.stringify({
+          name: pkg.name,
+          version: pkg.version,
+          exports: {
+            ".": "./src/index.ts",
+          },
+          include: ["LICENSE", "README.md", "src/**/*.ts"],
+          imports: {
+            "@adhesivejs/core": `jsr:@adhesivejs/core@${pkg.version}`,
+            vue: `npm:vue@${vueVersion}`,
+          },
+        }),
+      );
+
+      execSync("pnpx prettier --write jsr.json");
+    },
+  },
 });

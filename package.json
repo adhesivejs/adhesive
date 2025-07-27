@@ -16,7 +16,7 @@
     "playground:core": "pnpm --filter @adhesivejs/playground-core run dev",
     "playground:react": "pnpm --filter @adhesivejs/playground-react run dev",
     "playground:vue": "pnpm --filter @adhesivejs/playground-vue run dev",
-    "release": "pnpm release:bump && pnpm automd && git add . && changelogen --release --push && pnpm release:publish",
+    "release": "pnpm release:bump && pnpm build && pnpm automd && git add . && changelogen --release --push && pnpm release:publish",
     "release:bump": "pnpm -r release:bump",
     "release:publish": "pnpm -r release:publish",
     "test": "pnpm build && pnpm lint && pnpm type-check && pnpm test:unit && pnpm test:attw && pnpm test:publint",
