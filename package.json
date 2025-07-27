@@ -18,7 +18,8 @@
     "release": "pnpm release:bump && pnpm automd && git add . && changelogen --release --push && pnpm release:publish",
     "release:bump": "pnpm -r release --bump",
     "release:publish": "pnpm -r publish",
-    "test": "pnpm build && pnpm lint && pnpm type-check && pnpm test:attw && pnpm test:publint",
+    "test": "pnpm build && pnpm lint && pnpm type-check && pnpm test:unit && pnpm test:attw && pnpm test:publint",
+    "test:unit": "pnpm --filter @adhesivejs/test run test",
     "test:attw": "pnpm -r test:attw",
     "test:publint": "pnpm -r test:publint",
     "type-check": "pnpm -r type-check"
