@@ -1,6 +1,6 @@
 # Adhesive
 
-Adhesive is a modern, performant, lightweight, dependency free library that provides smooth, performant sticky positioning for web elements with cross-platform compatibility and framework-specific adapters.
+Adhesive is a modern, performant, lightweight, dependency free library that provides advanced sticky positioning for web elements with cross-platform compatibility and framework-specific adapters.
 
 [![npm version](https://img.shields.io/npm/v/@adhesivejs/core?color=4c207d)](https://npmjs.com/package/@adhesivejs/core)
 [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/core?color=4c207d)](https://jsr.io/@adhesivejs/core)
@@ -10,13 +10,13 @@ Adhesive is a modern, performant, lightweight, dependency free library that prov
 
 ## ✨ Features
 
-- **🚀 Modern & Fast** - Built with TypeScript, optimized with RequestAnimationFrame and ResizeObserver
+- **🚀 Modern** - Built with TypeScript, distributed as ESM only
 - **📦 Lightweight** - Zero dependencies, minimal bundle size
 - **🔧 Flexible** - Supports top/bottom positioning with customizable offsets and boundaries
-- **⚡ Performance** - Optimized for smooth scrolling with efficient DOM updates
+- **⚡ Performance** - Optimized for smooth scrolling with efficient DOM updates using RequestAnimationFrame and ResizeObserver
 - **🎯 Type Safe** - Full TypeScript support with comprehensive type definitions
 - **🌍 Cross Platform** - Works across all modern browsers and devices
-- **🎨 Framework Ready** - Core library with React and Vue adapters
+- **🎨 Framework Ready** - Core library with framework specific adapters
 
 ## 📦 Packages
 
@@ -24,19 +24,22 @@ This monorepo contains multiple packages for different use cases:
 
 | Package | Description | README | NPM | JSR
 |---------|-------------|---------|-----|-----
-| [`@adhesivejs/core`](./packages/core) | Core vanilla JavaScript/TypeScript library | [📖 Core README](./packages/core/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/core?color=4c207d)](https://npmjs.com/package/@adhesivejs/core) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/core?color=4c207d)](https://jsr.io/@adhesivejs/core)
-| [`@adhesivejs/react`](./packages/react) | React hooks and components adapter | [📖 React README](./packages/react/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/react?color=4c207d)](https://npmjs.com/package/@adhesivejs/react) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/react?color=4c207d)](https://jsr.io/@adhesivejs/react)
-| [`@adhesivejs/vue`](./packages/vue) | Vue composables and components adapter | [📖 Vue README](./packages/vue/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/vue?color=4c207d)](https://npmjs.com/package/@adhesivejs/vue) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/vue?color=4c207d)](https://jsr.io/@adhesivejs/vue)
+| [`@adhesivejs/core`](./packages/core) | Core library | [📖 README](./packages/core/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/core?color=4c207d)](https://npmjs.com/package/@adhesivejs/core) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/core?color=4c207d)](https://jsr.io/@adhesivejs/core)
+| [`@adhesivejs/react`](./packages/react) | React adapter | [📖 README](./packages/react/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/react?color=4c207d)](https://npmjs.com/package/@adhesivejs/react) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/react?color=4c207d)](https://jsr.io/@adhesivejs/react)
+| [`@adhesivejs/vue`](./packages/vue) | Vue adapter | [📖 README](./packages/vue/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/vue?color=4c207d)](https://npmjs.com/package/@adhesivejs/vue) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/vue?color=4c207d)](https://jsr.io/@adhesivejs/vue)
 
 ## 🏎️ Quick Install
 
 ```sh
-# Core
+# core
 npx nypm install @adhesivejs/core
-# React
+
+# react
 npx nypm install @adhesivejs/react
-# Vue
+
+# vue
 npx nypm install @adhesivejs/vue
+
 ```
 
 ## 🎨 Usage
@@ -155,8 +158,9 @@ pnpm build
 pnpm test
 
 # Start development playgrounds
-pnpm playground:react  # React playground
-pnpm playground:vue    # Vue playground
+pnpm playground:core  # Core playground
+pnpm playground:react # React playground
+pnpm playground:vue   # Vue playground
 
 # Lint all packages
 pnpm lint
