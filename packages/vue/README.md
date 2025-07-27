@@ -52,7 +52,7 @@ import { AdhesiveContainer } from '@adhesivejs/vue';
 
 <template>
   <div>
-    <AdhesiveContainer>
+    <AdhesiveContainer position="top">
       <header>This header will stick to the top</header>
     </AdhesiveContainer>
 
@@ -73,9 +73,8 @@ import { ref, useTemplateRef } from 'vue';
 const targetEl = useTemplateRef('target');
 const boundingEl = useTemplateRef('bounding');
 const enabled = ref(true);
-const position = ref('top');
+const position = ref<'top' | 'bottom'>('top');
 
-// Reactive sticky configuration
 useAdhesive(
   { target: targetEl, bounding: boundingEl },
   () => ({
@@ -87,23 +86,15 @@ useAdhesive(
     releasedClassName: 'is-normal'
   })
 );
-
-function toggleEnabled() {
-  enabled.value = !enabled.value;
-}
-
-function switchPosition() {
-  position.value = position.value === 'top' ? 'bottom' : 'top';
-}
 </script>
 
 <template>
   <div ref="bounding" style="height: 200vh">
-    <button type="button" @click="toggleEnabled">
+    <button type="button" @click="enabled.value = !enabled.value">
       {{ enabled ? 'Disable' : 'Enable' }} Sticky
     </button>
 
-    <button type="button" @click="switchPosition">
+    <button type="button" @click="position.value === 'top' ? 'bottom' : 'top'">
       Switch to {{ position === 'top' ? 'bottom' : 'top' }}
     </button>
 
@@ -117,20 +108,6 @@ function switchPosition() {
     </div>
   </div>
 </template>
-
-<style scoped>
-.sticky-element {
-  padding: 1rem;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin: 1rem 0;
-}
-
-.is-sticky {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-</style>
 ```
 
 ### API Reference
@@ -143,7 +120,7 @@ A simple wrapper component that automatically applies sticky positioning to its 
 
 - All props from `UseAdhesiveOptions` (see below)
 
-> [!INFO]
+> [!NOTE]
 > Class props like `outerClassName`, `innerClassName`, `activeClassName`, and `releasedClassName` are renamed to `outerClass`, `innerClass`, `activeClass`, and `releasedClass` in Vue for brevity.
 
 ```vue
@@ -177,5 +154,3 @@ For more control over the sticky behavior with full Vue reactivity support.
 | `innerClassName` | `string` | `'adhesive__inner'` | Class for the inner wrapper |
 | `activeClassName` | `string` | `'adhesive--active'` | Class when element is sticky |
 | `releasedClassName` | `string` | `'adhesive--released'` | Class when element returns to normal |
-
-**Note:** Options can be reactive (refs) and will automatically update the sticky behavior when changed.

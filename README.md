@@ -34,27 +34,57 @@ This monorepo contains multiple packages for different use cases:
 import { Adhesive } from '@adhesivejs/core';
 
 // Simple sticky header
-const adhesive = Adhesive.create({
-  targetEl: '#header',
-  offset: 20
-});
+const adhesive = Adhesive.create({ targetEl: '#header' });
 ```
 
 ### React
+
+#### React Component Example
 
 ```tsx
 import { AdhesiveContainer } from '@adhesivejs/react';
 
 export function App() {
   return (
-    <AdhesiveContainer>
-      <header>Sticky header content</header>
-    </AdhesiveContainer>
+    <div>
+      <AdhesiveContainer position="top">
+        <header>This header will stick to the top</header>
+      </AdhesiveContainer>
+
+      <main>
+        <p>Your main content here...</p>
+      </main>
+    </div>
+  );
+}
+```
+
+#### React Hook Example
+
+```tsx
+import { useAdhesive } from '@adhesivejs/react';
+import { useRef } from 'react';
+
+export function App() {
+  const targetEl = useRef<HTMLElement>(null);
+
+  useAdhesive({ target: targetEl, position: 'top' });
+
+  return (
+    <div>
+      <header ref={targetEl}>This header will stick to the top</header>
+
+      <main>
+        <p>Your main content here...</p>
+      </main>
+    </div>
   );
 }
 ```
 
 ### Vue
+
+#### Vue Component Example
 
 ```vue
 <script setup lang="ts">
@@ -62,9 +92,38 @@ import { AdhesiveContainer } from '@adhesivejs/vue';
 </script>
 
 <template>
-  <AdhesiveContainer>
-    <header>Sticky header content</header>
-  </AdhesiveContainer>
+  <div>
+    <AdhesiveContainer position="top">
+      <header>This header will stick to the top</header>
+    </AdhesiveContainer>
+
+    <main>
+      <p>Your main content here...</p>
+    </main>
+  </div>
+</template>
+```
+
+#### Vue Composable Example
+
+```vue
+<script setup lang="ts">
+import { useAdhesive } from '@adhesivejs/vue';
+import { ref, useTemplateRef } from 'vue';
+
+const targetEl = useTemplateRef('target');
+
+useAdhesive({ target: targetEl, position: 'top' });
+</script>
+
+<template>
+  <div>
+    <header ref="target">This header will stick to the top</header>
+
+    <main>
+      <p>Your main content here...</p>
+    </main>
+  </div>
 </template>
 ```
 

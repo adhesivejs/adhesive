@@ -46,7 +46,7 @@ import { AdhesiveContainer } from '@adhesivejs/react';
 export function App() {
   return (
     <div>
-      <AdhesiveContainer>
+      <AdhesiveContainer position="top">
         <header>This header will stick to the top</header>
       </AdhesiveContainer>
 

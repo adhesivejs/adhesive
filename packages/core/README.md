@@ -44,10 +44,7 @@ deno install @adhesivejs/core
 import { Adhesive } from '@adhesivejs/core';
 
 // Simple sticky header
-const adhesive = Adhesive.create({
-  targetEl: '#header',
-  offset: 20
-});
+const adhesive = Adhesive.create({ targetEl: '#header' });
 ```
 
 ### Advanced Example
