@@ -2,9 +2,10 @@
 
 React adapter for Adhesive - A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements.
 
-<!-- automd:badges name="@adhesivejs/react" color="4c207d" bundlephobia license no-npmDownloads -->
+<!-- automd:badges name="@adhesivejs/react" color="4c207d" bundlephobia license -->
 
 [![npm version](https://img.shields.io/npm/v/@adhesivejs/react?color=4c207d)](https://npmjs.com/package/@adhesivejs/react)
+[![npm downloads](https://img.shields.io/npm/dm/@adhesivejs/react?color=4c207d)](https://npm.chart.dev/@adhesivejs/react)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/@adhesivejs/react?color=4c207d)](https://bundlephobia.com/package/@adhesivejs/react)
 [![license](https://img.shields.io/github/license/adhesivejs/adhesive?color=4c207d)](https://github.com/adhesivejs/adhesive/blob/main/LICENSE)
 
