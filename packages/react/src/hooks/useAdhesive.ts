@@ -1,21 +1,15 @@
 import { Adhesive, type AdhesiveOptions } from "@adhesivejs/core";
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useRef } from "react";
+import {
+  unrefElement,
+  type MaybeElementOrSelectorRef,
+} from "../utils/unrefElement.js";
 
-/**
- * Template ref objects for React elements used by the Adhesive hook.
- */
-export interface UseAdhesiveElements {
-  /** React ref to the element that should become sticky */
-  target: RefObject<HTMLDivElement | null | undefined>;
-  /** Optional React ref to the element that defines sticky boundaries */
-  bounding?: RefObject<HTMLDivElement | null | undefined> | null;
-}
-
-/**
- * Configuration options for the `useAdhesive` hook.
- * Excludes `targetEl` and `boundingEl` since they're provided via template refs.
- */
-export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
+export type UseAdhesiveOptions = Partial<
+  Omit<AdhesiveOptions, "targetEl" | "boundingEl">
+> & {
+  boundingEl?: AdhesiveOptions["boundingEl"] | MaybeElementOrSelectorRef;
+};
 
 /**
  * React hook for adding sticky positioning behavior to DOM elements.
@@ -24,8 +18,8 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * handling initialization, updates, and cleanup. It integrates seamlessly
  * with React's ref system and component lifecycle.
  *
- * @param elements - Object containing React refs for target and optional bounding elements
- * @param options - Configuration options for sticky behavior (excluding element references)
+ * @param target - React ref for the element that should become sticky
+ * @param options - Configuration options for sticky behavior
  *
  * @example
  * ```tsx
@@ -37,8 +31,8 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  *   const boundingEl = useRef<HTMLDivElement>(null);
  *
  *   useAdhesive(
- *     { target: targetEl, bounding: boundingEl },
- *     { position: 'top' }
+ *     targetEl,
+ *     { boundingEl, position: 'top' }
  *   );
  *
  *   return (
@@ -50,12 +44,12 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * ```
  */
 export function useAdhesive(
-  elements: UseAdhesiveElements,
+  target: MaybeElementOrSelectorRef,
   options?: UseAdhesiveOptions,
 ) {
   function getValidatedOptions() {
-    const targetEl = elements.target.current;
-    const boundingEl = elements.bounding?.current ?? options?.boundingEl;
+    const targetEl = unrefElement(target);
+    const boundingEl = unrefElement(options?.boundingEl);
 
     if (!targetEl) {
       throw new Error("@adhesivejs/react: sticky element is not defined");
@@ -73,7 +67,7 @@ export function useAdhesive(
       adhesive.current?.cleanup();
       adhesive.current = null;
     };
-  }, [elements.target]);
+  }, [target]);
 
   useEffect(() => {
     if (!adhesive.current) return;

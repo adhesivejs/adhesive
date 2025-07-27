@@ -8,11 +8,7 @@ export {
   type AdhesiveStatus,
 } from "@adhesivejs/core";
 
-export {
-  useAdhesive,
-  type UseAdhesiveElements,
-  type UseAdhesiveOptions,
-} from "./hooks/useAdhesive.js";
+export { useAdhesive, type UseAdhesiveOptions } from "./hooks/useAdhesive.js";
 
 export {
   AdhesiveContainer,

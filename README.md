@@ -79,7 +79,7 @@ import { useRef } from 'react';
 export function App() {
   const targetEl = useRef<HTMLElement>(null);
 
-  useAdhesive({ target: targetEl, position: 'top' });
+  useAdhesive(targetEl, { position: 'top' });
 
   return (
     <div>
@@ -124,7 +124,7 @@ import { useTemplateRef } from 'vue';
 
 const targetEl = useTemplateRef('target');
 
-useAdhesive({ target: targetEl }, { position: 'top' });
+useAdhesive(targetEl, { position: 'top' });
 </script>
 
 <template>

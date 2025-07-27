@@ -13,7 +13,8 @@ const position = ref<AdhesivePosition>("top");
 const targetEl = useTemplateRef("target");
 const boundingEl = useTemplateRef("bounding");
 
-useAdhesive({ target: targetEl, bounding: boundingEl }, () => ({
+useAdhesive(targetEl, () => ({
+  boundingEl: boundingEl.value,
   enabled: enabled.value,
   position: position.value,
 }));

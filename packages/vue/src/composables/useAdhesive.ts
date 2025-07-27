@@ -8,24 +8,14 @@ import {
 } from "vue";
 import {
   unrefElement,
-  type MaybeComputedElementRef,
+  type MaybeElementOrSelectorRef,
 } from "../utils/unrefElement.js";
 
-/**
- * Template ref objects for Vue elements used by the Adhesive composable.
- */
-export interface UseAdhesiveElements {
-  /** Vue template ref or element that should become sticky */
-  target: MaybeComputedElementRef;
-  /** Optional Vue template ref or element that defines sticky boundaries */
-  bounding?: MaybeComputedElementRef;
-}
-
-/**
- * Configuration options for the `useAdhesive` composable.
- * Excludes `targetEl` and `boundingEl` since they're provided via template refs.
- */
-export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
+export type UseAdhesiveOptions = Partial<
+  Omit<AdhesiveOptions, "targetEl" | "boundingEl">
+> & {
+  boundingEl?: AdhesiveOptions["boundingEl"] | MaybeElementOrSelectorRef;
+};
 
 /**
  * Vue composable for adding sticky positioning behavior to DOM elements.
@@ -34,8 +24,8 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * handling initialization, updates, and cleanup. It integrates seamlessly
  * with Vue's reactivity system and component lifecycle.
  *
- * @param elements - Object containing Vue refs for target and optional bounding elements
- * @param options - Reactive configuration options for sticky behavior (excluding element references)
+ * @param target - Vue template ref for the element that should become sticky
+ * @param options - Reactive configuration options for sticky behavior
  *
  * @example
  * ```vue
@@ -47,8 +37,8 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * const boundingEl = useTemplateRef('bounding');
  *
  * useAdhesive(
- *   { target: targetEl, bounding: boundingEl },
- *   { position: 'top' }
+ *   targetEl,
+ *   () => ({ boundingEl: boundingEl.value, position: 'top' })
  * );
  * </script>
  *
@@ -70,8 +60,8 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * const offset = ref(10);
  *
  * // Reactive options
- * useAdhesive({ target: targetEl }, () => ({
- *   position: 'top'
+ * useAdhesive(targetEl, () => ({
+ *   position: 'top',
  *   enabled: enabled.value,
  *   offset: offset.value,
  * }));
@@ -79,15 +69,14 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  * ```
  */
 export function useAdhesive(
-  elements: UseAdhesiveElements,
+  target: MaybeElementOrSelectorRef,
   options?: MaybeRefOrGetter<UseAdhesiveOptions>,
 ) {
   function getValidatedOptions() {
     const optionsValue = toValue(options);
 
-    const targetEl = unrefElement(elements.target);
-    const boundingEl =
-      unrefElement(elements.bounding) ?? optionsValue?.boundingEl;
+    const targetEl = unrefElement(target);
+    const boundingEl = unrefElement(optionsValue?.boundingEl);
 
     if (!targetEl) {
       throw new Error("@adhesivejs/vue: sticky element is not defined");

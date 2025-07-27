@@ -31,10 +31,12 @@ function TestHookComponent() {
   const [position, setPosition] = useState<AdhesivePosition>("top");
   const [offset, setOffset] = useState(10);
 
-  useAdhesive(
-    { target: targetRef, bounding: boundingRef },
-    { enabled, position, offset },
-  );
+  useAdhesive(targetRef, {
+    boundingEl: boundingRef,
+    enabled,
+    position,
+    offset,
+  });
 
   return (
     <div data-testid="test-component">
@@ -187,10 +189,7 @@ describe("React Integration", () => {
           const targetRef = useRef<HTMLDivElement>(null);
           const boundingRef = useRef<HTMLDivElement>(null);
 
-          useAdhesive(
-            { target: targetRef, bounding: boundingRef },
-            { enabled: false },
-          );
+          useAdhesive(targetRef, { boundingEl: boundingRef, enabled: false });
 
           return (
             <div ref={boundingRef}>

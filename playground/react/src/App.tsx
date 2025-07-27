@@ -16,10 +16,7 @@ export function App() {
   const targetEl = useRef<HTMLDivElement>(null);
   const boundingEl = useRef<HTMLDivElement>(null);
 
-  useAdhesive(
-    { target: targetEl, bounding: boundingEl },
-    { enabled, position },
-  );
+  useAdhesive(targetEl, { boundingEl, enabled, position });
 
   return (
     <div>

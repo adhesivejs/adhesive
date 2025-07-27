@@ -77,8 +77,9 @@ const enabled = ref(true);
 const position = ref<AdhesivePosition>('top');
 
 useAdhesive(
-  { target: targetEl, bounding: boundingEl },
+  targetEl,
   () => ({
+    boundingEl: boundingEl.value,
     position: position.value,
     offset: 20,
     enabled: enabled.value,
@@ -128,7 +129,7 @@ A simple wrapper component that automatically applies sticky positioning to its 
 <AdhesiveContainer
   position="bottom"
   :offset="30"
-  className="custom-class"
+  class="custom-class"
 >
   Content to make sticky
 </AdhesiveContainer>
@@ -140,13 +141,14 @@ For more control over the sticky behavior with full Vue reactivity support.
 
 **Parameters:**
 
-- `elements`: Object with `target` (required) and `bounding` (optional) template refs
+- `target`: Vue template ref for the element that should become sticky
 - `options`: Reactive configuration options (optional, can be a ref or getter function)
 
 **UseAdhesiveOptions:**
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
+| `boundingEl` | `TemplateRef` \| `string` | `undefined` | The element that defines the sticky boundaries |
 | `position` | `'top' \| 'bottom'` | `'top'` | Where the element should stick |
 | `offset` | `number` | `0` | Offset in pixels from the position |
 | `zIndex` | `number` | `1` | Z-index for the fixed element |

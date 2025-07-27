@@ -10,7 +10,6 @@ export {
 
 export {
   useAdhesive,
-  type UseAdhesiveElements,
   type UseAdhesiveOptions,
 } from "./composables/useAdhesive.js";
 

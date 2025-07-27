@@ -72,8 +72,9 @@ export function App() {
   const [position, setPosition] = useState<AdhesivePosition>('top');
 
   useAdhesive(
-    { target: targetEl, bounding: boundingEl },
+    targetEl,
     {
+      boundingEl,
       position,
       offset: 20,
       enabled,
@@ -133,13 +134,14 @@ For more control over the sticky behavior.
 
 **Parameters:**
 
-- `elements`: Object with `target` (required) and `bounding` (optional) refs
+- `target`: React ref object for the element that should become sticky
 - `options`: Configuration options (optional)
 
 **UseAdhesiveOptions:**
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
+| `boundingEl` | `React.RefObject` \| `string` | `undefined` | The element that defines the sticky boundaries |
 | `position` | `'top' \| 'bottom'` | `'top'` | Where the element should stick |
 | `offset` | `number` | `0` | Offset in pixels from the position |
 | `zIndex` | `number` | `1` | Z-index for the fixed element |
