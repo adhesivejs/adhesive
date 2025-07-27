@@ -42,7 +42,7 @@ export interface AdhesiveOptions<
    * The element that defines the boundaries for the sticky behavior.
    * Defaults to document.body if not provided.
    *
-   * @defaultValue `document.body`
+   * @default `document.body`
    * @example
    * ```ts
    * boundingEl: '.container' // CSS selector
@@ -54,13 +54,13 @@ export interface AdhesiveOptions<
 
   /**
    * Whether the sticky behavior is enabled.
-   * @defaultValue `true`
+   * @default true
    */
   readonly enabled?: boolean;
 
   /**
    * The offset from the top or bottom of the bounding element in pixels.
-   * @defaultValue `0`
+   * @default 0
    * @example
    * ```ts
    * offset: 20 // 20px offset from the position
@@ -71,7 +71,7 @@ export interface AdhesiveOptions<
   /**
    * The position where the element should stick.
    *
-   * @defaultValue `"top"`
+   * @default "top"
    * @example
    * ```ts
    * position: "top"    // Element sticks to the top
@@ -82,37 +82,31 @@ export interface AdhesiveOptions<
 
   /**
    * The z-index value for the sticky element when fixed.
-   * @defaultValue `1`
+   * @default 1
    */
   readonly zIndex?: number;
 
   /**
    * Additional CSS class to add to the outer element.
-   * @example
-   * ```ts
-   * outerClassName: "my-sticky-outer"
-   * ```
+   * @default "adhesive__outer"
    */
   readonly outerClassName?: string;
 
   /**
    * Additional CSS class to add to the inner element.
-   * @example
-   * ```ts
-   * innerClassName: "my-sticky-inner"
-   * ```
+   * @default "adhesive__inner"
    */
   readonly innerClassName?: string;
 
   /**
    * CSS class to add when the element is in active (fixed) state.
-   * @defaultValue `"adhesive--active"`
+   * @default "adhesive--active"
    */
   readonly activeClassName?: string;
 
   /**
    * CSS class to add when the element is in released (relative) state.
-   * @defaultValue `"adhesive--released"`
+   * @default "adhesive--released"
    */
   readonly releasedClassName?: string;
 }
@@ -463,10 +457,7 @@ function createInitialState(
  * @example
  * ```ts
  * // Basic usage with automatic initialization
- * const adhesive = Adhesive.create({
- *   targetEl: '#header',
- *   offset: 20
- * });
+ * const adhesive = Adhesive.create({ targetEl: '#header' });
  * ```
  *
  * @example
