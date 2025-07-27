@@ -25,10 +25,15 @@ export default defineConfig({
         JSON.stringify({
           name: pkg.name,
           version: pkg.version,
-          exports: {
-            ".": "./src/index.ts",
-          },
+          exports: "./src/index.ts",
           include: ["LICENSE", "README.md", "src/**/*.ts"],
+          exclude: [
+            "CHANGELOG.md",
+            "eslint.config.mjs",
+            "package.json",
+            "tsconfig.json",
+            "tsdown.config.ts",
+          ],
           imports: {
             "@adhesivejs/core": `jsr:@adhesivejs/core@${pkg.version}`,
             react: `npm:react@${resolvedReactVersion}`,

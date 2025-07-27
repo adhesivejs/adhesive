@@ -1,6 +1,13 @@
 {
   "name": "@adhesivejs/core",
   "version": "0.2.2",
-  "exports": { ".": "./src/index.ts" },
-  "include": ["LICENSE", "README.md", "src/**/*.ts"]
+  "exports": "./src/index.ts",
+  "include": ["LICENSE", "README.md", "src/**/*.ts"],
+  "exclude": [
+    "CHANGELOG.md",
+    "eslint.config.mjs",
+    "package.json",
+    "tsconfig.json",
+    "tsdown.config.ts"
+  ]
 }
