@@ -25,7 +25,11 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "jsr": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -33,8 +37,8 @@
     "build": "tsdown",
     "lint": "eslint",
     "prepack": "pnpm build",
-    "release": "changelogen",
-    "release:publish": "pnpm publish",
+    "release:bump": "changelogen --bump && pnpx pkg-to-jsr && pnpx prettier --write jsr.json",
+    "release:publish": "pnpm publish && pnpx jsr publish",
     "test:attw": "attw --pack --profile esm-only",
     "test:publint": "publint",
     "type-check": "tsc --noEmit"
