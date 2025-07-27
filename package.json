@@ -13,6 +13,7 @@
     "automd": "pnpm -r automd",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
+    "playground:core": "pnpm --filter @adhesivejs/playground-core run dev",
     "playground:react": "pnpm --filter @adhesivejs/playground-react run dev",
     "playground:vue": "pnpm --filter @adhesivejs/playground-vue run dev",
     "release": "pnpm release:bump && pnpm automd && git add . && changelogen --release --push && pnpm release:publish",
