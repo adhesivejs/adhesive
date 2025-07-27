@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.2.2
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.2.1...v0.2.2)
+
+### 💅 Refactors
+
+- Author vue component in pure typescript ([ef5a88e](https://github.com/adhesivejs/adhesive/commit/ef5a88e))
+
+### 🏡 Chore
+
+- Fix jsr publishing ([c08ef7c](https://github.com/adhesivejs/adhesive/commit/c08ef7c))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.2.1
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.2.0...v0.2.1)
