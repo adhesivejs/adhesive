@@ -6,82 +6,35 @@ import {
 import { fireEvent, render } from "@testing-library/vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { defineComponent, ref } from "vue";
+import {
+  commonBeforeEach,
+  configurationTestCases,
+  createMockAdhesive,
+} from "../utils/shared-test-helpers.js";
 
-// Mock the Adhesive imports since we're testing in isolation
-const mockAdhesive = {
-  init: vi.fn(() => mockAdhesive),
-  cleanup: vi.fn(),
-  updateOptions: vi.fn(),
-  getState: vi.fn(() => ({ status: "initial", isSticky: false })),
-};
+// Create the mock Adhesive instance
+const mockAdhesiveInstance = createMockAdhesive();
 
 // Mock the Adhesive class
 vi.mock("@adhesivejs/core", () => ({
   Adhesive: {
-    create: vi.fn((options) => {
-      // Create wrapper elements like the real Adhesive does
-      const targetEl =
-        typeof options.targetEl === "string"
-          ? document.querySelector(options.targetEl)
-          : options.targetEl;
-
-      if (targetEl && targetEl.parentNode) {
-        const outerWrapper = document.createElement("div");
-        outerWrapper.className = options.outerClassName || "adhesive__outer";
-
-        const innerWrapper = document.createElement("div");
-        innerWrapper.className = options.innerClassName || "adhesive__inner";
-
-        targetEl.before(outerWrapper);
-        outerWrapper.append(innerWrapper);
-        innerWrapper.append(targetEl);
-      }
-
-      return {
-        ...mockAdhesive,
-        cleanup: vi.fn(),
-        updateOptions: vi.fn((newOptions) => {
-          // Handle option updates by recreating wrappers if needed
-          const newTargetEl =
-            typeof newOptions.targetEl === "string"
-              ? document.querySelector(newOptions.targetEl)
-              : newOptions.targetEl;
-
-          if (newTargetEl && newTargetEl.parentNode) {
-            // Check if wrappers already exist
-            const existingOuter = newTargetEl.closest(".adhesive__outer");
-            if (!existingOuter) {
-              const outerWrapper = document.createElement("div");
-              outerWrapper.className =
-                newOptions.outerClassName || "adhesive__outer";
-
-              const innerWrapper = document.createElement("div");
-              innerWrapper.className =
-                newOptions.innerClassName || "adhesive__inner";
-
-              newTargetEl.before(outerWrapper);
-              outerWrapper.append(innerWrapper);
-              innerWrapper.append(newTargetEl);
-            }
-          }
-        }),
-      };
-    }),
+    create: vi.fn(() => mockAdhesiveInstance),
   },
 }));
 
-// Test component using useAdhesive composable
+// Enhanced test component using useAdhesive composable
 const TestComposableComponent = defineComponent({
   setup() {
     const targetRef = ref<HTMLElement>();
     const boundingRef = ref<HTMLElement>();
     const enabled = ref(true);
     const position = ref<AdhesivePosition>("top");
+    const offset = ref(10);
 
     useAdhesive({ target: targetRef, bounding: boundingRef }, () => ({
       enabled: enabled.value,
       position: position.value,
-      offset: 10,
+      offset: offset.value,
     }));
 
     return {
@@ -89,11 +42,15 @@ const TestComposableComponent = defineComponent({
       boundingRef,
       enabled,
       position,
+      offset,
       toggleEnabled() {
         enabled.value = !enabled.value;
       },
       togglePosition() {
         position.value = position.value === "top" ? "bottom" : "top";
+      },
+      toggleOffset() {
+        offset.value = offset.value === 10 ? 20 : 10;
       },
     };
   },
@@ -105,6 +62,9 @@ const TestComposableComponent = defineComponent({
       <button @click="togglePosition" data-testid="toggle-position">
         Position: {{ position }}
       </button>
+      <button @click="toggleOffset" data-testid="toggle-offset">
+        Offset: {{ offset }}
+      </button>
       <div ref="boundingRef" style="height: 1000px;">
         <div ref="targetRef" data-testid="sticky-element">
           Sticky Content
@@ -114,209 +74,217 @@ const TestComposableComponent = defineComponent({
   `,
 });
 
-describe("vue", () => {
+describe("Vue Integration", () => {
   beforeEach(() => {
-    // Setup DOM
-    document.body.innerHTML = "";
-
-    // Mock getBoundingClientRect
-    Element.prototype.getBoundingClientRect = vi.fn(() => ({
-      top: 100,
-      bottom: 150,
-      left: 0,
-      right: 100,
-      width: 100,
-      height: 50,
-      x: 0,
-      y: 100,
-      toJSON: () => ({}),
-    }));
+    commonBeforeEach();
   });
 
   afterEach(() => {
     document.body.innerHTML = "";
   });
 
+  // Helper functions
+  const renderTestComponent = () => render(TestComposableComponent);
+
+  const renderContainer = (props = {}, slots = {}) => {
+    return render(AdhesiveContainer, {
+      props,
+      slots: {
+        default: '<div data-testid="container-child">Container Content</div>',
+        ...slots,
+      },
+    });
+  };
+
   describe("useAdhesive Composable", () => {
-    it("should render without errors", () => {
-      const { getByTestId } = render(TestComposableComponent);
+    describe("initialization and rendering", () => {
+      it("should render without errors", () => {
+        const { getByTestId } = renderTestComponent();
 
-      expect(getByTestId("sticky-element")).toBeTruthy();
-      expect(getByTestId("toggle-enabled")).toHaveTextContent("enabled");
+        expect(getByTestId("sticky-element")).toBeTruthy();
+        expect(getByTestId("toggle-enabled")).toHaveTextContent("enabled");
+      });
+
+      it("should create Adhesive instance on mount", async () => {
+        renderTestComponent();
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledTimes(1);
+      });
+
+      it("should not create multiple instances on re-renders", async () => {
+        const { rerender } = renderTestComponent();
+
+        rerender({});
+        rerender({});
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledTimes(1);
+      });
     });
 
-    it("should handle enabled toggle", async () => {
-      const { getByTestId } = render(TestComposableComponent);
+    describe("state management", () => {
+      it("should handle enabled toggle correctly", async () => {
+        const { getByTestId } = renderTestComponent();
+        const toggleButton = getByTestId("toggle-enabled");
 
-      const toggleButton = getByTestId("toggle-enabled");
+        // Initial state
+        expect(toggleButton).toHaveTextContent("enabled");
 
-      await fireEvent.click(toggleButton);
-      expect(toggleButton).toHaveTextContent("disabled");
+        // Toggle to disabled
+        await fireEvent.click(toggleButton);
+        expect(toggleButton).toHaveTextContent("disabled");
 
-      await fireEvent.click(toggleButton);
-      expect(toggleButton).toHaveTextContent("enabled");
+        // Toggle back to enabled
+        await fireEvent.click(toggleButton);
+        expect(toggleButton).toHaveTextContent("enabled");
+      });
+
+      it("should handle position changes correctly", async () => {
+        const { getByTestId } = renderTestComponent();
+        const positionButton = getByTestId("toggle-position");
+
+        // Initial position
+        expect(positionButton).toHaveTextContent("top");
+
+        // Change to bottom
+        await fireEvent.click(positionButton);
+        expect(positionButton).toHaveTextContent("bottom");
+
+        // Change back to top
+        await fireEvent.click(positionButton);
+        expect(positionButton).toHaveTextContent("top");
+      });
+
+      it("should handle offset changes correctly", async () => {
+        const { getByTestId } = renderTestComponent();
+        const offsetButton = getByTestId("toggle-offset");
+
+        // Initial offset
+        expect(offsetButton).toHaveTextContent("10");
+
+        // Change offset
+        await fireEvent.click(offsetButton);
+        expect(offsetButton).toHaveTextContent("20");
+
+        // Change back
+        await fireEvent.click(offsetButton);
+        expect(offsetButton).toHaveTextContent("10");
+      });
     });
 
-    it("should handle position changes", async () => {
-      const { getByTestId } = render(TestComposableComponent);
+    describe("cleanup and lifecycle", () => {
+      it("should cleanup on unmount without errors", () => {
+        const { unmount, getByTestId } = renderTestComponent();
 
-      const positionButton = getByTestId("toggle-position");
+        expect(getByTestId("sticky-element")).toBeTruthy();
 
-      expect(positionButton).toHaveTextContent("top");
+        expect(() => unmount()).not.toThrow();
+      });
 
-      await fireEvent.click(positionButton);
-      expect(positionButton).toHaveTextContent("bottom");
+      it("should handle disabled state properly", () => {
+        const DisabledComponent = defineComponent({
+          setup() {
+            const targetRef = ref<HTMLElement>();
+            const boundingRef = ref<HTMLElement>();
 
-      await fireEvent.click(positionButton);
-      expect(positionButton).toHaveTextContent("top");
+            useAdhesive({ target: targetRef, bounding: boundingRef }, () => ({
+              enabled: false,
+            }));
+
+            return { targetRef, boundingRef };
+          },
+          template: `
+            <div ref="boundingRef">
+              <div ref="targetRef" data-testid="disabled-sticky">
+                Disabled Sticky
+              </div>
+            </div>
+          `,
+        });
+
+        const { getByTestId } = render(DisabledComponent);
+        expect(getByTestId("disabled-sticky")).toBeTruthy();
+      });
     });
   });
 
   describe("AdhesiveContainer Component", () => {
-    it("should render children", () => {
-      const { getByTestId } = render(AdhesiveContainer, {
-        slots: {
-          default: '<div data-testid="container-child">Container Content</div>',
-        },
+    describe("basic rendering", () => {
+      it("should render children correctly", () => {
+        const { getByTestId } = renderContainer();
+
+        expect(getByTestId("container-child")).toBeTruthy();
+        expect(getByTestId("container-child")).toHaveTextContent(
+          "Container Content",
+        );
       });
 
-      expect(getByTestId("container-child")).toBeTruthy();
-      expect(getByTestId("container-child")).toHaveTextContent(
-        "Container Content",
-      );
+      it("should handle empty children", () => {
+        const { container } = render(AdhesiveContainer);
+        expect(container).toBeTruthy();
+      });
     });
 
-    it("should apply custom class names", async () => {
-      const { getByTestId } = render(AdhesiveContainer, {
-        props: {
+    describe("styling and customization", () => {
+      it("should apply custom class names", async () => {
+        const customProps = {
           class: "custom-class",
           outerClass: "custom-outer",
           innerClass: "custom-inner",
           activeClass: "custom-active",
           releasedClass: "custom-released",
-        },
-        slots: {
-          default: '<div data-testid="container-child">Content</div>',
-        },
+        };
+
+        const { getByTestId } = renderContainer(customProps);
+
+        expect(getByTestId("container-child")).toBeTruthy();
+        expect(getByTestId("container-child")).toHaveTextContent(
+          "Container Content",
+        );
+
+        // Verify Adhesive.create was called with correct options
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            outerClassName: "custom-outer",
+            innerClassName: "custom-inner",
+            activeClassName: "custom-active",
+            releasedClassName: "custom-released",
+          }),
+        );
       });
 
-      // Verify the component renders and the content is present
-      expect(getByTestId("container-child")).toBeTruthy();
-      expect(getByTestId("container-child")).toHaveTextContent("Content");
+      it("should handle z-index styling", () => {
+        const { getByTestId } = renderContainer({ zIndex: 999 });
 
-      // Verify that Adhesive.create was called with the correct options
-      const { Adhesive } = await import("@adhesivejs/core");
-      expect(Adhesive.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          outerClassName: "custom-outer",
-          innerClassName: "custom-inner",
-          activeClassName: "custom-active",
-          releasedClassName: "custom-released",
-        }),
-      );
+        expect(getByTestId("container-child")).toBeTruthy();
+      });
     });
 
-    it("should handle position prop", async () => {
-      const { getByTestId, rerender } = render(AdhesiveContainer, {
-        props: { position: "top" },
-        slots: {
-          default: '<div data-testid="container-child">Content</div>',
-        },
+    describe("configuration options", () => {
+      configurationTestCases.forEach(({ name, props }) => {
+        it(`should handle ${name} correctly`, async () => {
+          const { getByTestId, rerender } = renderContainer(props);
+
+          expect(getByTestId("container-child")).toBeTruthy();
+
+          // Test that re-rendering with different props works
+          await rerender(props);
+
+          expect(getByTestId("container-child")).toBeTruthy();
+        });
       });
 
-      expect(getByTestId("container-child")).toBeTruthy();
+      it("should handle bounding element with string selector", () => {
+        document.body.innerHTML = '<div class="bounding-container"></div>';
 
-      await rerender({ position: "bottom" });
-      expect(getByTestId("container-child")).toBeTruthy();
-    });
+        const { getByTestId } = renderContainer({
+          boundingEl: ".bounding-container",
+        });
 
-    it("should handle enabled prop", async () => {
-      const { getByTestId, rerender } = render(AdhesiveContainer, {
-        props: { enabled: true },
-        slots: {
-          default: '<div data-testid="container-child">Content</div>',
-        },
+        expect(getByTestId("container-child")).toBeTruthy();
       });
-
-      expect(getByTestId("container-child")).toBeTruthy();
-
-      await rerender({ enabled: false });
-      expect(getByTestId("container-child")).toBeTruthy();
-    });
-
-    it("should handle offset prop", () => {
-      const { getByTestId } = render(AdhesiveContainer, {
-        props: { offset: 20 },
-        slots: {
-          default: '<div data-testid="container-child">Content</div>',
-        },
-      });
-
-      expect(getByTestId("container-child")).toBeTruthy();
-    });
-
-    it("should handle zIndex prop", () => {
-      const { getByTestId } = render(AdhesiveContainer, {
-        props: { zIndex: 999 },
-        slots: {
-          default: '<div data-testid="container-child">Content</div>',
-        },
-      });
-
-      expect(getByTestId("container-child")).toBeTruthy();
-    });
-
-    it("should handle boundingEl prop with string", () => {
-      document.body.innerHTML = '<div class="bounding-container"></div>';
-
-      const { getByTestId } = render(AdhesiveContainer, {
-        props: { boundingEl: ".bounding-container" },
-        slots: {
-          default: '<div data-testid="container-child">Content</div>',
-        },
-      });
-
-      expect(getByTestId("container-child")).toBeTruthy();
-    });
-  });
-
-  describe("Composable Cleanup", () => {
-    it("should cleanup on unmount", () => {
-      const { getByTestId, unmount } = render(TestComposableComponent);
-
-      // Verify component is rendered
-      expect(getByTestId("sticky-element")).toBeTruthy();
-
-      // Unmount should not throw errors
-      unmount();
-    });
-  });
-
-  describe("Error Handling", () => {
-    it("should handle disabled state", () => {
-      const DisabledComponent = defineComponent({
-        setup() {
-          const targetRef = ref<HTMLElement>();
-          const boundingRef = ref<HTMLElement>();
-
-          useAdhesive(
-            { target: targetRef, bounding: boundingRef },
-            { enabled: false },
-          );
-
-          return { targetRef, boundingRef };
-        },
-        template: `
-          <div ref="boundingRef">
-            <div ref="targetRef" data-testid="disabled-sticky">
-              Disabled Sticky
-            </div>
-          </div>
-        `,
-      });
-
-      const { getByTestId } = render(DisabledComponent);
-      expect(getByTestId("disabled-sticky")).toBeTruthy();
     });
   });
 });

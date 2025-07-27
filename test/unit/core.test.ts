@@ -3,30 +3,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createMockDOM,
   mockGetBoundingClientRect,
-} from "../utils/test-helpers.js";
+} from "../utils/core-test-helpers.js";
+import {
+  assertions,
+  DEFAULT_RECT,
+  errorTestCases,
+  simulateScrollToPosition,
+  TEST_OFFSETS,
+} from "../utils/shared-test-helpers.js";
 
-// Test data constants for better maintainability
-const TEST_DIMENSIONS = {
-  CONTAINER_HEIGHT: 2000,
-  BOUNDING_HEIGHT: 1000,
-  TARGET_HEIGHT: 50,
-  TARGET_WIDTH: 100,
-  VIEWPORT_HEIGHT: 768,
-} as const;
-
-const DEFAULT_RECT: DOMRect = {
-  top: 100,
-  bottom: 150,
-  left: 0,
-  right: 100,
-  width: TEST_DIMENSIONS.TARGET_WIDTH,
-  height: TEST_DIMENSIONS.TARGET_HEIGHT,
-  x: 0,
-  y: 100,
-  toJSON: () => ({}),
-};
-
-describe("core", () => {
+describe("Core", () => {
   let mockDOM: ReturnType<typeof createMockDOM>;
   let targetElement: HTMLElement;
   let boundingElement: HTMLElement;
@@ -37,8 +23,21 @@ describe("core", () => {
     targetElement = mockDOM.targetElement;
     boundingElement = mockDOM.boundingElement;
 
-    // Setup consistent mocking
-    mockGetBoundingClientRect(DEFAULT_RECT);
+    // Setup consistent mocking with default rect for target element
+    mockGetBoundingClientRect({
+      target: DEFAULT_RECT,
+      container: {
+        top: 0,
+        bottom: 2000,
+        left: 0,
+        right: 100,
+        width: 100,
+        height: 2000,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      },
+    });
   });
 
   afterEach(() => {
@@ -66,9 +65,10 @@ describe("core", () => {
     adhesive: Adhesive,
     expectedStatus: keyof typeof ADHESIVE_STATUS,
   ) => {
-    const state = adhesive.getState();
-    expect(state.status).toBe(ADHESIVE_STATUS[expectedStatus]);
-    return state;
+    return assertions.expectElementToBeInState(
+      adhesive,
+      ADHESIVE_STATUS[expectedStatus],
+    );
   };
 
   describe("Constructor & Factory Methods", () => {
@@ -395,25 +395,6 @@ describe("core", () => {
   });
 
   describe("Positioning Logic", () => {
-    // Helper to simulate scroll and wait for RAF
-    const simulateScrollToPosition = (scrollY: number): Promise<void> => {
-      Object.defineProperty(window, "scrollY", {
-        value: scrollY,
-        writable: true,
-      });
-      Object.defineProperty(window, "pageYOffset", {
-        value: scrollY,
-        writable: true,
-      });
-
-      window.dispatchEvent(new Event("scroll"));
-
-      // Wait for requestAnimationFrame to complete
-      return new Promise<void>((resolve) => {
-        requestAnimationFrame(() => resolve());
-      });
-    };
-
     describe("top positioning behavior", () => {
       let adhesive: Adhesive;
 
@@ -545,9 +526,7 @@ describe("core", () => {
 
     describe("offset handling", () => {
       it("applies offset correctly for different values", () => {
-        const testOffsets = [0, 10, 50, 100];
-
-        testOffsets.forEach((offset) => {
+        TEST_OFFSETS.forEach((offset) => {
           const adhesive = createInitializedAdhesive({
             boundingEl: boundingElement,
             offset,
@@ -917,13 +896,6 @@ describe("core", () => {
 
   describe("Error Handling & Edge Cases", () => {
     describe("comprehensive error scenarios", () => {
-      const errorTestCases = [
-        { selector: "", expectedCode: "TARGET_EL_REQUIRED" },
-        { selector: "#nonexistent", expectedCode: "TARGET_EL_NOT_FOUND" },
-        { selector: ".missing-class", expectedCode: "TARGET_EL_NOT_FOUND" },
-        { selector: "invalid>>selector", expectedCode: "TARGET_EL_NOT_FOUND" },
-      ] as const;
-
       it.each(errorTestCases)(
         "throws AdhesiveError with code $expectedCode for selector '$selector'",
         ({ selector, expectedCode }) => {
@@ -1010,24 +982,6 @@ describe("core", () => {
   });
 
   describe("Integration Scenarios", () => {
-    // Helper function for integration tests
-    const simulateScrollToPosition = (scrollY: number): Promise<void> => {
-      Object.defineProperty(window, "scrollY", {
-        value: scrollY,
-        writable: true,
-      });
-      Object.defineProperty(window, "pageYOffset", {
-        value: scrollY,
-        writable: true,
-      });
-
-      window.dispatchEvent(new Event("scroll"));
-
-      return new Promise<void>((resolve) => {
-        requestAnimationFrame(() => resolve());
-      });
-    };
-
     describe("complete user workflows", () => {
       it("handles full scroll lifecycle with state transitions", async () => {
         const adhesive = createInitializedAdhesive({
