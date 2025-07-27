@@ -50,7 +50,7 @@ npx nypm install @adhesivejs/vue
 import { Adhesive } from '@adhesivejs/core';
 
 // Simple sticky header
-const adhesive = Adhesive.create({ targetEl: '#header' });
+Adhesive.create({ targetEl: '#target-element' });
 ```
 
 ### React

@@ -226,7 +226,7 @@ interface InternalAdhesiveState {
  * @example
  * ```ts
  * try {
- *   const adhesive = new Adhesive({ targetEl: '#non-existent' });
+ *   new Adhesive({ targetEl: '#non-existent' });
  * } catch (error) {
  *   if (error instanceof AdhesiveError) {
  *     console.log(`Error code: ${error.code}`);
@@ -406,13 +406,13 @@ function createInitialState(
  * @example
  * ```ts
  * // Basic usage with automatic initialization
- * const adhesive = Adhesive.create({ targetEl: '#header' });
+ * Adhesive.create({ targetEl: '#target-element' });
  * ```
  *
  * @example
  * ```ts
  * // Advanced configuration with boundary container
- * const adhesive = Adhesive.create({
+ * Adhesive.create({
  *   targetEl: document.querySelector('.sidebar'),
  *   boundingEl: '.main-content',
  *   position: 'bottom',
@@ -428,18 +428,15 @@ function createInitialState(
  * @example
  * ```ts
  * // SSR-safe initialization
- * const adhesive = typeof window !== 'undefined'
- *   ? Adhesive.create({
- *       targetEl: '#element'
- *     })
- *   : new Adhesive({
- *       targetEl: '#element',
- *       enabled: false
- *     });
+ * typeof window !== 'undefined'
+ *   ? Adhesive.create({ targetEl: '#element' })
+ *   : new Adhesive({ targetEl: '#element', enabled: false });
  * ```
  *
  * @example
  * ```ts
+ * const adhesive = Adhesive.create({ targetEl: '#target-element' });
+ *
  * // Dynamic configuration updates
  * adhesive.updateOptions({
  *   position: 'bottom',
@@ -479,8 +476,8 @@ export class Adhesive {
    * @example
    * ```ts
    * // Convenient one-liner initialization
-   * const adhesive = Adhesive.create({
-   *   targetEl: '#header',
+   * Adhesive.create({
+   *   targetEl: '#target-element',
    *   offset: 20
    * });
    * ```
@@ -500,8 +497,8 @@ export class Adhesive {
    * @example
    * ```ts
    * // Basic usage with element selector
-   * const adhesive = new Adhesive({
-   *   targetEl: '#header',
+   * new Adhesive({
+   *   targetEl: '#target-element',
    *   offset: 10
    * });
    * ```
@@ -509,7 +506,7 @@ export class Adhesive {
    * @example
    * ```ts
    * // Advanced usage with all options
-   * const adhesive = new Adhesive({
+   * new Adhesive({
    *   targetEl: document.querySelector('.sidebar'),
    *   boundingEl: '.main-content',
    *   position: 'bottom',
@@ -1099,11 +1096,10 @@ export class Adhesive {
    *
    * @example
    * ```ts
-   * const adhesive = new Adhesive({ targetEl: '#header' });
-   * adhesive.init(); // Activate sticky behavior
+   * new Adhesive({ targetEl: '#target-element' }).init();
    *
    * // Or use the convenient factory method
-   * const adhesive2 = Adhesive.create({ targetEl: '#header' });
+   * Adhesive.create({ targetEl: '#target-element' });
    * ```
    */
   init(): this {
