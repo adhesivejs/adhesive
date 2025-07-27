@@ -10,6 +10,7 @@
     "react"
   ],
   "license": "MIT",
+  "homepage": "https://github.com/adhesivejs/adhesive/tree/main/packages/react#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/adhesivejs/adhesive.git"
