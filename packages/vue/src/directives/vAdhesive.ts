@@ -76,9 +76,3 @@ export const vAdhesive: AdhesiveDirective = {
     el.__adhesive__?.updateOptions({ ...options, position });
   },
 };
-
-declare module "vue" {
-  export interface GlobalDirectives {
-    vAdhesive: typeof vAdhesive;
-  }
-}

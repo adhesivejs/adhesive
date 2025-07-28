@@ -156,7 +156,7 @@ const adhesiveOptions = ref({
 You can register the directive globally in your Vue app:
 
 ```ts
-import { vAdhesive } from '@adhesivejs/vue';
+import { vAdhesive, type AdhesiveDirective } from '@adhesivejs/vue';
 import { createApp } from 'vue';
 import App from './App.vue';
 
@@ -166,6 +166,13 @@ const app = createApp(App);
 app.directive('adhesive', vAdhesive);
 
 app.mount('#app');
+
+// Optionally augment Vue global types for the directive
+declare module 'vue' {
+  interface GlobalDirectives {
+    vAdhesive: AdhesiveDirective;
+  }
+}
 ```
 
 After global registration, you can use it without importing:
