@@ -264,7 +264,6 @@ const ERROR_CODES = {
   TARGET_EL_NOT_FOUND: "targetEl not found in DOM",
   TARGET_EL_NO_PARENT: "targetEl must have a parent node for wrapper creation",
   BOUNDING_EL_NOT_FOUND: "boundingEl not found in DOM",
-  INSTANCE_DISABLED: "Instance is disabled",
   RESIZE_OBSERVER_NOT_SUPPORTED:
     "ResizeObserver not supported in this environment",
 } as const;
@@ -1076,12 +1075,7 @@ export class Adhesive {
    * ```
    */
   init(): this {
-    if (!isBrowser()) return this;
-
-    if (!this.#isEnabled) {
-      console.warn(`@adhesivejs/core: ${ERROR_CODES.INSTANCE_DISABLED}`);
-      return this;
-    }
+    if (!isBrowser() || !this.#isEnabled) return this;
 
     this.#state.activated = true;
     this.#updateInitialDimensions();
@@ -1106,7 +1100,7 @@ export class Adhesive {
    * ```
    */
   enable(): this {
-    if (this.#isEnabled) return this; // Already enabled
+    if (this.#isEnabled) return this;
 
     this.#isEnabled = true;
 
