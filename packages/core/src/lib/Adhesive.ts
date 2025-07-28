@@ -296,7 +296,14 @@ function createAdhesiveError(
   return new AdhesiveError(error.message, error.code, context);
 }
 
+function isBrowser(): boolean {
+  const windowExists = typeof window !== "undefined";
+  const documentExists = typeof document !== "undefined";
+  return windowExists && documentExists;
+}
+
 function resolveElement(element: HTMLElement | string): HTMLElement | null {
+  if (!isBrowser()) return null;
   if (typeof element === "string") {
     const resolved = document.querySelector(element);
     return resolved instanceof HTMLElement ? resolved : null;
@@ -305,16 +312,13 @@ function resolveElement(element: HTMLElement | string): HTMLElement | null {
 }
 
 function getScrollTop(): number {
-  return (
-    window.scrollY ??
-    window.pageYOffset ??
-    document.documentElement.scrollTop ??
-    0
-  );
+  if (!isBrowser()) return 0;
+  return window.scrollY ?? document.documentElement?.scrollTop ?? 0;
 }
 
 function getViewportHeight(): number {
-  return window.innerHeight ?? document.documentElement.clientHeight ?? 0;
+  if (!isBrowser()) return 0;
+  return window.innerHeight ?? document.documentElement?.clientHeight ?? 0;
 }
 
 function validateElement(
@@ -325,39 +329,6 @@ function validateElement(
   if (!element) {
     throw createAdhesiveError(errorKey, context);
   }
-}
-
-function createInitialOptions(
-  options: AdhesiveOptions,
-): InternalAdhesiveOptions {
-  const targetEl = resolveElement(options.targetEl);
-  validateElement(targetEl, "TARGET_EL_NOT_FOUND", {
-    selector: options.targetEl,
-  });
-
-  const boundingEl = options.boundingEl
-    ? resolveElement(options.boundingEl)
-    : document.body;
-  validateElement(boundingEl, "BOUNDING_EL_NOT_FOUND", {
-    selector: options.boundingEl,
-  });
-
-  return {
-    targetEl,
-    boundingEl,
-    enabled: options.enabled ?? DEFAULT_CONFIG.ENABLED,
-    offset: options.offset ?? DEFAULT_CONFIG.OFFSET,
-    position: options.position ?? DEFAULT_CONFIG.POSITION,
-    zIndex: options.zIndex ?? DEFAULT_CONFIG.Z_INDEX,
-    outerClassName:
-      options.outerClassName ?? DEFAULT_CONFIG.CLASS_NAMES.OUTER_WRAPPER,
-    innerClassName:
-      options.innerClassName ?? DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER,
-    activeClassName:
-      options.activeClassName ?? DEFAULT_CONFIG.CLASS_NAMES.ACTIVE,
-    releasedClassName:
-      options.releasedClassName ?? DEFAULT_CONFIG.CLASS_NAMES.RELEASED,
-  };
 }
 
 function createInitialState(
@@ -423,14 +394,6 @@ function createInitialState(
  *   activeClassName: 'custom-active',
  *   releasedClassName: 'custom-released',
  * });
- * ```
- *
- * @example
- * ```ts
- * // SSR-safe initialization
- * typeof window !== 'undefined'
- *   ? Adhesive.create({ targetEl: '#element' })
- *   : new Adhesive({ targetEl: '#element', enabled: false });
  * ```
  *
  * @example
@@ -520,6 +483,18 @@ export class Adhesive {
    * ```
    */
   constructor(options: AdhesiveOptions) {
+    // Handle SSR environment - create disabled instance and return early
+    if (!isBrowser()) {
+      // Still validate required options even in SSR
+      if (!options.targetEl) {
+        throw createAdhesiveError("TARGET_EL_REQUIRED", {
+          selector: options.targetEl,
+        });
+      }
+      this.#initializeSSRInstance(options);
+      return;
+    }
+
     // Handle disabled state early
     if (options.enabled === false) {
       this.#initializeDisabledInstance();
@@ -549,7 +524,22 @@ export class Adhesive {
     this.#boundingEl = boundingEl;
 
     // Initialize options
-    this.#options = createInitialOptions(options);
+    this.#options = {
+      targetEl,
+      boundingEl,
+      enabled: options.enabled ?? DEFAULT_CONFIG.ENABLED,
+      offset: options.offset ?? DEFAULT_CONFIG.OFFSET,
+      position: options.position ?? DEFAULT_CONFIG.POSITION,
+      zIndex: options.zIndex ?? DEFAULT_CONFIG.Z_INDEX,
+      outerClassName:
+        options.outerClassName ?? DEFAULT_CONFIG.CLASS_NAMES.OUTER_WRAPPER,
+      innerClassName:
+        options.innerClassName ?? DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER,
+      activeClassName:
+        options.activeClassName ?? DEFAULT_CONFIG.CLASS_NAMES.ACTIVE,
+      releasedClassName:
+        options.releasedClassName ?? DEFAULT_CONFIG.CLASS_NAMES.RELEASED,
+    };
 
     // Create DOM structure
     this.#createWrappers();
@@ -563,10 +553,38 @@ export class Adhesive {
     this.#scrollTop = getScrollTop();
   }
 
+  #initializeSSRInstance(options: AdhesiveOptions): void {
+    this.#isEnabled = false;
+    // Create dummy elements that won't be used in SSR
+    const dummyElement: HTMLElement = Object.create(null);
+    this.#targetEl = dummyElement;
+    this.#boundingEl = dummyElement;
+    this.#options = {
+      targetEl: this.#targetEl,
+      boundingEl: this.#boundingEl,
+      enabled: false,
+      offset: options.offset ?? DEFAULT_CONFIG.OFFSET,
+      position: options.position ?? DEFAULT_CONFIG.POSITION,
+      zIndex: options.zIndex ?? DEFAULT_CONFIG.Z_INDEX,
+      outerClassName:
+        options.outerClassName ?? DEFAULT_CONFIG.CLASS_NAMES.OUTER_WRAPPER,
+      innerClassName:
+        options.innerClassName ?? DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER,
+      activeClassName:
+        options.activeClassName ?? DEFAULT_CONFIG.CLASS_NAMES.ACTIVE,
+      releasedClassName:
+        options.releasedClassName ?? DEFAULT_CONFIG.CLASS_NAMES.RELEASED,
+    };
+    this.#state = createInitialState();
+  }
+
   #initializeDisabledInstance(): void {
     this.#isEnabled = false;
-    this.#targetEl = document.createElement("div");
-    this.#boundingEl = document.createElement("div");
+    const dummyElement = isBrowser()
+      ? document.createElement("div")
+      : Object.create(null);
+    this.#targetEl = dummyElement;
+    this.#boundingEl = dummyElement;
     this.#options = this.#createDisabledOptions();
     this.#state = createInitialState();
   }
@@ -622,6 +640,8 @@ export class Adhesive {
   // =============================================================================
 
   #getBottomBoundary(): number {
+    if (!isBrowser()) return Number.POSITIVE_INFINITY;
+
     if (!this.#boundingEl || this.#boundingEl === document.body) {
       return Number.POSITIVE_INFINITY;
     }
@@ -1103,6 +1123,8 @@ export class Adhesive {
    * ```
    */
   init(): this {
+    if (!isBrowser()) return this;
+
     if (!this.#isEnabled) {
       const error = ERROR_REGISTRY.INSTANCE_DISABLED;
       console.warn(`@adhesivejs/core: ${error.message}`);
@@ -1256,6 +1278,8 @@ export class Adhesive {
    * ```
    */
   cleanup(): void {
+    if (!isBrowser()) return;
+
     // Cancel any pending RAF operations and timeouts
     if (this.#rafId !== null) {
       cancelAnimationFrame(this.#rafId);

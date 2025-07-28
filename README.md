@@ -17,6 +17,7 @@ Adhesive is a modern, performant, lightweight, dependency free library that prov
 - **🎯 Type Safe** - Full TypeScript support with comprehensive type definitions
 - **🌍 Cross Platform** - Works across all modern browsers and devices
 - **🎨 Framework Ready** - Core library with framework specific adapters
+- **🖥️ SSR Friendly** - Handles server-side rendering environments gracefully
 
 ## 📦 Packages
 
