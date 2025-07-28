@@ -1038,7 +1038,19 @@ export class Adhesive {
     if (!needsFullUpdate && !needsWidthUpdate) return;
 
     this.#pendingResizeUpdate = true;
+
+    // Cancel any existing RAF callback before scheduling a new one
+    if (this.#rafId !== null) {
+      cancelAnimationFrame(this.#rafId);
+    }
+
     this.#rafId = requestAnimationFrame(() => {
+      // Check if still enabled when callback executes (prevent state corruption)
+      if (!this.#isEnabled) {
+        this.#pendingResizeUpdate = false;
+        return;
+      }
+
       this.#pendingResizeUpdate = false;
 
       if (needsFullUpdate) {
@@ -1056,7 +1068,19 @@ export class Adhesive {
     if (!this.#isEnabled || this.#pendingUpdate) return;
 
     this.#pendingUpdate = true;
+
+    // Cancel any existing RAF callback before scheduling a new one
+    if (this.#rafId !== null) {
+      cancelAnimationFrame(this.#rafId);
+    }
+
     this.#rafId = requestAnimationFrame(() => {
+      // Check if still enabled when callback executes (prevent state corruption)
+      if (!this.#isEnabled) {
+        this.#pendingUpdate = false;
+        return;
+      }
+
       this.#pendingUpdate = false;
       updateFn();
     });
@@ -1172,16 +1196,31 @@ export class Adhesive {
   /**
    * Disables the sticky behavior and resets the element to its original position.
    *
+   * This method safely cancels any pending animation frames to prevent memory leaks
+   * and race conditions that could occur with rapid enable/disable cycles.
+   *
    * @returns The Adhesive instance for method chaining
    *
    * @example
    * ```ts
    * adhesive.disable(); // Temporarily disable sticky behavior
+   *
+   * // Safe to call multiple times or during rapid enable/disable cycles
+   * adhesive.disable().enable().disable();
    * ```
    */
   disable(): this {
     this.#isEnabled = false;
     this.#state.activated = false;
+
+    // Cancel any pending RAF operations to prevent memory leaks and race conditions
+    if (this.#rafId !== null) {
+      cancelAnimationFrame(this.#rafId);
+      this.#rafId = null;
+    }
+    this.#pendingUpdate = false;
+    this.#pendingResizeUpdate = false;
+
     this.#reset();
     return this;
   }

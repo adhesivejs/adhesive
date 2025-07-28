@@ -1402,6 +1402,156 @@ describe("Core", () => {
 
         adhesive.cleanup();
       });
+
+      describe("RAF race conditions and memory management", () => {
+        let rafSpy: any;
+        let cancelRafSpy: any;
+
+        beforeEach(() => {
+          // Spy on requestAnimationFrame and cancelAnimationFrame
+          rafSpy = vi.spyOn(window, "requestAnimationFrame");
+          cancelRafSpy = vi.spyOn(window, "cancelAnimationFrame");
+        });
+
+        it("should cancel pending RAF callbacks when disabled rapidly", () => {
+          const adhesive = createInitializedAdhesive();
+
+          // Trigger multiple scroll events rapidly to queue RAF callbacks
+          window.dispatchEvent(new Event("scroll"));
+          window.dispatchEvent(new Event("scroll"));
+          window.dispatchEvent(new Event("scroll"));
+
+          // Disable immediately before RAF callbacks execute
+          adhesive.disable();
+
+          // Verify that cancelAnimationFrame was called to clean up
+          expect(cancelRafSpy).toHaveBeenCalled();
+
+          adhesive.cleanup();
+        });
+
+        it("should handle multiple RAF callbacks queued before cleanup", () => {
+          const adhesive = createInitializedAdhesive();
+
+          // Queue multiple updates
+          window.dispatchEvent(new Event("scroll"));
+          window.dispatchEvent(new Event("resize"));
+
+          // Cleanup before callbacks execute
+          adhesive.cleanup();
+
+          // Verify RAF was canceled
+          expect(cancelRafSpy).toHaveBeenCalled();
+        });
+
+        it("should prevent memory leaks during rapid enable/disable cycles", () => {
+          const adhesive = new Adhesive({ targetEl: targetElement });
+
+          // Rapid enable/disable cycles
+          for (let i = 0; i < 10; i++) {
+            adhesive.enable();
+            window.dispatchEvent(new Event("scroll"));
+            adhesive.disable();
+          }
+
+          // Final cleanup
+          adhesive.cleanup();
+
+          // Verify no RAF callbacks are left hanging
+          expect(cancelRafSpy).toHaveBeenCalled();
+        });
+
+        it("should prevent state corruption when RAF callbacks execute after disable", () => {
+          const adhesive = createInitializedAdhesive();
+
+          let callbackExecuted = false;
+          let savedCallback: any = null;
+
+          // Override RAF to capture callback
+          rafSpy.mockImplementation((callback: any) => {
+            savedCallback = callback;
+            callbackExecuted = false;
+            return 123; // mock ID
+          });
+
+          // Trigger an event that schedules RAF
+          window.dispatchEvent(new Event("scroll"));
+
+          // Disable the adhesive
+          adhesive.disable();
+
+          // Now manually execute the captured callback (simulating delayed execution)
+          if (savedCallback) {
+            savedCallback(performance.now());
+            callbackExecuted = true;
+          }
+
+          // State should remain disabled/inactive even after callback execution
+          const state = adhesive.getState();
+          expect(state.activated).toBe(false);
+          expect(callbackExecuted).toBe(true);
+
+          adhesive.cleanup();
+        });
+
+        it("should handle overlapping RAF callbacks correctly", () => {
+          const adhesive = createInitializedAdhesive();
+
+          const executedCallbacks: number[] = [];
+
+          // Track RAF callback execution order
+          rafSpy.mockImplementation((callback: any) => {
+            const id = Math.random();
+            setTimeout(() => {
+              callback(performance.now());
+              executedCallbacks.push(id);
+            }, 0);
+            return id;
+          });
+
+          // Trigger multiple events rapidly
+          window.dispatchEvent(new Event("scroll"));
+          window.dispatchEvent(new Event("scroll"));
+          window.dispatchEvent(new Event("resize"));
+
+          // Wait for callbacks to execute
+          return new Promise<void>((resolve) => {
+            setTimeout(() => {
+              // State should be consistent regardless of callback execution order
+              const state = adhesive.getState();
+              expect(state.activated).toBe(true);
+
+              adhesive.cleanup();
+              resolve();
+            }, 50);
+          });
+        });
+
+        it("should handle cleanup when DOM elements are removed externally", () => {
+          const adhesive = createInitializedAdhesive();
+
+          // Simulate external DOM manipulation (like React strict mode or HMR)
+          const outerWrapper = targetElement.parentElement?.parentElement;
+          if (
+            outerWrapper &&
+            outerWrapper.className.includes("adhesive__outer")
+          ) {
+            outerWrapper.remove();
+          }
+
+          // Cleanup should not throw even with missing DOM elements
+          expect(() => adhesive.cleanup()).not.toThrow();
+        });
+
+        it("should prevent double cleanup issues", () => {
+          const adhesive = createInitializedAdhesive();
+
+          // Multiple cleanup calls should be safe
+          adhesive.cleanup();
+          expect(() => adhesive.cleanup()).not.toThrow();
+          expect(() => adhesive.cleanup()).not.toThrow();
+        });
+      });
     });
   });
 });
