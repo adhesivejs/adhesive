@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v0.3.2
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.1...v0.3.2)
+
+### 🩹 Fixes
+
+- **core:** Handle frozen option updates ([b07bfdb](https://github.com/adhesivejs/adhesive/commit/b07bfdb))
+
+### 📖 Documentation
+
+- Update performance bullet ([c3f088e](https://github.com/adhesivejs/adhesive/commit/c3f088e))
+
+### 🏡 Chore
+
+- Update vscode settings ([b6a0ace](https://github.com/adhesivejs/adhesive/commit/b6a0ace))
+
+### ✅ Tests
+
+- Use present voice in test descriptions ([20670bd](https://github.com/adhesivejs/adhesive/commit/20670bd))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.3.1
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.0...v0.3.1)
