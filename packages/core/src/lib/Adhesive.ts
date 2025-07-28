@@ -420,6 +420,10 @@ export class Adhesive {
   #options!: InternalAdhesiveOptions;
   #state!: InternalAdhesiveState;
   #isEnabled = true;
+  #originalSelectors: {
+    targetEl: ElementSelector;
+    boundingEl: ElementSelector | null;
+  } | null = null;
 
   // Performance optimization: cache frequently accessed values
   #scrollTop = -1;
@@ -495,13 +499,7 @@ export class Adhesive {
       return;
     }
 
-    // Handle disabled state early
-    if (options.enabled === false) {
-      this.#initializeDisabledInstance();
-      return;
-    }
-
-    // Validate required options
+    // Validate required options early
     if (!options.targetEl) {
       throw createAdhesiveError("TARGET_EL_REQUIRED", {
         selector: options.targetEl,
@@ -541,10 +539,15 @@ export class Adhesive {
         options.releasedClassName ?? DEFAULT_CONFIG.CLASS_NAMES.RELEASED,
     };
 
-    // Create DOM structure
-    this.#createWrappers();
+    // Handle disabled state - only set flag, don't create dummy elements
+    if (options.enabled === false) {
+      this.#isEnabled = false;
+      this.#state = createInitialState();
+      return;
+    }
 
-    // Initialize state
+    // For enabled instances, create DOM structure and initialize
+    this.#createWrappers();
     this.#state = createInitialState(this.#innerWrapper);
     this.#state.bottomBoundary = this.#getBottomBoundary();
 
@@ -555,6 +558,11 @@ export class Adhesive {
 
   #initializeSSRInstance(options: AdhesiveOptions): void {
     this.#isEnabled = false;
+    // Store original selectors for later resolution when transitioning to browser
+    this.#originalSelectors = {
+      targetEl: options.targetEl,
+      boundingEl: options.boundingEl ?? null,
+    };
     // Create dummy elements that won't be used in SSR
     const dummyElement: HTMLElement = Object.create(null);
     this.#targetEl = dummyElement;
@@ -576,32 +584,6 @@ export class Adhesive {
         options.releasedClassName ?? DEFAULT_CONFIG.CLASS_NAMES.RELEASED,
     };
     this.#state = createInitialState();
-  }
-
-  #initializeDisabledInstance(): void {
-    this.#isEnabled = false;
-    const dummyElement = isBrowser()
-      ? document.createElement("div")
-      : Object.create(null);
-    this.#targetEl = dummyElement;
-    this.#boundingEl = dummyElement;
-    this.#options = this.#createDisabledOptions();
-    this.#state = createInitialState();
-  }
-
-  #createDisabledOptions(): InternalAdhesiveOptions {
-    return Object.freeze({
-      targetEl: this.#targetEl,
-      boundingEl: this.#boundingEl,
-      enabled: false,
-      offset: DEFAULT_CONFIG.OFFSET,
-      position: DEFAULT_CONFIG.POSITION,
-      zIndex: 1,
-      outerClassName: DEFAULT_CONFIG.CLASS_NAMES.OUTER_WRAPPER,
-      innerClassName: DEFAULT_CONFIG.CLASS_NAMES.INNER_WRAPPER,
-      activeClassName: DEFAULT_CONFIG.CLASS_NAMES.ACTIVE,
-      releasedClassName: DEFAULT_CONFIG.CLASS_NAMES.RELEASED,
-    });
   }
 
   // =============================================================================
@@ -1056,6 +1038,26 @@ export class Adhesive {
   // Event Handlers
   // =============================================================================
 
+  #setupEventListeners(): void {
+    // Add event listeners with optimal performance settings
+    window.addEventListener("scroll", this.#onScroll, { passive: true });
+    window.addEventListener("resize", this.#onWindowResize, { passive: true });
+
+    // Modern ResizeObserver for better performance
+    if ("ResizeObserver" in window) {
+      this.#observer = new ResizeObserver(this.#onElementResize);
+      this.#observer.observe(this.#boundingEl);
+      if (this.#outerWrapper) {
+        this.#observer.observe(this.#outerWrapper);
+      }
+      // Also observe the target element for content changes
+      this.#observer.observe(this.#targetEl);
+    } else {
+      const error = ERROR_REGISTRY.RESIZE_OBSERVER_NOT_SUPPORTED;
+      console.warn(`@adhesivejs/core: ${error.message}`);
+    }
+  }
+
   readonly #onScroll = (): void => {
     if (!this.#isEnabled || this.#pendingUpdate) return;
 
@@ -1148,22 +1150,9 @@ export class Adhesive {
     this.#updateInitialDimensions();
     this.#update();
 
-    // Add event listeners with optimal performance settings
-    window.addEventListener("scroll", this.#onScroll, { passive: true });
-    window.addEventListener("resize", this.#onWindowResize, { passive: true });
-
-    // Modern ResizeObserver for better performance
-    if ("ResizeObserver" in window) {
-      this.#observer = new ResizeObserver(this.#onElementResize);
-      this.#observer.observe(this.#boundingEl);
-      if (this.#outerWrapper) {
-        this.#observer.observe(this.#outerWrapper);
-      }
-      // Also observe the target element for content changes
-      this.#observer.observe(this.#targetEl);
-    } else {
-      const error = ERROR_REGISTRY.RESIZE_OBSERVER_NOT_SUPPORTED;
-      console.warn(`@adhesivejs/core: ${error.message}`);
+    // Only set up event listeners if they haven't been set up yet
+    if (!this.#observer) {
+      this.#setupEventListeners();
     }
 
     return this;
@@ -1180,10 +1169,58 @@ export class Adhesive {
    * ```
    */
   enable(): this {
+    if (this.#isEnabled) return this; // Already enabled
+
     this.#isEnabled = true;
+
+    // In SSR environment, just set the flag and return
+    if (!isBrowser()) {
+      this.#state.activated = true;
+      return this;
+    }
+
+    // If this instance was created in SSR mode, re-resolve elements
+    if (this.#originalSelectors) {
+      const targetEl = resolveElement(this.#originalSelectors.targetEl);
+      const boundingEl = this.#originalSelectors.boundingEl
+        ? resolveElement(this.#originalSelectors.boundingEl)
+        : null;
+
+      if (!targetEl) {
+        throw createAdhesiveError("TARGET_EL_REQUIRED", {
+          targetEl: this.#originalSelectors.targetEl,
+        });
+      }
+
+      this.#targetEl = targetEl;
+      this.#boundingEl = boundingEl ?? targetEl;
+      this.#options.targetEl = this.#targetEl;
+      this.#options.boundingEl = this.#boundingEl;
+
+      // Clear original selectors as they're no longer needed
+      this.#originalSelectors = null;
+    }
+
+    // If wrappers don't exist yet (instance was created disabled), create them now
+    if (!this.#outerWrapper || !this.#innerWrapper) {
+      this.#createWrappers();
+      this.#state = createInitialState(this.#innerWrapper);
+      this.#state.bottomBoundary = this.#getBottomBoundary();
+      this.#winHeight = getViewportHeight();
+      this.#scrollTop = getScrollTop();
+    }
+
+    // Always set activated to true after any state initialization
     this.#state.activated = true;
+
     this.#updateInitialDimensions();
     this.#update();
+
+    // Set up event listeners if they haven't been set up yet
+    if (!this.#observer) {
+      this.#setupEventListeners();
+    }
+
     return this;
   }
 

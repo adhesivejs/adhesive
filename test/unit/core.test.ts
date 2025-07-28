@@ -376,6 +376,43 @@ describe("Core", () => {
 
         adhesive.cleanup();
       });
+
+      it("correctly re-enables instance that started in disabled state", () => {
+        // Create an instance that starts disabled with real target element
+        const adhesive = new Adhesive({
+          targetEl: targetElement,
+          enabled: false,
+        });
+
+        // Verify it starts disabled
+        expect(adhesive.getState().activated).toBe(false);
+
+        // Initialize the instance (this should work for disabled instances)
+        adhesive.init();
+
+        // Instance should still be disabled after init
+        expect(adhesive.getState().activated).toBe(false);
+
+        // Now enable it via updateOptions
+        expect(() => {
+          adhesive.updateOptions({ enabled: true });
+        }).not.toThrow();
+
+        // The instance should now be properly enabled and functional
+        expect(adhesive.getState().activated).toBe(true);
+
+        // Check if wrapper elements were created correctly
+        const outerWrapper = targetElement.parentElement?.parentElement;
+        const innerWrapper = targetElement.parentElement;
+
+        expect(outerWrapper).toBeTruthy();
+        expect(innerWrapper).toBeTruthy();
+        expect(outerWrapper?.className).toContain("adhesive__outer");
+        expect(innerWrapper?.className).toContain("adhesive__inner");
+
+        // Clean up
+        adhesive.cleanup();
+      });
     });
   });
 
