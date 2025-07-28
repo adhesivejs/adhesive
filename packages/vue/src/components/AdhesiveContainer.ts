@@ -10,7 +10,7 @@ import {
   useAdhesive,
   type UseAdhesiveOptions,
 } from "../composables/useAdhesive.js";
-import type { MaybeElementOrSelectorRef } from "../utils/unwrapElement.js";
+import type { MaybeVueInstanceOrElementOrSelector } from "../utils/unwrapElement.js";
 
 type BaseProps = Omit<
   Partial<UseAdhesiveOptions>,
@@ -69,7 +69,7 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
     name: "AdhesiveContainer",
     props: {
       boundingRef: {
-        type: [Object, String] as PropType<MaybeElementOrSelectorRef>,
+        type: [Object, String] as PropType<MaybeVueInstanceOrElementOrSelector>,
         required: false,
       },
       boundingEl: {
