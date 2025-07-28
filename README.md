@@ -50,7 +50,6 @@ npx nypm install @adhesivejs/vue
 ```ts
 import { Adhesive } from '@adhesivejs/core';
 
-// Simple sticky header
 Adhesive.create({ targetEl: '#target-element' });
 ```
 
@@ -136,6 +135,22 @@ useAdhesive(targetRef, { position: 'top' });
 <template>
   <div>
     <header ref="target">This header will stick to the top</header>
+
+    <main>
+      <p>Your main content here...</p>
+    </main>
+  </div>
+</template>
+```
+
+#### Vue Directive Example
+
+```vue
+<template>
+  <div>
+    <header v-adhesive>
+      This header will stick to the top
+    </header>
 
     <main>
       <p>Your main content here...</p>

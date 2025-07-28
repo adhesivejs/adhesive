@@ -17,3 +17,9 @@ export {
   useAdhesive,
   type UseAdhesiveOptions,
 } from "./composables/useAdhesive.js";
+
+export {
+  vAdhesive,
+  type AdhesiveDirective,
+  type AdhesiveDirectiveBinding,
+} from "./directives/vAdhesive.js";

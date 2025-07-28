@@ -37,7 +37,6 @@ deno install @adhesivejs/core
 ```js
 import { Adhesive } from '@adhesivejs/core';
 
-// Simple sticky header
 Adhesive.create({ targetEl: '#target-element' });
 ```
 

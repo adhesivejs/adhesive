@@ -1,11 +1,12 @@
 import {
   AdhesiveContainer,
   useAdhesive,
+  vAdhesive,
   type AdhesivePosition,
 } from "@adhesivejs/vue";
 import { fireEvent, render } from "@testing-library/vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import {
   commonBeforeEach,
   configurationTestCases,
@@ -16,11 +17,16 @@ import {
 const mockAdhesiveInstance = createMockAdhesive();
 
 // Mock the Adhesive class
-vi.mock("@adhesivejs/core", () => ({
-  Adhesive: {
+vi.mock("@adhesivejs/core", () => {
+  const MockAdhesive = {
     create: vi.fn(() => mockAdhesiveInstance),
-  },
-}));
+  };
+
+  return {
+    Adhesive: MockAdhesive,
+    default: MockAdhesive,
+  };
+});
 
 // Enhanced test component using useAdhesive composable
 const TestComposableComponent = defineComponent({
@@ -76,8 +82,11 @@ const TestComposableComponent = defineComponent({
 });
 
 describe("Vue Integration", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     commonBeforeEach();
+    // Clear the mock call count for each test
+    const { Adhesive } = await import("@adhesivejs/core");
+    (Adhesive.create as any).mockClear();
   });
 
   afterEach(() => {
@@ -320,6 +329,465 @@ describe("Vue Integration", () => {
         });
 
         expect(getByTestId("container-child")).toBeTruthy();
+      });
+    });
+  });
+
+  describe("v-adhesive Directive", () => {
+    // Test component using directive through app registration
+    const createTestApp = (template: string, setup?: any) => {
+      return defineComponent({
+        setup,
+        template,
+      });
+    };
+
+    describe("basic functionality", () => {
+      it("should render element with directive", () => {
+        const TestComponent = createTestApp(
+          `<div data-testid="directive-basic">Basic Directive Content</div>`,
+        );
+
+        const { getByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        expect(getByTestId("directive-basic")).toBeTruthy();
+        expect(getByTestId("directive-basic")).toHaveTextContent(
+          "Basic Directive Content",
+        );
+      });
+
+      it("should create Adhesive instance when directive is applied", async () => {
+        const TestComponent = createTestApp(
+          `<div v-adhesive data-testid="directive-with-adhesive">Directive Content</div>`,
+        );
+
+        render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            targetEl: expect.any(HTMLElement),
+          }),
+        );
+      });
+
+      it("should handle position argument", async () => {
+        const TestComponent = createTestApp(
+          `<div v-adhesive:bottom data-testid="directive-position">Bottom Position</div>`,
+        );
+
+        render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            targetEl: expect.any(HTMLElement),
+            position: "bottom",
+          }),
+        );
+      });
+
+      it("should handle options object", async () => {
+        const TestComponent = createTestApp(
+          `<div v-adhesive="options" data-testid="directive-options">Options Content</div>`,
+          () => ({
+            options: {
+              offset: 20,
+              zIndex: 999,
+              enabled: true,
+              activeClassName: "custom-active",
+              releasedClassName: "custom-released",
+            },
+          }),
+        );
+
+        render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            targetEl: expect.any(HTMLElement),
+            offset: 20,
+            zIndex: 999,
+            enabled: true,
+            activeClassName: "custom-active",
+            releasedClassName: "custom-released",
+          }),
+        );
+      });
+
+      it("should handle position argument with options", async () => {
+        const TestComponent = createTestApp(
+          `<div v-adhesive:top="{ offset: 10, zIndex: 500 }" data-testid="directive-combined">Combined Content</div>`,
+        );
+
+        render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            targetEl: expect.any(HTMLElement),
+            position: "top",
+            offset: 10,
+            zIndex: 500,
+          }),
+        );
+      });
+    });
+
+    describe("reactivity and updates", () => {
+      it("should handle reactive options changes", async () => {
+        const TestComponent = createTestApp(
+          `
+          <div>
+            <button @click="toggleEnabled" data-testid="toggle-enabled">
+              {{ enabled ? 'Disable' : 'Enable' }}
+            </button>
+            <button @click="changeOffset" data-testid="change-offset">
+              Offset: {{ offset }}
+            </button>
+            <div v-adhesive="options" data-testid="directive-reactive">
+              Reactive Content
+            </div>
+          </div>
+          `,
+          () => {
+            const enabled = ref(true);
+            const offset = ref(10);
+
+            const options = computed(() => ({
+              enabled: enabled.value,
+              offset: offset.value,
+            }));
+
+            return {
+              enabled,
+              offset,
+              options,
+              toggleEnabled() {
+                enabled.value = !enabled.value;
+              },
+              changeOffset() {
+                offset.value = offset.value === 10 ? 30 : 10;
+              },
+            };
+          },
+        );
+
+        const { getByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        expect(getByTestId("directive-reactive")).toBeTruthy();
+        expect(getByTestId("toggle-enabled")).toHaveTextContent("Disable");
+        expect(getByTestId("change-offset")).toHaveTextContent("Offset: 10");
+
+        // Reset mock to track updates
+        mockAdhesiveInstance.updateOptions.mockClear();
+
+        // Test enabled toggle
+        await fireEvent.click(getByTestId("toggle-enabled"));
+        expect(getByTestId("toggle-enabled")).toHaveTextContent("Enable");
+        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            enabled: false,
+          }),
+        );
+
+        // Test offset change
+        await fireEvent.click(getByTestId("change-offset"));
+        expect(getByTestId("change-offset")).toHaveTextContent("Offset: 30");
+        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            offset: 30,
+          }),
+        );
+      });
+
+      it("should call updateOptions when directive value changes", async () => {
+        const TestComponent = createTestApp(
+          `
+          <div>
+            <button @click="incrementOffset" data-testid="increment-offset">
+              Increment
+            </button>
+            <div v-adhesive="{ offset: dynamicOffset }" data-testid="dynamic-element">
+              Dynamic Content
+            </div>
+          </div>
+          `,
+          () => {
+            const dynamicOffset = ref(15);
+
+            return {
+              dynamicOffset,
+              incrementOffset() {
+                dynamicOffset.value += 5;
+              },
+            };
+          },
+        );
+
+        const { getByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        // Reset mock to track updates
+        mockAdhesiveInstance.updateOptions.mockClear();
+
+        await fireEvent.click(getByTestId("increment-offset"));
+
+        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            offset: 20,
+          }),
+        );
+      });
+    });
+
+    describe("lifecycle management", () => {
+      it("should cleanup Adhesive instance on unmount", () => {
+        const TestComponent = createTestApp(
+          `<div v-adhesive data-testid="directive-basic">Basic Content</div>`,
+        );
+
+        const { unmount, getByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        expect(getByTestId("directive-basic")).toBeTruthy();
+
+        // Verify instance was created
+        expect(mockAdhesiveInstance.cleanup).not.toHaveBeenCalled();
+
+        // Unmount component
+        unmount();
+
+        // Verify cleanup was called
+        expect(mockAdhesiveInstance.cleanup).toHaveBeenCalledTimes(1);
+      });
+
+      it("should not create multiple instances on re-renders", async () => {
+        const TestComponent = createTestApp(
+          `<div v-adhesive data-testid="directive-basic">Basic Content</div>`,
+        );
+
+        const { rerender, getByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        expect(getByTestId("directive-basic")).toBeTruthy();
+
+        // Get initial call count
+        const { Adhesive } = await import("@adhesivejs/core");
+        const initialCallCount = (Adhesive.create as any).mock.calls.length;
+
+        // Trigger re-render
+        await rerender({});
+        await rerender({});
+
+        // Verify no additional instances were created
+        expect((Adhesive.create as any).mock.calls.length).toBe(
+          initialCallCount,
+        );
+      });
+
+      it("should handle conditional rendering correctly", async () => {
+        const TestComponent = createTestApp(
+          `
+          <div>
+            <button @click="toggle" data-testid="toggle-visibility">
+              {{ show ? 'Hide' : 'Show' }}
+            </button>
+            <div v-if="show" v-adhesive data-testid="conditional-element">
+              Conditional Content
+            </div>
+          </div>
+          `,
+          () => {
+            const show = ref(true);
+
+            return {
+              show,
+              toggle() {
+                show.value = !show.value;
+              },
+            };
+          },
+        );
+
+        const { getByTestId, queryByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        expect(getByTestId("conditional-element")).toBeTruthy();
+        expect(getByTestId("toggle-visibility")).toHaveTextContent("Hide");
+
+        // Reset cleanup mock
+        mockAdhesiveInstance.cleanup.mockClear();
+
+        // Hide element
+        await fireEvent.click(getByTestId("toggle-visibility"));
+        expect(queryByTestId("conditional-element")).toBeNull();
+        expect(getByTestId("toggle-visibility")).toHaveTextContent("Show");
+
+        // Verify cleanup was called when element was removed
+        expect(mockAdhesiveInstance.cleanup).toHaveBeenCalledTimes(1);
+
+        // Show element again
+        mockAdhesiveInstance.cleanup.mockClear();
+        await fireEvent.click(getByTestId("toggle-visibility"));
+        expect(getByTestId("conditional-element")).toBeTruthy();
+        expect(getByTestId("toggle-visibility")).toHaveTextContent("Hide");
+      });
+    });
+
+    describe("edge cases", () => {
+      it("should handle directive with undefined options gracefully", async () => {
+        const TestComponent = createTestApp(
+          `<div v-adhesive="undefined" data-testid="undefined-options">Undefined Options</div>`,
+        );
+
+        const { getByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        expect(getByTestId("undefined-options")).toBeTruthy();
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            targetEl: expect.any(HTMLElement),
+          }),
+        );
+      });
+
+      it("should handle directive with empty options object", async () => {
+        const TestComponent = createTestApp(
+          `<div v-adhesive="{}" data-testid="empty-options">Empty Options</div>`,
+        );
+
+        const { getByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        expect(getByTestId("empty-options")).toBeTruthy();
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            targetEl: expect.any(HTMLElement),
+          }),
+        );
+      });
+
+      it("should handle position argument override", async () => {
+        const TestComponent = createTestApp(
+          `<div v-adhesive:top="{ position: 'bottom' }" data-testid="position-override">Position Override</div>`,
+        );
+
+        const { getByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        expect(getByTestId("position-override")).toBeTruthy();
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledWith(
+          expect.objectContaining({
+            targetEl: expect.any(HTMLElement),
+            position: "top", // Argument should override options
+          }),
+        );
+      });
+
+      it("should handle multiple directives on same page", async () => {
+        const TestComponent = createTestApp(
+          `
+          <div>
+            <div v-adhesive:top data-testid="directive-1">First Directive</div>
+            <div v-adhesive:bottom data-testid="directive-2">Second Directive</div>
+            <div v-adhesive="{ offset: 15 }" data-testid="directive-3">Third Directive</div>
+          </div>
+          `,
+        );
+
+        const { getByTestId } = render(TestComponent, {
+          global: {
+            directives: {
+              adhesive: vAdhesive as any,
+            },
+          },
+        });
+
+        expect(getByTestId("directive-1")).toBeTruthy();
+        expect(getByTestId("directive-2")).toBeTruthy();
+        expect(getByTestId("directive-3")).toBeTruthy();
+
+        const { Adhesive } = await import("@adhesivejs/core");
+        expect(Adhesive.create).toHaveBeenCalledTimes(3);
       });
     });
   });

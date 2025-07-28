@@ -105,6 +105,82 @@ useAdhesive(
 </template>
 ```
 
+### Using the `v-adhesive` Directive
+
+For simple use cases, you can use the `v-adhesive` directive directly on elements:
+
+```vue
+<script setup lang="ts">
+import { vAdhesive } from '@adhesivejs/vue';
+import { ref } from 'vue';
+
+// Register the directive locally (optional if globally registered)
+const directives = { adhesive: vAdhesive };
+
+const stickyConfig = ref({
+  offset: 20,
+  zIndex: 999,
+  activeClassName: 'is-sticky',
+  releasedClassName: 'is-released'
+});
+</script>
+
+<template>
+  <div style="height: 200vh">
+    <!-- Basic usage -->
+    <div v-adhesive>
+      <h2>Basic Sticky Element</h2>
+    </div>
+
+    <!-- With position argument -->
+    <div v-adhesive:bottom>
+      <p>This sticks to the bottom</p>
+    </div>
+
+    <!-- With reactive options -->
+    <div v-adhesive="stickyConfig">
+      <h3>Sticky with Custom Config</h3>
+    </div>
+
+    <!-- With position and options -->
+    <div v-adhesive:top="{ offset: 10, zIndex: 1000 }">
+      <header>Top Sticky Header</header>
+    </div>
+
+    <div style="height: 150vh; background: linear-gradient(to bottom, #f0f0f0, #ffffff)">
+      <p>Scroll to see the sticky behavior in action!</p>
+    </div>
+  </div>
+</template>
+```
+
+#### Registering the Directive Globally
+
+You can register the directive globally in your Vue app:
+
+```ts
+import { vAdhesive } from '@adhesivejs/vue';
+import { createApp } from 'vue';
+import App from './App.vue';
+
+const app = createApp(App);
+
+// Register the directive globally
+app.directive('adhesive', vAdhesive);
+
+app.mount('#app');
+```
+
+After global registration, you can use it without importing:
+
+```vue
+<template>
+  <div v-adhesive:top="{ offset: 20 }">
+    Globally available directive
+  </div>
+</template>
+```
+
 ### API Reference
 
 #### `AdhesiveContainer` Component
@@ -116,7 +192,7 @@ A simple wrapper component that automatically applies sticky positioning to its 
 - All props from `UseAdhesiveOptions` (see below)
 
 > [!NOTE]
-> Class props like `outerClassName`, `innerClassName`, `activeClassName`, and `releasedClassName` are renamed to `outerClass`, `innerClass`, `activeClass`, and `releasedClass` in Vue for brevity.
+> Class props like `outerClassName`, `innerClassName`, `activeClassName`, and `releasedClassName` become `outerClass`, `innerClass`, `activeClass`, and `releasedClass` in Vue for brevity.
 
 ```vue
 <AdhesiveContainer
@@ -151,3 +227,42 @@ For more control over the sticky behavior with full Vue reactivity support.
 | `innerClassName` | `string` | `'adhesive__inner'` | Class for the inner wrapper |
 | `activeClassName` | `string` | `'adhesive--active'` | Class when element is sticky |
 | `releasedClassName` | `string` | `'adhesive--released'` | Class when element returns to normal |
+
+#### `v-adhesive` Directive
+
+A Vue directive for applying sticky behavior directly to elements with minimal setup.
+
+**Usage:**
+
+```vue
+<!-- Basic usage -->
+<div v-adhesive>Content</div>
+
+<!-- With position argument -->
+<div v-adhesive:bottom>Content</div>
+
+<!-- With options -->
+<div v-adhesive="{ offset: 20 }">Content</div>
+
+<!-- With position and options -->
+<div v-adhesive:top="{ offset: 10, zIndex: 999 }">Content</div>
+```
+
+**Directive Value:**
+
+The directive accepts the same options as `UseAdhesiveOptions` (excluding `boundingRef`/`boundingEl` which you can provide as options).
+
+**Directive Argument:**
+
+- `:top` - Position the element at the top (default)
+- `:bottom` - Position the element at the bottom
+
+**Global Registration:**
+
+```ts
+import { vAdhesive } from '@adhesivejs/vue';
+import { createApp } from 'vue';
+
+const app = createApp(App);
+app.directive('adhesive', vAdhesive);
+```

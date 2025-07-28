@@ -43,11 +43,11 @@ useAdhesive(targetRef, () => ({
       </a>
     </div>
   </div>
-  <div className="adhesive-container">
+  <div className="adhesive-component-container">
     <AdhesiveContainer
       :enabled
       :position
-      bounding-el=".adhesive-container"
+      bounding-el=".adhesive-component-container"
       class="custom-class"
       outer-class="custom-outer"
       inner-class="custom-inner"
@@ -57,6 +57,17 @@ useAdhesive(targetRef, () => ({
     >
       Sticky Element
     </AdhesiveContainer>
+    <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
+      <img src="/vite.svg" class="logo" alt="Vite logo" />
+    </a>
+    <a href="https://vuejs.org/" target="_blank" rel="noopener noreferrer">
+      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
+    </a>
+  </div>
+  <div class="adhesive-directive-container">
+    <div v-adhesive:bottom="{ boundingEl: '.adhesive-directive-container' }">
+      Sticky Element
+    </div>
     <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
     </a>
