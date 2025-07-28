@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.3.4
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.3...v0.3.4)
+
+### 🔥 Performance
+
+- **core:** Optimize resize observer event handler ([dd563f0](https://github.com/adhesivejs/adhesive/commit/dd563f0))
+
+### 🩹 Fixes
+
+- **core:** Remove warning when initializing a disabled instance ([80e9423](https://github.com/adhesivejs/adhesive/commit/80e9423))
+- **core:** Prevent raf memory leaks ([0e52dcd](https://github.com/adhesivejs/adhesive/commit/0e52dcd))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.3.3
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.2...v0.3.3)

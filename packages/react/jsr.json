@@ -1,6 +1,6 @@
 {
   "name": "@adhesivejs/react",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "exports": "./src/index.ts",
   "include": ["LICENSE", "README.md", "src/**/*.ts"],
   "exclude": [
@@ -11,7 +11,7 @@
     "tsdown.config.ts"
   ],
   "imports": {
-    "@adhesivejs/core": "jsr:@adhesivejs/core@0.3.3",
+    "@adhesivejs/core": "jsr:@adhesivejs/core@0.3.4",
     "react": "npm:react@^19.0.0"
   }
 }
