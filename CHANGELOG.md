@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.3.3
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.2...v0.3.3)
+
+### 🩹 Fixes
+
+- Support enabling and instance that starts disabled ([a412f90](https://github.com/adhesivejs/adhesive/commit/a412f90))
+
+### 💅 Refactors
+
+- **core:** Reduce bundle size and lower complexity ([f0872a7](https://github.com/adhesivejs/adhesive/commit/f0872a7))
+
+### ✅ Tests
+
+- Alias packages to not require building ([1fd1adc](https://github.com/adhesivejs/adhesive/commit/1fd1adc))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.3.2
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.1...v0.3.2)
