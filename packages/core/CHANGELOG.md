@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v0.2.4
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.2.3...v0.2.4)
+
+### 🚀 Enhancements
+
+- Gracefully handle server side rendering ([f29e56b](https://github.com/adhesivejs/adhesive/commit/f29e56b))
+
+### 💅 Refactors
+
+- Simplify hook and composable implementations ([7f040b0](https://github.com/adhesivejs/adhesive/commit/7f040b0))
+
+### 📖 Documentation
+
+- Update project readme ([09df144](https://github.com/adhesivejs/adhesive/commit/09df144))
+- Update simple init examples ([465b224](https://github.com/adhesivejs/adhesive/commit/465b224))
+
+### 🏡 Chore
+
+- Add homepage to packages ([fbe52cc](https://github.com/adhesivejs/adhesive/commit/fbe52cc))
+- Update lockfile ([80bad57](https://github.com/adhesivejs/adhesive/commit/80bad57))
+
+### ✅ Tests
+
+- Add specs to validate update options ([61899bc](https://github.com/adhesivejs/adhesive/commit/61899bc))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.2.3
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.2.2...v0.2.3)
