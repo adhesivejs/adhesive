@@ -30,8 +30,6 @@ bun install @adhesivejs/react
 deno install @adhesivejs/react
 ```
 
-
-
 ## 🎨 Usage
 
 ### Basic Example
@@ -39,7 +37,7 @@ deno install @adhesivejs/react
 ```tsx
 import { AdhesiveContainer } from '@adhesivejs/react';
 
-export function App() {
+export function Component() {
   return (
     <div>
       <AdhesiveContainer position="top">
@@ -60,7 +58,7 @@ export function App() {
 import { useAdhesive, type AdhesivePosition } from '@adhesivejs/react';
 import { useRef, useState } from 'react';
 
-export function App() {
+export function Component() {
   const targetRef = useRef<HTMLDivElement>(null);
   const boundingRef = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(true);

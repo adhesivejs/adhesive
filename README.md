@@ -60,7 +60,7 @@ Adhesive.create({ targetEl: '#target-element' });
 ```tsx
 import { AdhesiveContainer } from '@adhesivejs/react';
 
-export function App() {
+export function Component() {
   return (
     <div>
       <AdhesiveContainer position="top">
@@ -81,7 +81,7 @@ export function App() {
 import { useAdhesive } from '@adhesivejs/react';
 import { useRef } from 'react';
 
-export function App() {
+export function Component() {
   const targetRef = useRef<HTMLElement>(null);
 
   useAdhesive(targetRef, { position: 'top' });
