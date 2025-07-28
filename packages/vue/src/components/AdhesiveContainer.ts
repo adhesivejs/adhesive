@@ -3,6 +3,7 @@ import {
   defineComponent,
   h,
   useTemplateRef,
+  type ComponentObjectPropsOptions,
   type DefineComponent,
   type PropType,
 } from "vue";
@@ -10,7 +11,6 @@ import {
   useAdhesive,
   type UseAdhesiveOptions,
 } from "../composables/useAdhesive.js";
-import type { MaybeVueInstanceOrElementOrSelector } from "../utils/unwrapElement.js";
 
 type BaseProps = Omit<
   Partial<UseAdhesiveOptions>,
@@ -69,46 +69,50 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
     name: "AdhesiveContainer",
     props: {
       boundingRef: {
-        type: [Object, String] as PropType<MaybeVueInstanceOrElementOrSelector>,
+        type: [Object, String] as PropType<
+          AdhesiveContainerProps["boundingRef"]
+        >,
         required: false,
       },
       boundingEl: {
-        type: [Object, String] as PropType<UseAdhesiveOptions["boundingEl"]>,
+        type: [Object, String] as PropType<
+          AdhesiveContainerProps["boundingEl"]
+        >,
         required: false,
       },
       enabled: {
-        type: Boolean as PropType<boolean>,
+        type: Boolean as PropType<AdhesiveContainerProps["enabled"]>,
         default: true,
       },
       offset: {
-        type: Number as PropType<number>,
+        type: Number as PropType<AdhesiveContainerProps["offset"]>,
         required: false,
       },
       position: {
-        type: String as PropType<UseAdhesiveOptions["position"]>,
+        type: String as PropType<AdhesiveContainerProps["position"]>,
         required: false,
       },
       zIndex: {
-        type: Number as PropType<number>,
+        type: Number as PropType<AdhesiveContainerProps["zIndex"]>,
         required: false,
       },
       outerClass: {
-        type: String as PropType<string>,
+        type: String as PropType<AdhesiveContainerProps["outerClass"]>,
         required: false,
       },
       innerClass: {
-        type: String as PropType<string>,
+        type: String as PropType<AdhesiveContainerProps["innerClass"]>,
         required: false,
       },
       activeClass: {
-        type: String as PropType<string>,
+        type: String as PropType<AdhesiveContainerProps["activeClass"]>,
         required: false,
       },
       releasedClass: {
-        type: String as PropType<string>,
+        type: String as PropType<AdhesiveContainerProps["releasedClass"]>,
         required: false,
       },
-    },
+    } satisfies Required<ComponentObjectPropsOptions<AdhesiveContainerProps>>,
     setup(props, { slots }) {
       const targetRef = useTemplateRef<HTMLElement>("target");
 
