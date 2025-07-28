@@ -2,11 +2,14 @@ import {
   toValue,
   type ComponentPublicInstance,
   type MaybeRefOrGetter,
+  type TemplateRef,
 } from "vue";
 
 export type VueInstance = ComponentPublicInstance;
 
 export type VueInstanceOrElement = VueInstance | HTMLElement;
+
+export type MaybeTemplateRef<T> = TemplateRef<T> | T | null;
 
 export type MaybeVueInstanceOrElementOrSelector =
   | VueInstanceOrElement

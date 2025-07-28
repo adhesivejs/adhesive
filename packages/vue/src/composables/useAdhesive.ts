@@ -8,7 +8,9 @@ import {
 } from "vue";
 import {
   unwrapElement,
+  type MaybeTemplateRef,
   type MaybeVueInstanceOrElementOrSelector,
+  type VueInstanceOrElement,
 } from "../utils/unwrapElement.js";
 
 /**
@@ -19,7 +21,7 @@ import {
  */
 export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
   /** Vue template ref for the element that defines sticky boundaries */
-  boundingRef?: MaybeRefOrGetter<MaybeVueInstanceOrElementOrSelector>;
+  boundingRef?: MaybeTemplateRef<VueInstanceOrElement>;
 };
 
 /**

@@ -14,7 +14,11 @@ import {
 
 type BaseProps = Omit<
   Partial<UseAdhesiveOptions>,
-  "outerClassName" | "innerClassName" | "activeClassName" | "releasedClassName"
+  | "boundingRef"
+  | "outerClassName"
+  | "innerClassName"
+  | "activeClassName"
+  | "releasedClassName"
 >;
 
 /**
@@ -68,12 +72,6 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
   defineComponent({
     name: "AdhesiveContainer",
     props: {
-      boundingRef: {
-        type: [Object, String] as PropType<
-          AdhesiveContainerProps["boundingRef"]
-        >,
-        required: false,
-      },
       boundingEl: {
         type: [Object, String] as PropType<
           AdhesiveContainerProps["boundingEl"]
@@ -117,7 +115,6 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
       const targetRef = useTemplateRef<HTMLElement>("target");
 
       const options = computed<UseAdhesiveOptions>(() => ({
-        boundingRef: props.boundingRef,
         boundingEl: props.boundingEl,
         enabled: props.enabled,
         offset: props.offset,
