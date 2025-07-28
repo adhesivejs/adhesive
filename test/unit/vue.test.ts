@@ -11,6 +11,9 @@ import {
   commonBeforeEach,
   configurationTestCases,
   createMockAdhesive,
+  CUSTOM_CLASS_NAMES,
+  TEST_OFFSETS,
+  TEST_Z_INDEXES,
 } from "../utils/shared-test-helpers.js";
 
 // Create the mock Adhesive instance
@@ -211,7 +214,7 @@ describe("Vue Integration", () => {
         await fireEvent.click(toggleOffsetButton);
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
           expect.objectContaining({
-            offset: 20,
+            offset: TEST_OFFSETS[2],
           }),
         );
       });
@@ -275,10 +278,10 @@ describe("Vue Integration", () => {
       it("should apply custom class names", async () => {
         const customProps = {
           class: "custom-class",
-          outerClass: "custom-outer",
-          innerClass: "custom-inner",
-          activeClass: "custom-active",
-          releasedClass: "custom-released",
+          outerClass: CUSTOM_CLASS_NAMES.outerClassName,
+          innerClass: CUSTOM_CLASS_NAMES.innerClassName,
+          activeClass: CUSTOM_CLASS_NAMES.activeClassName,
+          releasedClass: CUSTOM_CLASS_NAMES.releasedClassName,
         };
 
         const { getByTestId } = renderContainer(customProps);
@@ -292,16 +295,16 @@ describe("Vue Integration", () => {
         const { Adhesive } = await import("@adhesivejs/core");
         expect(Adhesive.create).toHaveBeenCalledWith(
           expect.objectContaining({
-            outerClassName: "custom-outer",
-            innerClassName: "custom-inner",
-            activeClassName: "custom-active",
-            releasedClassName: "custom-released",
+            outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
+            innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
+            activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
+            releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
           }),
         );
       });
 
       it("should handle z-index styling", () => {
-        const { getByTestId } = renderContainer({ zIndex: 999 });
+        const { getByTestId } = renderContainer({ zIndex: TEST_Z_INDEXES[3] });
 
         expect(getByTestId("container-child")).toBeTruthy();
       });
@@ -410,11 +413,11 @@ describe("Vue Integration", () => {
           `<div v-adhesive="options" data-testid="directive-options">Options Content</div>`,
           () => ({
             options: {
-              offset: 20,
-              zIndex: 999,
+              offset: TEST_OFFSETS[2],
+              zIndex: TEST_Z_INDEXES[3],
               enabled: true,
-              activeClassName: "custom-active",
-              releasedClassName: "custom-released",
+              activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
+              releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
             },
           }),
         );
@@ -431,18 +434,18 @@ describe("Vue Integration", () => {
         expect(Adhesive.create).toHaveBeenCalledWith(
           expect.objectContaining({
             targetEl: expect.any(HTMLElement),
-            offset: 20,
-            zIndex: 999,
+            offset: TEST_OFFSETS[2],
+            zIndex: TEST_Z_INDEXES[3],
             enabled: true,
-            activeClassName: "custom-active",
-            releasedClassName: "custom-released",
+            activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
+            releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
           }),
         );
       });
 
       it("should handle position argument with options", async () => {
         const TestComponent = createTestApp(
-          `<div v-adhesive:top="{ offset: 10, zIndex: 500 }" data-testid="directive-combined">Combined Content</div>`,
+          `<div v-adhesive:top="{ offset: ${TEST_OFFSETS[1]}, zIndex: 500 }" data-testid="directive-combined">Combined Content</div>`,
         );
 
         render(TestComponent, {
@@ -458,7 +461,7 @@ describe("Vue Integration", () => {
           expect.objectContaining({
             targetEl: expect.any(HTMLElement),
             position: "top",
-            offset: 10,
+            offset: TEST_OFFSETS[1],
             zIndex: 500,
           }),
         );

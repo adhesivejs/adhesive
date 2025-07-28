@@ -750,6 +750,19 @@ export class Adhesive {
     }
   }
 
+  /**
+   * Ensures the options object is mutable by creating a copy if frozen.
+   *
+   * Note: This method assumes this.#options is always a complete InternalAdhesiveOptions
+   * object (never partial), which is guaranteed by our initialization logic.
+   * The spread operation preserves all existing properties from the frozen object.
+   */
+  #ensureOptionsAreMutable(): void {
+    if (Object.isFrozen(this.#options)) {
+      this.#options = { ...this.#options };
+    }
+  }
+
   #reset(): void {
     this.#setState({
       status: ADHESIVE_STATUS.INITIAL,
@@ -1211,14 +1224,25 @@ export class Adhesive {
       ([, value]) => value !== undefined,
     ) as Array<[keyof InternalAdhesiveOptions, unknown]>;
 
+    // Handle enabled state changes first (these may cause early return)
     for (const [key, value] of optionsToUpdate) {
       if (key === "enabled") {
         const isDisabling = value === false;
         if (isDisabling) return this.disable();
         this.enable();
+        break; // Only one enabled key possible
       }
-      if (key in this.#options) {
-        (this.#options as any)[key] = value;
+    }
+
+    // Handle other option updates
+    const otherOptions = optionsToUpdate.filter(([key]) => key !== "enabled");
+    if (otherOptions.length > 0) {
+      this.#ensureOptionsAreMutable();
+
+      for (const [key, value] of otherOptions) {
+        if (key in this.#options) {
+          (this.#options as any)[key] = value;
+        }
       }
     }
 

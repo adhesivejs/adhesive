@@ -11,6 +11,9 @@ import {
   commonBeforeEach,
   configurationTestCases,
   createMockAdhesive,
+  CUSTOM_CLASS_NAMES,
+  TEST_OFFSETS,
+  TEST_Z_INDEXES,
 } from "../utils/shared-test-helpers.js";
 
 // Create the mock Adhesive instance
@@ -205,7 +208,7 @@ describe("React Integration", () => {
         await user.click(toggleOffsetButton);
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
           expect.objectContaining({
-            offset: 20,
+            offset: TEST_OFFSETS[2],
           }),
         );
       });
@@ -262,10 +265,10 @@ describe("React Integration", () => {
       it("should apply custom class names", async () => {
         const customProps = {
           className: "custom-class",
-          outerClassName: "custom-outer",
-          innerClassName: "custom-inner",
-          activeClassName: "custom-active",
-          releasedClassName: "custom-released",
+          outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
+          innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
+          activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
+          releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
         };
 
         renderContainer(customProps);
@@ -281,16 +284,16 @@ describe("React Integration", () => {
         const { Adhesive } = await import("@adhesivejs/core");
         expect(Adhesive.create).toHaveBeenCalledWith(
           expect.objectContaining({
-            outerClassName: "custom-outer",
-            innerClassName: "custom-inner",
-            activeClassName: "custom-active",
-            releasedClassName: "custom-released",
+            outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
+            innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
+            activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
+            releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
           }),
         );
       });
 
       it("should handle z-index styling", () => {
-        renderContainer({ zIndex: 999 });
+        renderContainer({ zIndex: TEST_Z_INDEXES[3] });
 
         expect(screen.getByTestId("container-child")).toBeInTheDocument();
       });

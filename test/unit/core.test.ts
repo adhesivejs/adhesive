@@ -6,10 +6,12 @@ import {
 } from "../utils/core-test-helpers.js";
 import {
   assertions,
+  CUSTOM_CLASS_NAMES,
   DEFAULT_RECT,
   errorTestCases,
   simulateScrollToPosition,
   TEST_OFFSETS,
+  TEST_Z_INDEXES,
 } from "../utils/shared-test-helpers.js";
 
 describe("Core", () => {
@@ -172,12 +174,12 @@ describe("Core", () => {
       it("accepts and applies custom options", () => {
         const customOptions = {
           position: "bottom" as const,
-          offset: 20,
-          zIndex: 999,
-          outerClassName: "custom-outer",
-          innerClassName: "custom-inner",
-          activeClassName: "custom-active",
-          releasedClassName: "custom-released",
+          offset: TEST_OFFSETS[2],
+          zIndex: TEST_Z_INDEXES[3],
+          outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
+          innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
+          activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
+          releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
         };
 
         const adhesive = createAdhesiveInstance(customOptions);
@@ -191,7 +193,9 @@ describe("Core", () => {
 
       it("validates option types and ranges", () => {
         // Test valid numeric options
-        expect(() => createAdhesiveInstance({ offset: 50 })).not.toThrow();
+        expect(() =>
+          createAdhesiveInstance({ offset: TEST_OFFSETS[3] }),
+        ).not.toThrow();
         expect(() => createAdhesiveInstance({ zIndex: 1000 })).not.toThrow();
 
         // Test valid string options
@@ -227,6 +231,148 @@ describe("Core", () => {
         // Test re-enabling
         adhesive.updateOptions({ enabled: true });
         expect(adhesive.getState().activated).toBe(true);
+
+        adhesive.cleanup();
+      });
+
+      it("should handle updating frozen options from disabled state", () => {
+        const adhesive = createInitializedAdhesive();
+
+        adhesive.updateOptions({ enabled: false });
+        expect(adhesive.getState().activated).toBe(false);
+
+        expect(() => {
+          adhesive.updateOptions({
+            enabled: false,
+            position: "bottom",
+            offset: TEST_OFFSETS[2],
+          });
+        }).not.toThrow();
+
+        // Try to re-enable with new options - this should not throw
+        expect(() => {
+          adhesive.updateOptions({
+            enabled: true,
+            position: "top",
+            offset: TEST_OFFSETS[1],
+          });
+        }).not.toThrow();
+
+        expect(adhesive.getState().activated).toBe(true);
+
+        adhesive.cleanup();
+      });
+
+      it("should handle creating instance with enabled:false then updating options", () => {
+        // Create an instance that starts disabled (uses frozen options)
+        const adhesive = Adhesive.create({
+          targetEl: targetElement,
+          enabled: false,
+        });
+
+        // Try to update options while disabled - this should not throw
+        expect(() => {
+          adhesive.updateOptions({
+            position: "bottom",
+            offset: TEST_OFFSETS[1],
+          });
+        }).not.toThrow();
+
+        // Try to enable with additional options - this should not throw
+        expect(() => {
+          adhesive.updateOptions({
+            enabled: true,
+            position: "top",
+          });
+        }).not.toThrow();
+
+        expect(adhesive.getState().activated).toBe(true);
+
+        adhesive.cleanup();
+      });
+
+      it("should preserve all default options when updating frozen options", () => {
+        // Create an instance that starts disabled (uses frozen options with defaults)
+        const adhesive = Adhesive.create({
+          targetEl: targetElement,
+          enabled: false,
+        });
+
+        // Try to update one option - this should preserve all other defaults
+        adhesive.updateOptions({
+          offset: TEST_OFFSETS[2],
+        });
+
+        // Now enable to access the unfrozen options
+        adhesive.updateOptions({ enabled: true });
+
+        // Verify that defaults are still intact after the unfreezing process
+        expectElementToBeInState(adhesive, "INITIAL");
+
+        // Test with multiple updates to ensure robustness
+        adhesive.updateOptions({
+          position: "bottom",
+          zIndex: TEST_Z_INDEXES[3],
+        });
+
+        expect(adhesive.getState().activated).toBe(true);
+
+        adhesive.cleanup();
+      });
+
+      it("should preserve all option properties when unfreezing frozen options", () => {
+        // This test specifically verifies that no options are lost during the unfreezing process
+        const adhesive = Adhesive.create({
+          targetEl: targetElement,
+          enabled: false,
+        });
+
+        // Perform an update that will trigger unfreezing
+        adhesive.updateOptions({
+          offset: TEST_OFFSETS[1],
+          position: "bottom",
+          zIndex: TEST_Z_INDEXES[2],
+          outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
+          innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
+          activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
+          releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
+        });
+
+        // Enable the instance
+        adhesive.updateOptions({ enabled: true });
+
+        // All the options should have been applied correctly
+        expect(adhesive.getState().activated).toBe(true);
+
+        // Verify we can still update options after unfreezing
+        adhesive.updateOptions({
+          offset: TEST_OFFSETS[3],
+        });
+
+        expect(adhesive.getState().activated).toBe(true);
+
+        adhesive.cleanup();
+      });
+
+      it("should handle multiple consecutive updates from disabled state", () => {
+        const adhesive = createInitializedAdhesive();
+
+        // Disable first
+        adhesive.updateOptions({ enabled: false });
+
+        // Multiple updates while disabled - none should throw
+        expect(() => {
+          adhesive.updateOptions({ enabled: false, position: "bottom" });
+          adhesive.updateOptions({ enabled: false, offset: TEST_OFFSETS[2] });
+          adhesive.updateOptions({ enabled: false, zIndex: TEST_Z_INDEXES[2] });
+        }).not.toThrow();
+
+        // Final re-enable
+        expect(() => {
+          adhesive.updateOptions({ enabled: true });
+        }).not.toThrow();
+
+        expectElementToBeInState(adhesive, "INITIAL");
 
         adhesive.cleanup();
       });
@@ -1021,7 +1167,7 @@ describe("Core", () => {
         // Change configuration while active
         adhesive.updateOptions({
           position: "bottom",
-          offset: 20,
+          offset: TEST_OFFSETS[2],
         });
 
         expect(adhesive.getState().activated).toBe(true);
