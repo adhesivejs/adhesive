@@ -1,6 +1,31 @@
 # Changelog
 
 
+## v0.3.1
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.0...v0.3.1)
+
+### 🩹 Fixes
+
+- Remove global type augmenting ([af84c3f](https://github.com/adhesivejs/adhesive/commit/af84c3f))
+
+### 📖 Documentation
+
+- Update local directive usage example ([a6afce6](https://github.com/adhesivejs/adhesive/commit/a6afce6))
+- Update example component names ([f115a6c](https://github.com/adhesivejs/adhesive/commit/f115a6c))
+
+### 🏡 Chore
+
+- Validate jsr publishing ([316c7c4](https://github.com/adhesivejs/adhesive/commit/316c7c4))
+
+### 🤖 CI
+
+- Remove custom name for git config step ([9ac89c6](https://github.com/adhesivejs/adhesive/commit/9ac89c6))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.3.0
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.2.4...v0.3.0)
