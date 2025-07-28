@@ -928,6 +928,279 @@ describe("Core", () => {
         expect(adhesive.getState().activated).toBe(true);
         expect(adhesive.getState().width).toBe(initialState.width);
       });
+
+      it("updates fixed element dimensions when resized in active state", async () => {
+        // Create a more realistic test setup with actual ResizeObserver
+        let resizeObserverCallback: ResizeObserverCallback | null = null;
+        const mockObserver = {
+          observe: vi.fn(),
+          unobserve: vi.fn(),
+          disconnect: vi.fn(),
+        };
+
+        // Mock ResizeObserver to capture the callback
+        const originalResizeObserver = window.ResizeObserver;
+        window.ResizeObserver = vi.fn((callback) => {
+          resizeObserverCallback = callback;
+          return mockObserver;
+        }) as any;
+
+        // Create and initialize adhesive
+        const adhesive = createInitializedAdhesive();
+
+        // Force the element into fixed state by scrolling
+        await simulateScrollToPosition(200);
+
+        const initialState = adhesive.getState();
+        expect(initialState.status).toBe(ADHESIVE_STATUS.FIXED);
+        expect(initialState.width).toBe(DEFAULT_RECT.width);
+
+        // Mock new dimensions after resize
+        const newWidth = 150;
+        const newX = 25;
+
+        // Update the mock to return new dimensions for the target element
+        mockGetBoundingClientRect({
+          target: {
+            ...DEFAULT_RECT,
+            width: newWidth,
+            left: newX,
+            right: newX + newWidth,
+            x: newX,
+          },
+          container: {
+            top: 0,
+            bottom: 2000,
+            left: newX,
+            right: newX + newWidth,
+            width: newWidth,
+            height: 2000,
+            x: newX,
+            y: 0,
+            toJSON: () => ({}),
+          },
+        });
+
+        // Find the outer wrapper in the DOM (should have the adhesive__outer class)
+        const innerWrapper = targetElement.parentElement;
+        const outerWrapper = innerWrapper?.parentElement;
+        expect(outerWrapper).toBeTruthy();
+        expect(outerWrapper?.classList.contains("adhesive__outer")).toBe(true);
+
+        // Create mock ResizeObserver entry simulating element resize
+        const mockEntry: ResizeObserverEntry = {
+          target: outerWrapper!,
+          contentRect: {
+            width: newWidth,
+            height: DEFAULT_RECT.height,
+            top: 0,
+            left: 0,
+            bottom: DEFAULT_RECT.height,
+            right: newWidth,
+            x: 0,
+            y: 0,
+            toJSON: () => ({}),
+          },
+          borderBoxSize: [
+            {
+              inlineSize: newWidth,
+              blockSize: DEFAULT_RECT.height,
+            },
+          ],
+          contentBoxSize: [
+            {
+              inlineSize: newWidth,
+              blockSize: DEFAULT_RECT.height,
+            },
+          ],
+          devicePixelContentBoxSize: [
+            {
+              inlineSize: newWidth,
+              blockSize: DEFAULT_RECT.height,
+            },
+          ],
+        };
+
+        // Trigger the ResizeObserver callback if it was captured
+        if (resizeObserverCallback) {
+          (resizeObserverCallback as ResizeObserverCallback)(
+            [mockEntry],
+            mockObserver as ResizeObserver,
+          );
+        }
+
+        // Wait for RAF to complete
+        await new Promise((resolve) => {
+          window.requestAnimationFrame(() => {
+            resolve(undefined);
+          });
+        });
+
+        // Verify the element's width was updated
+        const updatedState = adhesive.getState();
+        expect(updatedState.status).toBe(ADHESIVE_STATUS.FIXED);
+        expect(updatedState.width).toBe(newWidth);
+        expect(updatedState.x).toBe(newX);
+
+        // Verify the fixed element's CSS width was updated by checking the inner wrapper
+        const innerWrapperElement = outerWrapper?.querySelector(
+          ".adhesive__inner",
+        ) as HTMLElement;
+        expect(innerWrapperElement).toBeTruthy();
+        expect(innerWrapperElement?.style.width).toBe(`${newWidth}px`);
+
+        adhesive.cleanup();
+
+        // Restore ResizeObserver
+        window.ResizeObserver = originalResizeObserver;
+      });
+
+      it("correctly handles resize without full repositioning update", () => {
+        // Create and initialize adhesive
+        const adhesive = createInitializedAdhesive();
+
+        // Test that refresh doesn't break anything
+        const stateBefore = adhesive.getState();
+
+        // This should work without throwing errors
+        expect(() => {
+          adhesive.refresh();
+        }).not.toThrow();
+
+        const stateAfter = adhesive.getState();
+
+        // Status should remain consistent (shouldn't change just from width refresh)
+        expect(stateAfter.status).toBe(stateBefore.status);
+
+        adhesive.cleanup();
+      });
+
+      it("refresh preserves state status during resize operations", () => {
+        // Create and initialize adhesive
+        const adhesive = createInitializedAdhesive();
+
+        // Mock updated width
+        const newWidth = 200;
+        Element.prototype.getBoundingClientRect = function (this: Element) {
+          if (this.id === "target" || this.className.includes("adhesive__")) {
+            const rect: DOMRect = {
+              width: newWidth,
+              height: DEFAULT_RECT.height,
+              left: 50,
+              right: 50 + newWidth,
+              top: DEFAULT_RECT.top,
+              bottom: DEFAULT_RECT.bottom,
+              x: 50,
+              y: DEFAULT_RECT.y,
+              toJSON: () => ({}),
+            };
+            return rect;
+          }
+          return DEFAULT_RECT;
+        };
+
+        const initialState = adhesive.getState();
+
+        adhesive.refresh();
+
+        const updatedState = adhesive.getState();
+
+        // Key validation: status should be preserved during width-only updates
+        expect(updatedState.status).toBe(initialState.status);
+
+        // Width should be updated
+        expect(updatedState.width).toBe(newWidth);
+
+        adhesive.cleanup();
+      });
+
+      it("ResizeObserver callback handles width-only updates correctly", () => {
+        // Mock ResizeObserver to capture the callback
+        let resizeObserverCallback: ResizeObserverCallback | null = null;
+        const mockObserver = {
+          observe: vi.fn(),
+          unobserve: vi.fn(),
+          disconnect: vi.fn(),
+        };
+
+        const originalResizeObserver = window.ResizeObserver;
+        window.ResizeObserver = vi.fn((callback) => {
+          resizeObserverCallback = callback;
+          return mockObserver;
+        }) as any;
+
+        // Create and initialize adhesive
+        const adhesive = createInitializedAdhesive();
+
+        // Get initial state
+        const initialState = adhesive.getState();
+
+        // Mock updated dimensions (width change only)
+        const newWidth = 200;
+        const originalHeight = DEFAULT_RECT.height;
+
+        Element.prototype.getBoundingClientRect = function (this: Element) {
+          if (this.id === "target" || this.className.includes("adhesive__")) {
+            const rect: DOMRect = {
+              width: newWidth,
+              height: originalHeight,
+              left: 50,
+              right: 50 + newWidth,
+              top: DEFAULT_RECT.top,
+              bottom: DEFAULT_RECT.top + originalHeight,
+              x: 50,
+              y: DEFAULT_RECT.top,
+              toJSON: () => ({}),
+            };
+            return rect;
+          }
+          return DEFAULT_RECT;
+        };
+
+        // Get the outer wrapper and simulate ResizeObserver with width-only change
+        const outerWrapper = targetElement.parentElement;
+        expect(outerWrapper).toBeTruthy();
+
+        const mockEntry: ResizeObserverEntry = {
+          target: outerWrapper!,
+          contentRect: {
+            width: newWidth,
+            height: originalHeight,
+            top: 0,
+            left: 0,
+            bottom: originalHeight,
+            right: newWidth,
+            x: 0,
+            y: 0,
+            toJSON: () => ({}),
+          },
+          borderBoxSize: [{ inlineSize: newWidth, blockSize: originalHeight }],
+          contentBoxSize: [{ inlineSize: newWidth, blockSize: originalHeight }],
+          devicePixelContentBoxSize: [
+            { inlineSize: newWidth, blockSize: originalHeight },
+          ],
+        };
+
+        // Trigger the ResizeObserver callback - this should NOT call #update()
+        if (resizeObserverCallback) {
+          expect(() => {
+            (resizeObserverCallback as any)(
+              [mockEntry],
+              mockObserver as ResizeObserver,
+            );
+          }).not.toThrow();
+        }
+
+        // The key fix: status should be preserved after width-only resize
+        // (The fix prevents #update() from being called which would reset status)
+        const updatedState = adhesive.getState();
+        expect(updatedState.status).toBe(initialState.status);
+        expect(updatedState.width).toBe(newWidth);
+        expect(updatedState.height).toBe(originalHeight);
+
+        adhesive.cleanup();
+        window.ResizeObserver = originalResizeObserver;
+      });
     });
 
     describe("event listener lifecycle", () => {

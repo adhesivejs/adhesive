@@ -604,40 +604,14 @@ export class Adhesive {
     return getScrollTop() + rect.bottom;
   }
 
-  #updateInitialDimensions(): void {
-    if (!this.#outerWrapper || !this.#innerWrapper) return;
-
-    const outerRect = this.#outerWrapper.getBoundingClientRect();
-    const innerRect = this.#innerWrapper.getBoundingClientRect();
-
-    // Get dimensions with fallbacks for browser compatibility
-    const width =
-      outerRect.width ||
-      outerRect.right - outerRect.left ||
-      this.#outerWrapper.offsetWidth;
-    const height =
-      innerRect.height ||
-      innerRect.bottom - innerRect.top ||
-      this.#innerWrapper.offsetHeight;
-    const outerY = outerRect.top + this.#scrollTop;
-
-    // Batch update state for better performance
-    Object.assign(this.#state, {
-      width,
-      height,
-      x: outerRect.left,
-      y: outerY,
-      topBoundary: outerY,
-      bottomBoundary: this.#getBottomBoundary(),
-    });
-  }
-
-  #updateWidthDimensions(): void {
+  #updateDimensions(): void {
     if (!this.#outerWrapper || !this.#innerWrapper) return;
 
     const wasPositioned = this.#state.status !== ADHESIVE_STATUS.INITIAL;
     let newWidth: number;
+    let newHeight: number;
     let newX: number;
+    let newY: number;
 
     if (wasPositioned) {
       // Temporarily reset positioning to get accurate measurements
@@ -657,29 +631,51 @@ export class Adhesive {
         bottom: "",
       });
 
-      // Force reflow and measure
+      // Force reflow and measure both outer and inner wrappers
       this.#outerWrapper.offsetHeight; // eslint-disable-line @typescript-eslint/no-unused-expressions
-      const rect = this.#outerWrapper.getBoundingClientRect();
+      const outerRect = this.#outerWrapper.getBoundingClientRect();
+      const innerRect = this.#innerWrapper.getBoundingClientRect();
+
       newWidth =
-        rect.width || rect.right - rect.left || this.#outerWrapper.offsetWidth;
-      newX = rect.left;
+        outerRect.width ||
+        outerRect.right - outerRect.left ||
+        this.#outerWrapper.offsetWidth;
+      newHeight =
+        innerRect.height ||
+        innerRect.bottom - innerRect.top ||
+        this.#innerWrapper.offsetHeight;
+      newX = outerRect.left;
+      newY = outerRect.top + this.#scrollTop;
 
       // Restore styles
       Object.assign(innerStyle, originalStyles);
     } else {
       // Simple measurement for initial state
-      const rect = this.#outerWrapper.getBoundingClientRect();
+      const outerRect = this.#outerWrapper.getBoundingClientRect();
+      const innerRect = this.#innerWrapper.getBoundingClientRect();
+
       newWidth =
-        rect.width || rect.right - rect.left || this.#outerWrapper.offsetWidth;
-      newX = rect.left;
+        outerRect.width ||
+        outerRect.right - outerRect.left ||
+        this.#outerWrapper.offsetWidth;
+      newHeight =
+        innerRect.height ||
+        innerRect.bottom - innerRect.top ||
+        this.#innerWrapper.offsetHeight;
+      newX = outerRect.left;
+      newY = outerRect.top + this.#scrollTop;
     }
 
     this.#state.width = newWidth;
+    this.#state.height = newHeight;
     this.#state.x = newX;
+    this.#state.y = newY;
+    this.#state.topBoundary = newY;
+    this.#state.bottomBoundary = this.#getBottomBoundary();
   }
 
-  #forceWidthUpdate(): void {
-    this.#updateWidthDimensions();
+  #forcedDimensionUpdate(): void {
+    this.#updateDimensions();
     this.#updateStyles();
   }
 
@@ -728,7 +724,7 @@ export class Adhesive {
     });
   }
 
-  #fix(pos: number): void {
+  #fixed(pos: number): void {
     this.#setState({
       status: ADHESIVE_STATUS.FIXED,
       pos,
@@ -793,6 +789,8 @@ export class Adhesive {
   // =============================================================================
 
   #update(): void {
+    this.#updateDimensions();
+
     const { bottomBoundary, topBoundary, height, width } = this.#state;
 
     const isDisabled =
@@ -823,15 +821,22 @@ export class Adhesive {
 
     if (top <= topBoundary) {
       this.#reset();
-    } else if (bottom >= bottomBoundary) {
+      return;
+    }
+
+    if (bottom >= bottomBoundary) {
       const stickyTop = bottomBoundary - height;
       const relativePos = stickyTop - this.#state.y;
       this.#release(relativePos);
-    } else if (height > this.#winHeight - offset) {
-      this.#handleTallElement(top, bottom);
-    } else {
-      this.#fix(offset);
+      return;
     }
+
+    if (height > this.#winHeight - offset) {
+      this.#handleTallElementTop(top, bottom);
+      return;
+    }
+
+    this.#fixed(offset);
   }
 
   #updateForBottomPosition(offset: number): void {
@@ -866,14 +871,14 @@ export class Adhesive {
       return;
     }
 
-    this.#fix(offset);
+    this.#fixed(offset);
   }
 
   // =============================================================================
   // Tall Element Handling Methods
   // =============================================================================
 
-  #handleTallElement(top: number, bottom: number): void {
+  #handleTallElementTop(top: number, bottom: number): void {
     const { status, y, height } = this.#state;
     const { offset } = this.#options;
 
@@ -883,13 +888,13 @@ export class Adhesive {
         break;
       case ADHESIVE_STATUS.RELATIVE:
         if (bottom > y + height) {
-          this.#fix(offset + height - this.#winHeight);
+          this.#fixed(offset + height - this.#winHeight);
         } else if (top < y) {
-          this.#fix(offset);
+          this.#fixed(offset);
         }
         break;
       case ADHESIVE_STATUS.FIXED: {
-        const releaseInfo = this.#shouldReleaseFromFixed(top, bottom);
+        const releaseInfo = this.#shouldReleaseFromFixedTop(top, bottom);
         if (releaseInfo.release) {
           this.#release(releaseInfo.position);
         }
@@ -914,9 +919,9 @@ export class Adhesive {
 
         // Check scroll direction and viewport boundaries
         if (elementBottom < currentBottom && currentTop < viewportTop) {
-          this.#fix(offset); // Stick to bottom
+          this.#fixed(offset); // Stick to bottom
         } else if (elementTop > currentTop && currentBottom > viewportBottom) {
-          this.#fix(height - this.#winHeight + offset); // Stick to top
+          this.#fixed(height - this.#winHeight + offset); // Stick to top
         }
         break;
       }
@@ -933,7 +938,7 @@ export class Adhesive {
     }
   }
 
-  #shouldReleaseFromFixed(
+  #shouldReleaseFromFixedTop(
     top: number,
     bottom: number,
   ): { release: boolean; position: number } {
@@ -999,7 +1004,6 @@ export class Adhesive {
   readonly #onScroll = (): void => {
     this.#scheduleUpdate(() => {
       this.#scrollTop = getScrollTop();
-      this.#updateInitialDimensions();
       this.#update();
     });
   };
@@ -1007,7 +1011,6 @@ export class Adhesive {
   readonly #onWindowResize = (): void => {
     this.#scheduleUpdate(() => {
       this.#winHeight = getViewportHeight();
-      this.#updateInitialDimensions();
       this.#update();
     });
   };
@@ -1020,12 +1023,12 @@ export class Adhesive {
     if (this.#pendingResizeUpdate) return;
 
     // Check if any entries are for tracked elements before scheduling update
-    let needsWidthUpdate = false;
+    let needsDimensionUpdate = false;
     let needsFullUpdate = false;
 
     for (const entry of entries) {
       if (entry.target === this.#outerWrapper) {
-        needsWidthUpdate = true;
+        needsDimensionUpdate = true;
       } else if (
         entry.target === this.#boundingEl ||
         entry.target === this.#targetEl
@@ -1035,7 +1038,7 @@ export class Adhesive {
     }
 
     // Only schedule update if we found relevant entries
-    if (!needsFullUpdate && !needsWidthUpdate) return;
+    if (!needsFullUpdate && !needsDimensionUpdate) return;
 
     this.#pendingResizeUpdate = true;
 
@@ -1054,13 +1057,10 @@ export class Adhesive {
       this.#pendingResizeUpdate = false;
 
       if (needsFullUpdate) {
-        this.#updateInitialDimensions();
-      } else if (needsWidthUpdate) {
-        this.#updateWidthDimensions();
+        this.#update();
+      } else if (needsDimensionUpdate) {
+        this.#forcedDimensionUpdate();
       }
-
-      this.#updateStyles();
-      this.#update();
     });
   };
 
@@ -1108,7 +1108,6 @@ export class Adhesive {
     if (!isBrowser() || !this.#isEnabled) return this;
 
     this.#state.activated = true;
-    this.#updateInitialDimensions();
     this.#update();
 
     // Only set up event listeners if they haven't been set up yet
@@ -1149,7 +1148,6 @@ export class Adhesive {
     // Always set activated to true after any state initialization
     this.#state.activated = true;
 
-    this.#updateInitialDimensions();
     this.#update();
 
     // Set up event listeners if they haven't been set up yet
@@ -1267,7 +1265,6 @@ export class Adhesive {
       }
     }
 
-    this.#updateInitialDimensions();
     this.#update();
     return this;
   }
@@ -1291,7 +1288,7 @@ export class Adhesive {
   }
 
   /**
-   * Manually triggers a width update for the sticky element.
+   * Manually triggers a refresh for the sticky element.
    * This is useful when the element's container width changes due to external factors
    * that might not be detected by the ResizeObserver (e.g., CSS changes via JavaScript).
    *
@@ -1299,13 +1296,13 @@ export class Adhesive {
    *
    * @example
    * ```ts
-   * // After programmatically changing container width
-   * adhesive.refreshWidth();
+   * // After programmatically changing container dimensions
+   * adhesive.refresh();
    * ```
    */
-  refreshWidth(): this {
+  refresh(): this {
     if (!this.#isEnabled) return this;
-    this.#forceWidthUpdate();
+    this.#forcedDimensionUpdate();
     return this;
   }
 

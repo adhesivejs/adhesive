@@ -155,7 +155,7 @@ export function createMockAdhesive() {
     })),
     enable: vi.fn(),
     disable: vi.fn(),
-    refreshWidth: vi.fn(),
+    refresh: vi.fn(),
   };
 
   // Make init return the instance for chaining

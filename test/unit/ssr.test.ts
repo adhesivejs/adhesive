@@ -194,8 +194,8 @@ describe("SSR Safety", () => {
       );
     });
 
-    it("handles refreshWidth() safely in SSR", () => {
-      expect(() => adhesive.refreshWidth()).not.toThrow();
+    it("handles refresh() safely in SSR", () => {
+      expect(() => adhesive.refresh()).not.toThrow();
     });
 
     it("handles cleanup() safely in SSR", () => {
@@ -213,7 +213,7 @@ describe("SSR Safety", () => {
           .enable()
           .updateOptions({ offset: 20 })
           .disable()
-          .refreshWidth();
+          .refresh();
 
         adhesive.cleanup();
       }).not.toThrow();

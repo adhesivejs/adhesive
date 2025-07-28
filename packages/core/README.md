@@ -104,6 +104,7 @@ adhesive.cleanup();
 - `disable()` - Disable sticky behavior
 - `updateOptions(options)` - Update configuration
 - `getState()` - Get current state
+- `refresh()` - Update dimensions and positions
 - `cleanup()` - Remove all listeners and clean up
 
 #### Static Methods
