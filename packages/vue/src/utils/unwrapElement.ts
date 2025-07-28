@@ -19,9 +19,16 @@ type UnwrapElementReturn = HTMLElement | string | null | undefined;
 export function unwrapElement(
   instanceOrElOrSelectorRef: MaybeRefOrGetter<MaybeVueInstanceOrElementOrSelector>,
 ): UnwrapElementReturn {
-  const instanceOrElOrSelectorValue = toValue(instanceOrElOrSelectorRef);
+  const value = toValue(instanceOrElOrSelectorRef);
+  if (isVueInstance(value)) return value.$el;
+  return value;
+}
+
+function isVueInstance(value: unknown): value is VueInstance {
   return (
-    (instanceOrElOrSelectorValue as VueInstance)?.$el ??
-    instanceOrElOrSelectorValue
+    !!value &&
+    typeof value === "object" &&
+    "$el" in value &&
+    typeof (value as VueInstance).$el === "object"
   );
 }

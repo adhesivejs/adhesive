@@ -1,8 +1,8 @@
 import { Adhesive, type AdhesiveOptions } from "@adhesivejs/core";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import {
   unwrapElement,
-  type MaybeElementOrSelectorRef,
+  type MaybeRefObjectOrElementOrSelector,
 } from "../utils/unwrapElement.js";
 
 /**
@@ -13,7 +13,7 @@ import {
  */
 export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
   /** React ref for the element that defines sticky boundaries */
-  boundingRef?: MaybeElementOrSelectorRef;
+  boundingRef?: RefObject<HTMLElement | null>;
 };
 
 /**
@@ -49,7 +49,7 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
  * ```
  */
 export function useAdhesive(
-  target: MaybeElementOrSelectorRef,
+  target: MaybeRefObjectOrElementOrSelector,
   options?: UseAdhesiveOptions,
 ) {
   function getValidatedOptions() {

@@ -1,6 +1,6 @@
 import type { RefObject } from "react";
 
-export type MaybeElementOrSelectorRef =
+export type MaybeRefObjectOrElementOrSelector =
   | RefObject<HTMLElement | null>
   | HTMLElement
   | string
@@ -10,16 +10,12 @@ export type MaybeElementOrSelectorRef =
 type UnwrapElementReturn = HTMLElement | string | null | undefined;
 
 export function unwrapElement(
-  elOrSelectorRef: MaybeElementOrSelectorRef,
+  value: MaybeRefObjectOrElementOrSelector,
 ): UnwrapElementReturn {
-  // Handle React ref objects by accessing their .current property
-  // For non-ref values, return them as-is
-  if (
-    elOrSelectorRef &&
-    typeof elOrSelectorRef === "object" &&
-    "current" in elOrSelectorRef
-  ) {
-    return elOrSelectorRef.current;
-  }
-  return elOrSelectorRef as UnwrapElementReturn;
+  if (isRefObject(value)) return value.current;
+  return value;
+}
+
+function isRefObject(value: unknown): value is RefObject<HTMLElement | null> {
+  return !!value && typeof value === "object" && "current" in value;
 }
