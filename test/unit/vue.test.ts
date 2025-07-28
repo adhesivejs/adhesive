@@ -16,10 +16,8 @@ import {
   TEST_Z_INDEXES,
 } from "../utils/shared-test-helpers.js";
 
-// Create the mock Adhesive instance
 const mockAdhesiveInstance = createMockAdhesive();
 
-// Mock the Adhesive class
 vi.mock("@adhesivejs/core", () => {
   const MockAdhesive = {
     create: vi.fn(() => mockAdhesiveInstance),
@@ -31,7 +29,6 @@ vi.mock("@adhesivejs/core", () => {
   };
 });
 
-// Enhanced test component using useAdhesive composable
 const TestComposableComponent = defineComponent({
   setup() {
     const targetRef = ref<HTMLElement>();
@@ -85,18 +82,14 @@ const TestComposableComponent = defineComponent({
 });
 
 describe("Vue Integration", () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     commonBeforeEach();
-    // Clear the mock call count for each test
-    const { Adhesive } = await import("@adhesivejs/core");
-    (Adhesive.create as any).mockClear();
   });
 
   afterEach(() => {
     document.body.innerHTML = "";
   });
 
-  // Helper functions
   const renderTestComponent = () => render(TestComposableComponent);
 
   const renderContainer = (props = {}, slots = {}) => {
@@ -111,21 +104,21 @@ describe("Vue Integration", () => {
 
   describe("useAdhesive Composable", () => {
     describe("initialization and rendering", () => {
-      it("should render without errors", () => {
+      it("renders without errors", () => {
         const { getByTestId } = renderTestComponent();
 
         expect(getByTestId("sticky-element")).toBeTruthy();
         expect(getByTestId("toggle-enabled")).toHaveTextContent("enabled");
       });
 
-      it("should create Adhesive instance on mount", async () => {
+      it("creates Adhesive instance on mount", async () => {
         renderTestComponent();
 
         const { Adhesive } = await import("@adhesivejs/core");
         expect(Adhesive.create).toHaveBeenCalledTimes(1);
       });
 
-      it("should not create multiple instances on re-renders", async () => {
+      it("does not create multiple instances on re-renders", async () => {
         const { rerender } = renderTestComponent();
 
         rerender({});
@@ -137,7 +130,7 @@ describe("Vue Integration", () => {
     });
 
     describe("state management", () => {
-      it("should handle enabled toggle correctly", async () => {
+      it("handles enabled toggle correctly", async () => {
         const { getByTestId } = renderTestComponent();
         const toggleButton = getByTestId("toggle-enabled");
 
@@ -153,7 +146,7 @@ describe("Vue Integration", () => {
         expect(toggleButton).toHaveTextContent("enabled");
       });
 
-      it("should handle position changes correctly", async () => {
+      it("handles position changes correctly", async () => {
         const { getByTestId } = renderTestComponent();
         const positionButton = getByTestId("toggle-position");
 
@@ -169,7 +162,7 @@ describe("Vue Integration", () => {
         expect(positionButton).toHaveTextContent("top");
       });
 
-      it("should handle offset changes correctly", async () => {
+      it("handles offset changes correctly", async () => {
         const { getByTestId } = renderTestComponent();
         const offsetButton = getByTestId("toggle-offset");
 
@@ -185,7 +178,7 @@ describe("Vue Integration", () => {
         expect(offsetButton).toHaveTextContent("10");
       });
 
-      it("should call updateOptions when options change", async () => {
+      it("calls updateOptions when options change", async () => {
         const { getByTestId } = renderTestComponent();
         const toggleEnabledButton = getByTestId("toggle-enabled");
         const togglePositionButton = getByTestId("toggle-position");
@@ -221,7 +214,7 @@ describe("Vue Integration", () => {
     });
 
     describe("cleanup and lifecycle", () => {
-      it("should cleanup on unmount without errors", () => {
+      it("cleans up on unmount without errors", () => {
         const { unmount, getByTestId } = renderTestComponent();
 
         expect(getByTestId("sticky-element")).toBeTruthy();
@@ -229,7 +222,7 @@ describe("Vue Integration", () => {
         expect(() => unmount()).not.toThrow();
       });
 
-      it("should handle disabled state properly", () => {
+      it("handles disabled state properly", () => {
         const DisabledComponent = defineComponent({
           setup() {
             const targetRef = ref<HTMLElement>();
@@ -259,7 +252,7 @@ describe("Vue Integration", () => {
 
   describe("AdhesiveContainer Component", () => {
     describe("basic rendering", () => {
-      it("should render children correctly", () => {
+      it("renders children correctly", () => {
         const { getByTestId } = renderContainer();
 
         expect(getByTestId("container-child")).toBeTruthy();
@@ -268,14 +261,14 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should handle empty children", () => {
+      it("handles empty children", () => {
         const { container } = render(AdhesiveContainer);
         expect(container).toBeTruthy();
       });
     });
 
     describe("styling and customization", () => {
-      it("should apply custom class names", async () => {
+      it("applies custom class names", async () => {
         const customProps = {
           class: "custom-class",
           outerClass: CUSTOM_CLASS_NAMES.outerClassName,
@@ -303,7 +296,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should handle z-index styling", () => {
+      it("handles z-index styling", () => {
         const { getByTestId } = renderContainer({ zIndex: TEST_Z_INDEXES[3] });
 
         expect(getByTestId("container-child")).toBeTruthy();
@@ -312,7 +305,7 @@ describe("Vue Integration", () => {
 
     describe("configuration options", () => {
       configurationTestCases.forEach(({ name, props }) => {
-        it(`should handle ${name} correctly`, async () => {
+        it(`handles ${name} correctly`, async () => {
           const { getByTestId, rerender } = renderContainer(props);
 
           expect(getByTestId("container-child")).toBeTruthy();
@@ -324,7 +317,7 @@ describe("Vue Integration", () => {
         });
       });
 
-      it("should handle bounding element with string selector", () => {
+      it("handles bounding element with string selector", () => {
         document.body.innerHTML = '<div class="bounding-container"></div>';
 
         const { getByTestId } = renderContainer({
@@ -346,7 +339,7 @@ describe("Vue Integration", () => {
     };
 
     describe("basic functionality", () => {
-      it("should render element with directive", () => {
+      it("renders element with directive", () => {
         const TestComponent = createTestApp(
           `<div data-testid="directive-basic">Basic Directive Content</div>`,
         );
@@ -365,7 +358,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should create Adhesive instance when directive is applied", async () => {
+      it("creates Adhesive instance when directive is applied", async () => {
         const TestComponent = createTestApp(
           `<div v-adhesive data-testid="directive-with-adhesive">Directive Content</div>`,
         );
@@ -386,7 +379,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should handle position argument", async () => {
+      it("handles position argument", async () => {
         const TestComponent = createTestApp(
           `<div v-adhesive:bottom data-testid="directive-position">Bottom Position</div>`,
         );
@@ -408,7 +401,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should handle options object", async () => {
+      it("handles options object", async () => {
         const TestComponent = createTestApp(
           `<div v-adhesive="options" data-testid="directive-options">Options Content</div>`,
           () => ({
@@ -443,7 +436,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should handle position argument with options", async () => {
+      it("handles position argument with options", async () => {
         const TestComponent = createTestApp(
           `<div v-adhesive:top="{ offset: ${TEST_OFFSETS[1]}, zIndex: 500 }" data-testid="directive-combined">Combined Content</div>`,
         );
@@ -469,7 +462,7 @@ describe("Vue Integration", () => {
     });
 
     describe("reactivity and updates", () => {
-      it("should handle reactive options changes", async () => {
+      it("handles reactive options changes", async () => {
         const TestComponent = createTestApp(
           `
           <div>
@@ -541,7 +534,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should call updateOptions when directive value changes", async () => {
+      it("calls updateOptions when directive value changes", async () => {
         const TestComponent = createTestApp(
           `
           <div>
@@ -587,7 +580,7 @@ describe("Vue Integration", () => {
     });
 
     describe("lifecycle management", () => {
-      it("should cleanup Adhesive instance on unmount", () => {
+      it("cleans up Adhesive instance on unmount", () => {
         const TestComponent = createTestApp(
           `<div v-adhesive data-testid="directive-basic">Basic Content</div>`,
         );
@@ -612,7 +605,7 @@ describe("Vue Integration", () => {
         expect(mockAdhesiveInstance.cleanup).toHaveBeenCalledTimes(1);
       });
 
-      it("should not create multiple instances on re-renders", async () => {
+      it("does not create multiple instances on re-renders", async () => {
         const TestComponent = createTestApp(
           `<div v-adhesive data-testid="directive-basic">Basic Content</div>`,
         );
@@ -641,7 +634,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should handle conditional rendering correctly", async () => {
+      it("handles conditional rendering correctly", async () => {
         const TestComponent = createTestApp(
           `
           <div>
@@ -696,7 +689,7 @@ describe("Vue Integration", () => {
     });
 
     describe("edge cases", () => {
-      it("should handle directive with undefined options gracefully", async () => {
+      it("handles directive with undefined options gracefully", async () => {
         const TestComponent = createTestApp(
           `<div v-adhesive="undefined" data-testid="undefined-options">Undefined Options</div>`,
         );
@@ -719,7 +712,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should handle directive with empty options object", async () => {
+      it("handles directive with empty options object", async () => {
         const TestComponent = createTestApp(
           `<div v-adhesive="{}" data-testid="empty-options">Empty Options</div>`,
         );
@@ -742,7 +735,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should handle position argument override", async () => {
+      it("handles position argument override", async () => {
         const TestComponent = createTestApp(
           `<div v-adhesive:top="{ position: 'bottom' }" data-testid="position-override">Position Override</div>`,
         );
@@ -766,7 +759,7 @@ describe("Vue Integration", () => {
         );
       });
 
-      it("should handle multiple directives on same page", async () => {
+      it("handles multiple directives on same page", async () => {
         const TestComponent = createTestApp(
           `
           <div>

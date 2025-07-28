@@ -235,7 +235,7 @@ describe("Core", () => {
         adhesive.cleanup();
       });
 
-      it("should handle updating frozen options from disabled state", () => {
+      it("handles updating frozen options from disabled state", () => {
         const adhesive = createInitializedAdhesive();
 
         adhesive.updateOptions({ enabled: false });
@@ -263,7 +263,7 @@ describe("Core", () => {
         adhesive.cleanup();
       });
 
-      it("should handle creating instance with enabled:false then updating options", () => {
+      it("handles creating instance with enabled:false then updating options", () => {
         // Create an instance that starts disabled (uses frozen options)
         const adhesive = Adhesive.create({
           targetEl: targetElement,
@@ -291,7 +291,7 @@ describe("Core", () => {
         adhesive.cleanup();
       });
 
-      it("should preserve all default options when updating frozen options", () => {
+      it("preserves all default options when updating frozen options", () => {
         // Create an instance that starts disabled (uses frozen options with defaults)
         const adhesive = Adhesive.create({
           targetEl: targetElement,
@@ -320,7 +320,7 @@ describe("Core", () => {
         adhesive.cleanup();
       });
 
-      it("should preserve all option properties when unfreezing frozen options", () => {
+      it("preserves all option properties when unfreezing frozen options", () => {
         // This test specifically verifies that no options are lost during the unfreezing process
         const adhesive = Adhesive.create({
           targetEl: targetElement,
@@ -354,7 +354,7 @@ describe("Core", () => {
         adhesive.cleanup();
       });
 
-      it("should handle multiple consecutive updates from disabled state", () => {
+      it("handle multiple consecutive updates from disabled state", () => {
         const adhesive = createInitializedAdhesive();
 
         // Disable first

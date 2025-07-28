@@ -16,17 +16,14 @@ import {
   TEST_Z_INDEXES,
 } from "../utils/shared-test-helpers.js";
 
-// Create the mock Adhesive instance
 const mockAdhesiveInstance = createMockAdhesive();
 
-// Mock the Adhesive class
 vi.mock("@adhesivejs/core", () => ({
   Adhesive: {
     create: vi.fn(() => mockAdhesiveInstance),
   },
 }));
 
-// Enhanced test component using useAdhesive hook
 function TestHookComponent() {
   const targetRef = useRef<HTMLDivElement>(null);
   const boundingRef = useRef<HTMLDivElement>(null);
@@ -97,7 +94,7 @@ describe("React Integration", () => {
 
   describe("useAdhesive Hook", () => {
     describe("initialization and rendering", () => {
-      it("should render without errors", () => {
+      it("renders without errors", () => {
         renderTestComponent();
         const { stickyElement, toggleEnabledButton } = getTestElements();
 
@@ -106,14 +103,14 @@ describe("React Integration", () => {
         expect(screen.getByText("Toggle (enabled)")).toBeInTheDocument();
       });
 
-      it("should create Adhesive instance on mount", async () => {
+      it("creates Adhesive instance on mount", async () => {
         renderTestComponent();
 
         const { Adhesive } = await import("@adhesivejs/core");
         expect(Adhesive.create).toHaveBeenCalledTimes(1);
       });
 
-      it("should not create multiple instances on re-renders", async () => {
+      it("does not create multiple instances on re-renders", async () => {
         const { rerender } = renderTestComponent();
 
         rerender(<TestHookComponent />);
@@ -125,7 +122,7 @@ describe("React Integration", () => {
     });
 
     describe("state management", () => {
-      it("should handle enabled toggle correctly", async () => {
+      it("handles enabled toggle correctly", async () => {
         const user = userEvent.setup();
         renderTestComponent();
         const { toggleEnabledButton } = getTestElements();
@@ -142,7 +139,7 @@ describe("React Integration", () => {
         expect(screen.getByText("Toggle (enabled)")).toBeInTheDocument();
       });
 
-      it("should handle position changes correctly", async () => {
+      it("handles position changes correctly", async () => {
         const user = userEvent.setup();
         renderTestComponent();
         const { togglePositionButton } = getTestElements();
@@ -159,7 +156,7 @@ describe("React Integration", () => {
         expect(screen.getByText("Position: top")).toBeInTheDocument();
       });
 
-      it("should handle offset changes correctly", async () => {
+      it("handles offset changes correctly", async () => {
         const user = userEvent.setup();
         renderTestComponent();
         const { toggleOffsetButton } = getTestElements();
@@ -176,7 +173,7 @@ describe("React Integration", () => {
         expect(screen.getByText("Offset: 10")).toBeInTheDocument();
       });
 
-      it("should call updateOptions when options change", async () => {
+      it("calls updateOptions when options change", async () => {
         const user = userEvent.setup();
         renderTestComponent();
         const {
@@ -215,7 +212,7 @@ describe("React Integration", () => {
     });
 
     describe("cleanup and lifecycle", () => {
-      it("should cleanup on unmount without errors", () => {
+      it("cleans up on unmount without errors", () => {
         const { unmount } = renderTestComponent();
         const { stickyElement } = getTestElements();
 
@@ -224,7 +221,7 @@ describe("React Integration", () => {
         expect(() => unmount()).not.toThrow();
       });
 
-      it("should handle disabled state properly", () => {
+      it("handles disabled state properly", () => {
         function DisabledComponent() {
           const targetRef = useRef<HTMLDivElement>(null);
           const boundingRef = useRef<HTMLDivElement>(null);
@@ -248,21 +245,21 @@ describe("React Integration", () => {
 
   describe("AdhesiveContainer Component", () => {
     describe("basic rendering", () => {
-      it("should render children correctly", () => {
+      it("renders children correctly", () => {
         renderContainer();
 
         expect(screen.getByTestId("container-child")).toBeInTheDocument();
         expect(screen.getByText("Container Content")).toBeInTheDocument();
       });
 
-      it("should handle empty children", () => {
+      it("handles empty children", () => {
         render(<AdhesiveContainer />);
         // Should not throw errors
       });
     });
 
     describe("styling and customization", () => {
-      it("should apply custom class names", async () => {
+      it("applies custom class names", async () => {
         const customProps = {
           className: "custom-class",
           outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
@@ -292,7 +289,7 @@ describe("React Integration", () => {
         );
       });
 
-      it("should handle z-index styling", () => {
+      it("handles z-index styling", () => {
         renderContainer({ zIndex: TEST_Z_INDEXES[3] });
 
         expect(screen.getByTestId("container-child")).toBeInTheDocument();
@@ -301,7 +298,7 @@ describe("React Integration", () => {
 
     describe("configuration options", () => {
       configurationTestCases.forEach(({ name, props }) => {
-        it(`should handle ${name} correctly`, () => {
+        it(`handles ${name} correctly`, () => {
           const { rerender } = renderContainer(props);
 
           expect(screen.getByTestId("container-child")).toBeInTheDocument();
@@ -317,7 +314,7 @@ describe("React Integration", () => {
         });
       });
 
-      it("should handle bounding element with string selector", () => {
+      it("handles bounding element with string selector", () => {
         render(
           <div className="bounding-container">
             <AdhesiveContainer boundingEl=".bounding-container">

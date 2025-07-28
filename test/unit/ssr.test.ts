@@ -1,12 +1,6 @@
 import { Adhesive, ADHESIVE_STATUS, AdhesiveError } from "@adhesivejs/core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-/**
- * SSR Safety Test Suite
- *
- * These tests verify that Adhesive works safely in server-side rendering environments
- * where browser APIs like window, document, ResizeObserver, etc. are not available.
- */
 describe("SSR Safety", () => {
   let originalWindow: typeof globalThis.window;
   let originalDocument: typeof globalThis.document;
@@ -55,7 +49,7 @@ describe("SSR Safety", () => {
   });
 
   describe("Constructor Behavior in SSR", () => {
-    it("should create disabled instance when window is undefined", () => {
+    it("creates disabled instance when window is undefined", () => {
       simulateSSREnvironment();
 
       const adhesive = new Adhesive({
@@ -67,7 +61,7 @@ describe("SSR Safety", () => {
       expect(state.status).toBe(ADHESIVE_STATUS.INITIAL);
     });
 
-    it("should create disabled instance when document is undefined", () => {
+    it("creates disabled instance when document is undefined", () => {
       // Only remove document, keep window
       originalDocument = globalThis.document;
       // @ts-expect-error - Intentionally deleting for SSR simulation
@@ -85,7 +79,7 @@ describe("SSR Safety", () => {
       globalThis.document = originalDocument;
     });
 
-    it("should not throw errors during SSR instantiation", () => {
+    it("does not throw errors during SSR instantiation", () => {
       simulateSSREnvironment();
 
       expect(() => {
@@ -99,7 +93,7 @@ describe("SSR Safety", () => {
       }).not.toThrow();
     });
 
-    it("should preserve options in SSR environment", () => {
+    it("preserves options in SSR environment", () => {
       simulateSSREnvironment();
 
       const options = {
@@ -122,7 +116,7 @@ describe("SSR Safety", () => {
   });
 
   describe("Static Factory Method in SSR", () => {
-    it("should handle Adhesive.create() safely in SSR", () => {
+    it("handles Adhesive.create() safely in SSR", () => {
       simulateSSREnvironment();
 
       expect(() => {
@@ -133,7 +127,7 @@ describe("SSR Safety", () => {
       }).not.toThrow();
     });
 
-    it("should return a functional but disabled instance via create()", () => {
+    it("returns a functional but disabled instance via create()", () => {
       simulateSSREnvironment();
 
       const adhesive = Adhesive.create({
@@ -156,7 +150,7 @@ describe("SSR Safety", () => {
       });
     });
 
-    it("should handle init() gracefully in SSR", () => {
+    it("handles init() gracefully in SSR", () => {
       const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       const result = adhesive.init();
@@ -166,15 +160,15 @@ describe("SSR Safety", () => {
       consoleSpy.mockRestore();
     });
 
-    it("should handle enable() safely in SSR", () => {
+    it("handles enable() safely in SSR", () => {
       expect(() => adhesive.enable()).not.toThrow();
     });
 
-    it("should handle disable() safely in SSR", () => {
+    it("handles disable() safely in SSR", () => {
       expect(() => adhesive.disable()).not.toThrow();
     });
 
-    it("should handle updateOptions() safely in SSR", () => {
+    it("handles updateOptions() safely in SSR", () => {
       expect(() => {
         adhesive.updateOptions({
           offset: 50,
@@ -183,7 +177,7 @@ describe("SSR Safety", () => {
       }).not.toThrow();
     });
 
-    it("should return valid state from getState() in SSR", () => {
+    it("returns valid state from getState() in SSR", () => {
       const state = adhesive.getState();
 
       expect(state).toEqual(
@@ -200,17 +194,17 @@ describe("SSR Safety", () => {
       );
     });
 
-    it("should handle refreshWidth() safely in SSR", () => {
+    it("handles refreshWidth() safely in SSR", () => {
       expect(() => adhesive.refreshWidth()).not.toThrow();
     });
 
-    it("should handle cleanup() safely in SSR", () => {
+    it("handles cleanup() safely in SSR", () => {
       expect(() => adhesive.cleanup()).not.toThrow();
     });
   });
 
   describe("Method Chaining in SSR", () => {
-    it("should support method chaining in SSR environment", () => {
+    it("supports method chaining in SSR environment", () => {
       simulateSSREnvironment();
 
       expect(() => {
@@ -227,7 +221,7 @@ describe("SSR Safety", () => {
   });
 
   describe("Browser Environment Detection", () => {
-    it("should correctly detect browser environment when globals are present", () => {
+    it("correctly detects browser environment when globals are present", () => {
       // Ensure we're in browser environment
       expect(typeof window).toBe("object");
       expect(typeof document).toBe("object");
@@ -242,7 +236,7 @@ describe("SSR Safety", () => {
       }).not.toThrow();
     });
 
-    it("should correctly detect SSR environment when globals are missing", () => {
+    it("correctly detects SSR environment when globals are missing", () => {
       simulateSSREnvironment();
 
       // Should still work but be disabled
@@ -255,7 +249,7 @@ describe("SSR Safety", () => {
   });
 
   describe("Hybrid SSR/Hydration Scenarios", () => {
-    it("should transition from SSR to browser environment correctly", () => {
+    it("transitions from SSR to browser environment correctly", () => {
       // Start in SSR
       simulateSSREnvironment();
 
@@ -277,7 +271,7 @@ describe("SSR Safety", () => {
       // This test verifies the transition doesn't crash
     });
 
-    it("should handle multiple instances across SSR/browser transitions", () => {
+    it("handles multiple instances across SSR/browser transitions", () => {
       // Create in SSR
       simulateSSREnvironment();
       const ssrInstance = new Adhesive({ targetEl: "#target" });
@@ -302,7 +296,7 @@ describe("SSR Safety", () => {
   });
 
   describe("Error Handling in SSR", () => {
-    it("should not throw AdhesiveError for missing elements in SSR", () => {
+    it("does not throw AdhesiveError for missing elements in SSR", () => {
       simulateSSREnvironment();
 
       // These would normally throw in browser environment
@@ -320,7 +314,7 @@ describe("SSR Safety", () => {
       }).not.toThrow();
     });
 
-    it("should still validate required options in SSR", () => {
+    it("still validates required options in SSR", () => {
       simulateSSREnvironment();
 
       expect(() => {
@@ -338,7 +332,7 @@ describe("SSR Safety", () => {
   });
 
   describe("Memory Management in SSR", () => {
-    it("should not create event listeners in SSR", () => {
+    it("does not create event listeners in SSR", () => {
       simulateSSREnvironment();
 
       const adhesive = new Adhesive({
@@ -352,7 +346,7 @@ describe("SSR Safety", () => {
       expect(() => adhesive.cleanup()).not.toThrow();
     });
 
-    it("should not create ResizeObserver in SSR", () => {
+    it("does not create ResizeObserver in SSR", () => {
       simulateSSREnvironment();
 
       const adhesive = new Adhesive({
@@ -366,7 +360,7 @@ describe("SSR Safety", () => {
   });
 
   describe("Performance in SSR", () => {
-    it("should have minimal performance impact in SSR", () => {
+    it("has minimal performance impact in SSR", () => {
       simulateSSREnvironment();
 
       const start = performance.now();
