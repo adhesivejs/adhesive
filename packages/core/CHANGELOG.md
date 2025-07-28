@@ -1,6 +1,37 @@
 # Changelog
 
 
+## v0.3.0
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.2.4...v0.3.0)
+
+### 🚀 Enhancements
+
+- Add support for vue directive ([989d5d8](https://github.com/adhesivejs/adhesive/commit/989d5d8))
+
+### 💅 Refactors
+
+- Simplify vue element unwrapping ([c7ea4df](https://github.com/adhesivejs/adhesive/commit/c7ea4df))
+- Improve type safety for runtime prop definitions ([8bebb4a](https://github.com/adhesivejs/adhesive/commit/8bebb4a))
+- Improve ref element unwrapping ([794aed8](https://github.com/adhesivejs/adhesive/commit/794aed8))
+- ⚠️  Drop bounding ref usage in vue component ([9b4776c](https://github.com/adhesivejs/adhesive/commit/9b4776c))
+
+### 🏡 Chore
+
+- Split release prepare step to dedicated script ([e56e271](https://github.com/adhesivejs/adhesive/commit/e56e271))
+- Remove debug test ([431a403](https://github.com/adhesivejs/adhesive/commit/431a403))
+- Only include dom types in packages ([d20d526](https://github.com/adhesivejs/adhesive/commit/d20d526))
+- Reorder exports ([6fe5222](https://github.com/adhesivejs/adhesive/commit/6fe5222))
+- Update vscode settings ([1e6b491](https://github.com/adhesivejs/adhesive/commit/1e6b491))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Drop bounding ref usage in vue component ([9b4776c](https://github.com/adhesivejs/adhesive/commit/9b4776c))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.2.4
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.2.3...v0.2.4)
