@@ -36,7 +36,9 @@
     "release:bump": "changelogen --bump",
     "release:publish": "pnpm publish && pnpx jsr publish",
     "test:attw": "attw --pack --profile esm-only",
+    "test:jsr": "pnpx jsr publish --dry-run --allow-dirty",
     "test:publint": "publint",
+    "test:publish": "pnpm test:attw && pnpm test:jsr && pnpm test:publint",
     "type-check": "tsc --noEmit"
   },
   "engines": {
