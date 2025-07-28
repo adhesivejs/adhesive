@@ -9,11 +9,11 @@ export {
 } from "@adhesivejs/core";
 
 export {
-  useAdhesive,
-  type UseAdhesiveOptions,
-} from "./composables/useAdhesive.js";
-
-export {
   AdhesiveContainer,
   type AdhesiveContainerProps,
 } from "./components/AdhesiveContainer.js";
+
+export {
+  useAdhesive,
+  type UseAdhesiveOptions,
+} from "./composables/useAdhesive.js";
