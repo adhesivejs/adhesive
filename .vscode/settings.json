@@ -4,5 +4,6 @@
   },
   "eslint.codeActionsOnSave.mode": "problems",
   "eslint.format.enable": true,
+  "prettier.enable": false,
   "typescript.tsdk": "node_modules/typescript/lib"
 }
