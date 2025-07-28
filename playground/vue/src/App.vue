@@ -2,6 +2,7 @@
 import {
   AdhesiveContainer,
   useAdhesive,
+  vAdhesive,
   type AdhesivePosition,
 } from "@adhesivejs/vue";
 import { ref, useTemplateRef } from "vue";

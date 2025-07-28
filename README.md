@@ -146,11 +146,13 @@ useAdhesive(targetRef, { position: 'top' });
 #### Vue Directive Example
 
 ```vue
+<script setup lang="ts">
+import { vAdhesive } from '@adhesivejs/vue';
+</script>
+
 <template>
   <div>
-    <header v-adhesive>
-      This header will stick to the top
-    </header>
+    <header v-adhesive>This header will stick to the top</header>
 
     <main>
       <p>Your main content here...</p>

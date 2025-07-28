@@ -114,14 +114,11 @@ For simple use cases, you can use the `v-adhesive` directive directly on element
 import { vAdhesive } from '@adhesivejs/vue';
 import { ref } from 'vue';
 
-// Register the directive locally (optional if globally registered)
-const directives = { adhesive: vAdhesive };
-
-const stickyConfig = ref({
+const adhesiveOptions = ref({
   offset: 20,
   zIndex: 999,
-  activeClassName: 'is-sticky',
-  releasedClassName: 'is-released'
+  activeClassName: 'custom-active',
+  releasedClassName: 'custom-released'
 });
 </script>
 
@@ -138,7 +135,7 @@ const stickyConfig = ref({
     </div>
 
     <!-- With reactive options -->
-    <div v-adhesive="stickyConfig">
+    <div v-adhesive="adhesiveOptions">
       <h3>Sticky with Custom Config</h3>
     </div>
 
