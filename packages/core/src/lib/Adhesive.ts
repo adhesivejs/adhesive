@@ -1015,25 +1015,31 @@ export class Adhesive {
   readonly #onElementResize = (entries: ResizeObserverEntry[]): void => {
     if (!this.#isEnabled) return;
 
+    if (entries.length === 0) return;
+
     if (this.#pendingResizeUpdate) return;
+
+    // Check if any entries are for tracked elements before scheduling update
+    let needsWidthUpdate = false;
+    let needsFullUpdate = false;
+
+    for (const entry of entries) {
+      if (entry.target === this.#outerWrapper) {
+        needsWidthUpdate = true;
+      } else if (
+        entry.target === this.#boundingEl ||
+        entry.target === this.#targetEl
+      ) {
+        needsFullUpdate = true;
+      }
+    }
+
+    // Only schedule update if we found relevant entries
+    if (!needsFullUpdate && !needsWidthUpdate) return;
 
     this.#pendingResizeUpdate = true;
     this.#rafId = requestAnimationFrame(() => {
       this.#pendingResizeUpdate = false;
-
-      let needsWidthUpdate = false;
-      let needsFullUpdate = false;
-
-      for (const entry of entries) {
-        if (entry.target === this.#outerWrapper) {
-          needsWidthUpdate = true;
-        } else if (
-          entry.target === this.#boundingEl ||
-          entry.target === this.#targetEl
-        ) {
-          needsFullUpdate = true;
-        }
-      }
 
       if (needsFullUpdate) {
         this.#updateInitialDimensions();

@@ -1001,6 +1001,127 @@ describe("Core", () => {
         window.ResizeObserver = originalResizeObserver;
         consoleSpy.mockRestore();
       });
+
+      it("ignores ResizeObserver callbacks with empty entries", () => {
+        let capturedCallback: ResizeObserverCallback;
+        const mockObserver = {
+          observe: vi.fn(),
+          unobserve: vi.fn(),
+          disconnect: vi.fn(),
+        };
+
+        // Mock ResizeObserver constructor to capture callback
+        const originalResizeObserver = window.ResizeObserver;
+        window.ResizeObserver = vi.fn((callback) => {
+          capturedCallback = callback;
+          return mockObserver;
+        }) as any;
+
+        const rafSpy = vi.spyOn(window, "requestAnimationFrame");
+
+        // Create adhesive instance which will create the ResizeObserver
+        const adhesive = createInitializedAdhesive();
+
+        // Trigger resize with empty entries
+        capturedCallback!([], mockObserver as any);
+
+        // Should not schedule any updates for empty entries
+        expect(rafSpy).not.toHaveBeenCalled();
+
+        adhesive.cleanup();
+        window.ResizeObserver = originalResizeObserver;
+        rafSpy.mockRestore();
+      });
+
+      it("ignores ResizeObserver entries for untracked elements", () => {
+        let capturedCallback: ResizeObserverCallback;
+        const mockObserver = {
+          observe: vi.fn(),
+          unobserve: vi.fn(),
+          disconnect: vi.fn(),
+        };
+
+        // Mock ResizeObserver constructor to capture callback
+        const originalResizeObserver = window.ResizeObserver;
+        window.ResizeObserver = vi.fn((callback) => {
+          capturedCallback = callback;
+          return mockObserver;
+        }) as any;
+
+        const rafSpy = vi.spyOn(window, "requestAnimationFrame");
+        const unrelatedElement = document.createElement("div");
+
+        // Create adhesive instance
+        const adhesive = createInitializedAdhesive();
+
+        // Create mock entries for unrelated elements
+        const mockEntry: ResizeObserverEntry = {
+          target: unrelatedElement,
+          contentRect: new DOMRectReadOnly(0, 0, 200, 100),
+          borderBoxSize: [{ inlineSize: 200, blockSize: 100 }],
+          contentBoxSize: [{ inlineSize: 200, blockSize: 100 }],
+          devicePixelContentBoxSize: [{ inlineSize: 200, blockSize: 100 }],
+        };
+
+        // Trigger resize with unrelated entries
+        capturedCallback!([mockEntry], mockObserver as any);
+
+        // Should not schedule updates for unrelated elements
+        expect(rafSpy).not.toHaveBeenCalled();
+
+        adhesive.cleanup();
+        window.ResizeObserver = originalResizeObserver;
+        rafSpy.mockRestore();
+      });
+
+      it("processes ResizeObserver entries only for tracked elements", () => {
+        let capturedCallback: ResizeObserverCallback;
+        const mockObserver = {
+          observe: vi.fn(),
+          unobserve: vi.fn(),
+          disconnect: vi.fn(),
+        };
+
+        // Mock ResizeObserver constructor to capture callback
+        const originalResizeObserver = window.ResizeObserver;
+        window.ResizeObserver = vi.fn((callback) => {
+          capturedCallback = callback;
+          return mockObserver;
+        }) as any;
+
+        const rafSpy = vi.spyOn(window, "requestAnimationFrame");
+        const unrelatedElement = document.createElement("div");
+
+        // Create adhesive instance
+        const adhesive = createInitializedAdhesive();
+
+        // Create mixed entries - both tracked and untracked
+        const unrelatedEntry: ResizeObserverEntry = {
+          target: unrelatedElement,
+          contentRect: new DOMRectReadOnly(0, 0, 200, 100),
+          borderBoxSize: [{ inlineSize: 200, blockSize: 100 }],
+          contentBoxSize: [{ inlineSize: 200, blockSize: 100 }],
+          devicePixelContentBoxSize: [{ inlineSize: 200, blockSize: 100 }],
+        };
+
+        const trackedEntry: ResizeObserverEntry = {
+          target: targetElement,
+          contentRect: new DOMRectReadOnly(0, 0, 100, 50),
+          borderBoxSize: [{ inlineSize: 100, blockSize: 50 }],
+          contentBoxSize: [{ inlineSize: 100, blockSize: 50 }],
+          devicePixelContentBoxSize: [{ inlineSize: 100, blockSize: 50 }],
+        };
+
+        // Trigger resize with mixed entries
+        capturedCallback!([unrelatedEntry, trackedEntry], mockObserver as any);
+
+        // Should schedule update since we have a tracked element
+        expect(rafSpy).toHaveBeenCalled();
+
+        adhesive.cleanup();
+        window.ResizeObserver = originalResizeObserver;
+        rafSpy.mockRestore();
+      });
     });
   });
 
