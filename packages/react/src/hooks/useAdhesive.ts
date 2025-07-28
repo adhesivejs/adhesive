@@ -58,7 +58,7 @@ export function useAdhesive(
       unwrapElement(options?.boundingRef) ?? options?.boundingEl;
 
     if (!targetEl) {
-      throw new Error("@adhesivejs/react: sticky element is not defined");
+      throw new Error("@adhesivejs/react: target element is not defined");
     }
 
     return { ...options, targetEl, boundingEl } satisfies AdhesiveOptions;
@@ -76,8 +76,6 @@ export function useAdhesive(
   }, [target]);
 
   useEffect(() => {
-    if (!adhesive.current) return;
-
-    adhesive.current.updateOptions(getValidatedOptions());
+    adhesive.current?.updateOptions(getValidatedOptions());
   }, [options]);
 }

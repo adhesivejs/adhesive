@@ -85,7 +85,7 @@ export function useAdhesive(
       unwrapElement(optionsValue?.boundingRef) ?? optionsValue?.boundingEl;
 
     if (!targetEl) {
-      throw new Error("@adhesivejs/vue: sticky element is not defined");
+      throw new Error("@adhesivejs/vue: target element is not defined");
     }
 
     return { ...optionsValue, targetEl, boundingEl } satisfies AdhesiveOptions;
@@ -97,17 +97,13 @@ export function useAdhesive(
     adhesive ??= Adhesive.create(getValidatedOptions());
   });
 
-  watch(
-    () => toValue(options),
-    () => {
-      if (!adhesive) return;
-
-      adhesive.updateOptions(getValidatedOptions());
-    },
-  );
-
   onUnmounted(() => {
     adhesive?.cleanup();
     adhesive = null;
   });
+
+  watch(
+    () => toValue(options),
+    () => adhesive?.updateOptions(getValidatedOptions()),
+  );
 }
