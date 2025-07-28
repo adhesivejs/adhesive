@@ -172,6 +172,43 @@ describe("React Integration", () => {
         await user.click(toggleOffsetButton);
         expect(screen.getByText("Offset: 10")).toBeInTheDocument();
       });
+
+      it("should call updateOptions when options change", async () => {
+        const user = userEvent.setup();
+        renderTestComponent();
+        const {
+          toggleEnabledButton,
+          togglePositionButton,
+          toggleOffsetButton,
+        } = getTestElements();
+
+        // Reset the mock to clear initial calls
+        mockAdhesiveInstance.updateOptions.mockClear();
+
+        // Test enabled toggle
+        await user.click(toggleEnabledButton);
+        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            enabled: false,
+          }),
+        );
+
+        // Test position change
+        await user.click(togglePositionButton);
+        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            position: "bottom",
+          }),
+        );
+
+        // Test offset change
+        await user.click(toggleOffsetButton);
+        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            offset: 20,
+          }),
+        );
+      });
     });
 
     describe("cleanup and lifecycle", () => {

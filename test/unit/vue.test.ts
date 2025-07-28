@@ -172,6 +172,40 @@ describe("Vue Integration", () => {
         await fireEvent.click(offsetButton);
         expect(offsetButton).toHaveTextContent("10");
       });
+
+      it("should call updateOptions when options change", async () => {
+        const { getByTestId } = renderTestComponent();
+        const toggleEnabledButton = getByTestId("toggle-enabled");
+        const togglePositionButton = getByTestId("toggle-position");
+        const toggleOffsetButton = getByTestId("toggle-offset");
+
+        // Reset the mock to clear initial calls
+        mockAdhesiveInstance.updateOptions.mockClear();
+
+        // Test enabled toggle
+        await fireEvent.click(toggleEnabledButton);
+        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            enabled: false,
+          }),
+        );
+
+        // Test position change
+        await fireEvent.click(togglePositionButton);
+        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            position: "bottom",
+          }),
+        );
+
+        // Test offset change
+        await fireEvent.click(toggleOffsetButton);
+        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            offset: 20,
+          }),
+        );
+      });
     });
 
     describe("cleanup and lifecycle", () => {
