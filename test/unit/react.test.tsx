@@ -29,7 +29,7 @@ function TestHookComponent() {
   const boundingRef = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(true);
   const [position, setPosition] = useState<AdhesivePosition>("top");
-  const [offset, setOffset] = useState(10);
+  const [offset, setOffset] = useState<number>(TEST_OFFSETS[1]);
 
   useAdhesive(targetRef, {
     boundingRef,
@@ -50,7 +50,11 @@ function TestHookComponent() {
         Position: {position}
       </button>
       <button
-        onClick={() => setOffset(offset === 10 ? 20 : 10)}
+        onClick={() =>
+          setOffset(
+            offset === TEST_OFFSETS[1] ? TEST_OFFSETS[2] : TEST_OFFSETS[1],
+          )
+        }
         data-testid="toggle-offset"
       >
         Offset: {offset}
@@ -162,15 +166,21 @@ describe("React Integration", () => {
         const { toggleOffsetButton } = getTestElements();
 
         // Initial offset
-        expect(screen.getByText("Offset: 10")).toBeInTheDocument();
+        expect(
+          screen.getByText(`Offset: ${TEST_OFFSETS[1]}`),
+        ).toBeInTheDocument();
 
         // Change offset
         await user.click(toggleOffsetButton);
-        expect(screen.getByText("Offset: 20")).toBeInTheDocument();
+        expect(
+          screen.getByText(`Offset: ${TEST_OFFSETS[2]}`),
+        ).toBeInTheDocument();
 
         // Change back
         await user.click(toggleOffsetButton);
-        expect(screen.getByText("Offset: 10")).toBeInTheDocument();
+        expect(
+          screen.getByText(`Offset: ${TEST_OFFSETS[1]}`),
+        ).toBeInTheDocument();
       });
 
       it("calls updateOptions when options change", async () => {

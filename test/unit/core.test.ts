@@ -2,6 +2,7 @@ import { Adhesive, ADHESIVE_STATUS, AdhesiveError } from "@adhesivejs/core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockDOM } from "../utils/core-test-helpers.js";
 import {
+  animationHelpers,
   assertions,
   commonBeforeEach,
   CUSTOM_CLASS_NAMES,
@@ -992,11 +993,7 @@ describe("Core", () => {
         }
 
         // Wait for RAF to complete
-        await new Promise((resolve) => {
-          window.requestAnimationFrame(() => {
-            resolve(undefined);
-          });
-        });
+        await animationHelpers.waitForRAF();
 
         // Verify the element's width was updated
         const updatedState = adhesive.getState();
@@ -1180,11 +1177,7 @@ describe("Core", () => {
         }
 
         // Wait for RAF to complete since ResizeObserver uses requestAnimationFrame
-        await new Promise((resolve) => {
-          requestAnimationFrame(() => {
-            resolve(undefined);
-          });
-        });
+        await animationHelpers.waitForRAF();
 
         // The key fix: status should be preserved after width-only resize
         // (The fix prevents #update() from being called which would reset status)

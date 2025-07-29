@@ -13,7 +13,7 @@ Adhesive is a modern, performant, lightweight, dependency free library that prov
 - **🚀 Modern** - Built with TypeScript, distributed as ESM only
 - **📦 Lightweight** - Zero dependencies, minimal bundle size
 - **🔧 Flexible** - Supports top/bottom positioning with customizable offsets and boundaries
-- **⚡️ Performance** - Optimized for smooth scrolling with efficient DOM updates
+- **⚡️ Performant** - Optimized for smooth scrolling with efficient DOM updates
 - **🎯 Type Safe** - Full TypeScript support with comprehensive type definitions
 - **🌍 Cross Platform** - Works across all modern browsers and devices
 - **🎨 Framework Ready** - Core library with framework specific adapters

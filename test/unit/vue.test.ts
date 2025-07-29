@@ -8,6 +8,7 @@ import { fireEvent, render } from "@testing-library/vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { computed, defineComponent, ref } from "vue";
 import {
+  cleanupTestEnvironment,
   commonBeforeEach,
   configurationTestCases,
   createMockAdhesive,
@@ -87,7 +88,7 @@ describe("Vue Integration", () => {
   });
 
   afterEach(() => {
-    document.body.innerHTML = "";
+    cleanupTestEnvironment();
   });
 
   const renderTestComponent = () => render(TestComposableComponent);
