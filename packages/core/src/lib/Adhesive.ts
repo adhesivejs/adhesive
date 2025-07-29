@@ -96,8 +96,6 @@ export interface AdhesiveOptions {
 }
 
 interface InternalAdhesiveOptions {
-  targetEl: HTMLElement;
-  boundingEl: HTMLElement;
   enabled: boolean;
   offset: number;
   position: AdhesivePosition;
@@ -236,21 +234,17 @@ interface InternalAdhesiveState {
 export class AdhesiveError extends Error {
   /** Specific error code for programmatic error handling */
   public readonly code: string;
-  /** Additional context information about the error */
-  public readonly context: Record<string, unknown>;
 
   /**
    * Creates a new AdhesiveError instance.
    *
    * @param message - Human-readable error message
    * @param code - Specific error code for programmatic handling
-   * @param context - Additional context information about the error
    */
-  constructor(message: string, code: string, context: Record<string, unknown>) {
+  constructor(message: string, code: string) {
     super(`@adhesivejs/core: ${message}`);
     this.name = "AdhesiveError";
     this.code = code;
-    this.context = context;
 
     // Maintain proper stack trace for where error was thrown (only available on V8)
     if (Error.captureStackTrace) {
@@ -268,11 +262,8 @@ const ERROR_CODES = {
     "ResizeObserver not supported in this environment",
 } as const;
 
-function createAdhesiveError(
-  code: keyof typeof ERROR_CODES,
-  context: Record<string, unknown>,
-): AdhesiveError {
-  return new AdhesiveError(ERROR_CODES[code], code, context);
+function createAdhesiveError(code: keyof typeof ERROR_CODES): AdhesiveError {
+  return new AdhesiveError(ERROR_CODES[code], code);
 }
 
 function isBrowser(): boolean {
@@ -303,10 +294,9 @@ function getViewportHeight(): number {
 function validateElement(
   element: HTMLElement | null,
   errorKey: keyof typeof ERROR_CODES,
-  context: Record<string, unknown>,
 ): asserts element is HTMLElement {
   if (!element) {
-    throw createAdhesiveError(errorKey, context);
+    throw createAdhesiveError(errorKey);
   }
 }
 
@@ -391,14 +381,14 @@ function createInitialState(
  * ```
  */
 export class Adhesive {
-  #observer: ResizeObserver | null = null;
+  #isEnabled = true;
   #targetEl!: HTMLElement;
   #boundingEl!: HTMLElement;
-  #outerWrapper: HTMLElement | null = null;
-  #innerWrapper: HTMLElement | null = null;
   #options!: InternalAdhesiveOptions;
   #state!: InternalAdhesiveState;
-  #isEnabled = true;
+  #observer: ResizeObserver | null = null;
+  #outerWrapper: HTMLElement | null = null;
+  #innerWrapper: HTMLElement | null = null;
   #originalSelectors: {
     targetEl: ElementSelector;
     boundingEl: ElementSelector | null;
@@ -466,44 +456,24 @@ export class Adhesive {
    * ```
    */
   constructor(options: AdhesiveOptions) {
-    // Handle SSR environment - create disabled instance and return early
+    const { targetEl, boundingEl } = options;
+
+    if (!targetEl) throw createAdhesiveError("TARGET_EL_REQUIRED");
+
     if (!isBrowser()) {
-      // Still validate required options even in SSR
-      if (!options.targetEl) {
-        throw createAdhesiveError("TARGET_EL_REQUIRED", {
-          selector: options.targetEl,
-        });
-      }
       this.#initializeSSRInstance(options);
       return;
     }
 
-    // Validate required options early
-    if (!options.targetEl) {
-      throw createAdhesiveError("TARGET_EL_REQUIRED", {
-        selector: options.targetEl,
-      });
-    }
+    const _targetEl = resolveElement(targetEl);
+    validateElement(_targetEl, "TARGET_EL_NOT_FOUND");
+    this.#targetEl = _targetEl;
 
-    // Resolve and validate elements
-    const targetEl = resolveElement(options.targetEl);
-    validateElement(targetEl, "TARGET_EL_NOT_FOUND", {
-      selector: options.targetEl,
-    });
-    this.#targetEl = targetEl;
+    const _boundingEl = boundingEl ? resolveElement(boundingEl) : document.body;
+    validateElement(_boundingEl, "BOUNDING_EL_NOT_FOUND");
+    this.#boundingEl = _boundingEl;
 
-    const boundingEl = options.boundingEl
-      ? resolveElement(options.boundingEl)
-      : document.body;
-    validateElement(boundingEl, "BOUNDING_EL_NOT_FOUND", {
-      selector: options.boundingEl,
-    });
-    this.#boundingEl = boundingEl;
-
-    // Initialize options
     this.#options = {
-      targetEl,
-      boundingEl,
       enabled: options.enabled ?? DEFAULTS.ENABLED,
       offset: options.offset ?? DEFAULTS.OFFSET,
       position: options.position ?? DEFAULTS.POSITION,
@@ -514,37 +484,34 @@ export class Adhesive {
       releasedClassName: options.releasedClassName ?? DEFAULTS.RELEASED_CLASS,
     };
 
-    // Handle disabled state - only set flag, don't create dummy elements
     if (options.enabled === false) {
       this.#isEnabled = false;
       this.#state = createInitialState();
       return;
     }
 
-    // For enabled instances, create DOM structure and initialize
     this.#createWrappers();
     this.#state = createInitialState(this.#innerWrapper);
     this.#state.bottomBoundary = this.#getBottomBoundary();
 
-    // Initialize viewport dimensions
     this.#winHeight = getViewportHeight();
     this.#scrollTop = getScrollTop();
   }
 
   #initializeSSRInstance(options: AdhesiveOptions): void {
     this.#isEnabled = false;
-    // Store original selectors for later resolution when transitioning to browser
+
     this.#originalSelectors = {
       targetEl: options.targetEl,
       boundingEl: options.boundingEl ?? null,
     };
-    // Create dummy elements that won't be used in SSR
+
     const dummyElement: HTMLElement = Object.create(null);
+
     this.#targetEl = dummyElement;
     this.#boundingEl = dummyElement;
+
     this.#options = {
-      targetEl: this.#targetEl,
-      boundingEl: this.#boundingEl,
       enabled: false,
       offset: options.offset ?? DEFAULTS.OFFSET,
       position: options.position ?? DEFAULTS.POSITION,
@@ -554,7 +521,26 @@ export class Adhesive {
       activeClassName: options.activeClassName ?? DEFAULTS.ACTIVE_CLASS,
       releasedClassName: options.releasedClassName ?? DEFAULTS.RELEASED_CLASS,
     };
+
     this.#state = createInitialState();
+  }
+
+  #resolveSSRElements(): void {
+    if (!this.#originalSelectors) return;
+
+    const targetEl = resolveElement(this.#originalSelectors.targetEl);
+    const boundingEl = this.#originalSelectors.boundingEl
+      ? resolveElement(this.#originalSelectors.boundingEl)!
+      : document.body;
+
+    if (!targetEl) {
+      throw createAdhesiveError("TARGET_EL_REQUIRED");
+    }
+
+    this.#targetEl = targetEl;
+    this.#boundingEl = boundingEl;
+
+    this.#originalSelectors = null;
   }
 
   // =============================================================================
@@ -572,14 +558,22 @@ export class Adhesive {
 
     const parent = this.#targetEl.parentNode;
     if (!parent) {
-      throw createAdhesiveError("TARGET_EL_NO_PARENT", {
-        targetEl: this.#targetEl,
-      });
+      throw createAdhesiveError("TARGET_EL_NO_PARENT");
     }
 
     parent.insertBefore(this.#outerWrapper, this.#targetEl);
     this.#outerWrapper.append(this.#innerWrapper);
     this.#innerWrapper.append(this.#targetEl);
+  }
+
+  #ensureWrappersExist(): void {
+    if (this.#outerWrapper && !this.#innerWrapper) return;
+
+    this.#createWrappers();
+    this.#state = createInitialState(this.#innerWrapper);
+    this.#state.bottomBoundary = this.#getBottomBoundary();
+    this.#winHeight = getViewportHeight();
+    this.#scrollTop = getScrollTop();
   }
 
   #translate(style: CSSStyleDeclaration, pos: number): void {
@@ -592,12 +586,16 @@ export class Adhesive {
   // Calculation and Measurement Methods
   // =============================================================================
 
+  #getTopBoundary(): number {
+    if (!isBrowser() || this.#boundingEl === document.body) {
+      return 0;
+    }
+    const rect = this.#boundingEl.getBoundingClientRect();
+    return getScrollTop() + rect.top;
+  }
+
   #getBottomBoundary(): number {
-    if (
-      !isBrowser() ||
-      !this.#boundingEl ||
-      this.#boundingEl === document.body
-    ) {
+    if (!isBrowser() || this.#boundingEl === document.body) {
       return Number.POSITIVE_INFINITY;
     }
     const rect = this.#boundingEl.getBoundingClientRect();
@@ -616,6 +614,7 @@ export class Adhesive {
     if (wasPositioned) {
       // Temporarily reset positioning to get accurate measurements
       const innerStyle = this.#innerWrapper.style;
+
       const originalStyles = {
         position: innerStyle.position,
         transform: innerStyle.transform,
@@ -623,7 +622,6 @@ export class Adhesive {
         bottom: innerStyle.bottom,
       };
 
-      // Reset styles
       Object.assign(innerStyle, {
         position: "static",
         transform: "",
@@ -647,10 +645,8 @@ export class Adhesive {
       newX = outerRect.left;
       newY = outerRect.top + this.#scrollTop;
 
-      // Restore styles
       Object.assign(innerStyle, originalStyles);
     } else {
-      // Simple measurement for initial state
       const outerRect = this.#outerWrapper.getBoundingClientRect();
       const innerRect = this.#innerWrapper.getBoundingClientRect();
 
@@ -670,7 +666,7 @@ export class Adhesive {
     this.#state.height = newHeight;
     this.#state.x = newX;
     this.#state.y = newY;
-    this.#state.topBoundary = newY;
+    this.#state.topBoundary = this.#getTopBoundary();
     this.#state.bottomBoundary = this.#getBottomBoundary();
   }
 
@@ -686,22 +682,13 @@ export class Adhesive {
   #setState(newState: Partial<InternalAdhesiveState>): void {
     const prevStatus = this.#state.status;
 
-    // Batch update all state changes
     Object.assign(this.#state, newState);
 
-    // Only update styles if status actually changed (performance optimization)
     if (prevStatus !== this.#state.status) {
       this.#updateStyles();
     }
   }
 
-  /**
-   * Ensures the options object is mutable by creating a copy if frozen.
-   *
-   * Note: This method assumes this.#options is always a complete InternalAdhesiveOptions
-   * object (never partial), which is guaranteed by our initialization logic.
-   * The spread operation preserves all existing properties from the frozen object.
-   */
   #ensureOptionsAreMutable(): void {
     if (Object.isFrozen(this.#options)) {
       this.#options = { ...this.#options };
@@ -819,11 +806,13 @@ export class Adhesive {
     const top = this.#scrollTop + offset;
     const bottom = top + height;
 
+    // Check if element is above the top boundary
     if (top <= topBoundary) {
       this.#reset();
       return;
     }
 
+    // Check if element is below the bottom boundary
     if (bottom >= bottomBoundary) {
       const stickyTop = bottomBoundary - height;
       const relativePos = stickyTop - this.#state.y;
@@ -831,6 +820,7 @@ export class Adhesive {
       return;
     }
 
+    // Check if element is within the boundaries
     if (height > this.#winHeight - offset) {
       this.#handleTallElementTop(top, bottom);
       return;
@@ -988,12 +978,9 @@ export class Adhesive {
     // Modern ResizeObserver for better performance
     if ("ResizeObserver" in window) {
       this.#observer = new ResizeObserver(this.#onElementResize);
-      this.#observer.observe(this.#boundingEl);
-      if (this.#outerWrapper) {
-        this.#observer.observe(this.#outerWrapper);
-      }
-      // Also observe the target element for content changes
       this.#observer.observe(this.#targetEl);
+      this.#observer.observe(this.#boundingEl);
+      if (this.#outerWrapper) this.#observer.observe(this.#outerWrapper);
     } else {
       console.warn(
         `@adhesivejs/core: ${ERROR_CODES.RESIZE_OBSERVER_NOT_SUPPORTED}`,
@@ -1030,8 +1017,8 @@ export class Adhesive {
       if (entry.target === this.#outerWrapper) {
         needsDimensionUpdate = true;
       } else if (
-        entry.target === this.#boundingEl ||
-        entry.target === this.#targetEl
+        entry.target === this.#targetEl ||
+        entry.target === this.#boundingEl
       ) {
         needsFullUpdate = true;
       }
@@ -1110,7 +1097,6 @@ export class Adhesive {
     this.#state.activated = true;
     this.#update();
 
-    // Only set up event listeners if they haven't been set up yet
     if (!this.#observer) {
       this.#setupEventListeners();
     }
@@ -1133,62 +1119,22 @@ export class Adhesive {
 
     this.#isEnabled = true;
 
-    // In SSR environment, just set the flag and return
     if (!isBrowser()) {
       this.#state.activated = true;
       return this;
     }
 
-    // Re-resolve elements if instance was created in SSR mode
     this.#resolveSSRElements();
-
-    // Create wrappers if they don't exist yet (instance was created disabled)
     this.#ensureWrappersExist();
 
-    // Always set activated to true after any state initialization
     this.#state.activated = true;
-
     this.#update();
 
-    // Set up event listeners if they haven't been set up yet
     if (!this.#observer) {
       this.#setupEventListeners();
     }
 
     return this;
-  }
-
-  #resolveSSRElements(): void {
-    if (!this.#originalSelectors) return;
-
-    const targetEl = resolveElement(this.#originalSelectors.targetEl);
-    const boundingEl = this.#originalSelectors.boundingEl
-      ? resolveElement(this.#originalSelectors.boundingEl)
-      : null;
-
-    if (!targetEl) {
-      throw createAdhesiveError("TARGET_EL_REQUIRED", {
-        targetEl: this.#originalSelectors.targetEl,
-      });
-    }
-
-    this.#targetEl = targetEl;
-    this.#boundingEl = boundingEl ?? targetEl;
-    this.#options.targetEl = this.#targetEl;
-    this.#options.boundingEl = this.#boundingEl;
-
-    // Clear original selectors as they're no longer needed
-    this.#originalSelectors = null;
-  }
-
-  #ensureWrappersExist(): void {
-    if (!this.#outerWrapper || !this.#innerWrapper) {
-      this.#createWrappers();
-      this.#state = createInitialState(this.#innerWrapper);
-      this.#state.bottomBoundary = this.#getBottomBoundary();
-      this.#winHeight = getViewportHeight();
-      this.#scrollTop = getScrollTop();
-    }
   }
 
   /**
@@ -1208,6 +1154,8 @@ export class Adhesive {
    * ```
    */
   disable(): this {
+    if (!this.#isEnabled) return this;
+
     this.#isEnabled = false;
     this.#state.activated = false;
 
@@ -1238,7 +1186,9 @@ export class Adhesive {
    * });
    * ```
    */
-  updateOptions(newOptions: Partial<AdhesiveOptions>): this {
+  updateOptions(
+    newOptions: Partial<Omit<AdhesiveOptions, "targetEl" | "boundingEl">>,
+  ): this {
     const optionsToUpdate = Object.entries(newOptions).filter(
       ([, value]) => value !== undefined,
     ) as Array<[keyof InternalAdhesiveOptions, unknown]>;
@@ -1302,6 +1252,7 @@ export class Adhesive {
    */
   refresh(): this {
     if (!this.#isEnabled) return this;
+
     this.#forcedDimensionUpdate();
     return this;
   }

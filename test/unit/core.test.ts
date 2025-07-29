@@ -118,9 +118,6 @@ describe("Core", () => {
         } catch (error) {
           expect(error).toBeInstanceOf(AdhesiveError);
           expect((error as AdhesiveError).code).toBe("TARGET_EL_NOT_FOUND");
-          expect((error as AdhesiveError).context).toEqual({
-            selector: "#nonexistent",
-          });
         }
       });
 
@@ -1484,7 +1481,6 @@ describe("Core", () => {
             createAdhesiveInstance({ targetEl: selector });
           } catch (error) {
             expect((error as AdhesiveError).code).toBe(expectedCode);
-            expect((error as AdhesiveError).context).toBeDefined();
           }
         },
       );
@@ -1497,9 +1493,6 @@ describe("Core", () => {
         } catch (error) {
           expect(error).toBeInstanceOf(AdhesiveError);
           expect((error as AdhesiveError).code).toBe("TARGET_EL_NOT_FOUND");
-          expect((error as AdhesiveError).context).toEqual({
-            selector: testSelector,
-          });
           expect((error as AdhesiveError).message).toContain(
             "@adhesivejs/core",
           );
