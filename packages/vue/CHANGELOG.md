@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.6.1
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.6.0...v0.6.1)
+
+### 🩹 Fixes
+
+- **core:** Ensure z-index is still set in relative position ([abe4323](https://github.com/adhesivejs/adhesive/commit/abe4323))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.6.0
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.5.0...v0.6.0)
