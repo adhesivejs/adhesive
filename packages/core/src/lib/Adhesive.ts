@@ -616,6 +616,7 @@ export class Adhesive {
         transform: innerStyle.transform,
         top: innerStyle.top,
         bottom: innerStyle.bottom,
+        width: innerStyle.width,
       };
 
       Object.assign(innerStyle, {
@@ -623,6 +624,7 @@ export class Adhesive {
         transform: "",
         top: "",
         bottom: "",
+        width: "",
       });
 
       // Force reflow and measure both outer and inner wrappers
@@ -659,11 +661,6 @@ export class Adhesive {
     this.#state.elementY = newElementY;
     this.#state.topBoundary = this.#getTopBoundary();
     this.#state.bottomBoundary = this.#getBottomBoundary();
-  }
-
-  #forcedDimensionUpdate(): void {
-    this.#updateDimensions();
-    this.#updateStyles();
   }
 
   // =============================================================================
@@ -770,6 +767,7 @@ export class Adhesive {
     if (!this.#isEnabled) return;
 
     this.#updateDimensions();
+    this.#updateStyles();
 
     const { bottomBoundary, topBoundary, elementWidth, elementHeight } =
       this.#state;
@@ -1011,25 +1009,19 @@ export class Adhesive {
 
     if (entries.length === 0) return;
 
-    if (this.#pendingResizeUpdate) return;
-
-    // Check if any entries are for tracked elements before scheduling update
-    let needsDimensionUpdate = false;
-    let needsFullUpdate = false;
+    let updateNeeded = false;
 
     for (const entry of entries) {
-      if (entry.target === this.#outerWrapper) {
-        needsDimensionUpdate = true;
-      } else if (
-        entry.target === this.#targetEl ||
-        entry.target === this.#boundingEl
-      ) {
-        needsFullUpdate = true;
-      }
+      const isTarget = entry.target === this.#targetEl;
+      const isBounding = entry.target === this.#boundingEl;
+      const isOuter = entry.target === this.#outerWrapper;
+      const isValidEntry = isTarget || isBounding || isOuter;
+      if (isValidEntry) updateNeeded = true;
     }
 
-    // Only schedule update if we found relevant entries
-    if (!needsFullUpdate && !needsDimensionUpdate) return;
+    if (!updateNeeded) return;
+
+    if (this.#pendingResizeUpdate) return;
 
     this.#pendingResizeUpdate = true;
 
@@ -1047,11 +1039,7 @@ export class Adhesive {
 
       this.#pendingResizeUpdate = false;
 
-      if (needsFullUpdate) {
-        this.#update();
-      } else if (needsDimensionUpdate) {
-        this.#forcedDimensionUpdate();
-      }
+      this.#update();
     });
   };
 
@@ -1220,6 +1208,7 @@ export class Adhesive {
     }
 
     this.#update();
+
     return this;
   }
 
@@ -1257,7 +1246,7 @@ export class Adhesive {
   refresh(): this {
     if (!this.#isEnabled) return this;
 
-    this.#forcedDimensionUpdate();
+    this.#update();
     return this;
   }
 
