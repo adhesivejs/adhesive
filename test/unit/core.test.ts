@@ -1426,12 +1426,7 @@ describe("Core", () => {
         expectElementToBeInState(adhesive, "INITIAL");
 
         await simulateScrollToPosition(200);
-        const scrolledState = adhesive.getState();
-        expect([
-          ADHESIVE_STATUS.INITIAL,
-          ADHESIVE_STATUS.FIXED,
-          ADHESIVE_STATUS.RELATIVE,
-        ]).toContain(scrolledState.status);
+        expectElementToBeInState(adhesive, "FIXED");
 
         await simulateScrollToPosition(0);
         expectElementToBeInState(adhesive, "INITIAL");
@@ -1493,6 +1488,40 @@ describe("Core", () => {
     });
 
     describe("real-world edge cases", () => {
+      it("cleans up previously set classes when transitioning between statuses", async () => {
+        const adhesive = createInitializedAdhesive({ boundingEl });
+
+        const innerEl = targetEl.parentElement!;
+        const outerEl = innerEl!.parentElement!;
+
+        function expectExactOuterClasses(expectedClasses: string[]) {
+          expect([...outerEl.classList]).toEqual(expectedClasses);
+        }
+
+        expectElementToBeInState(adhesive, "INITIAL");
+        expectExactOuterClasses(["adhesive__outer"]);
+
+        await simulateScrollToPosition(200);
+        expectElementToBeInState(adhesive, "FIXED");
+        expectExactOuterClasses(["adhesive__outer", "adhesive--active"]);
+
+        await simulateScrollToPosition(0);
+        expectElementToBeInState(adhesive, "INITIAL");
+        expectExactOuterClasses(["adhesive__outer"]);
+
+        await simulateScrollToPosition(2000);
+        expectElementToBeInState(adhesive, "RELATIVE");
+        expectExactOuterClasses(["adhesive__outer", "adhesive--released"]);
+
+        await simulateScrollToPosition(200);
+        expectElementToBeInState(adhesive, "FIXED");
+        expectExactOuterClasses(["adhesive__outer", "adhesive--active"]);
+
+        await simulateScrollToPosition(0);
+        expectElementToBeInState(adhesive, "INITIAL");
+        expectExactOuterClasses(["adhesive__outer"]);
+      });
+
       it("handles rapid enable/disable cycles", () => {
         const adhesive = createInitializedAdhesive();
 

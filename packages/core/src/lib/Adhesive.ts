@@ -674,6 +674,7 @@ export class Adhesive {
 
     const outerStyle = this.#outerWrapper.style;
     outerStyle.height = `${this.#state.elementHeight}px`;
+    this.#outerWrapper.classList.remove(this.#options.releasedClassName);
     this.#outerWrapper.classList.add(this.#options.activeClassName);
 
     if (!wasAlreadyFixed) {
