@@ -1498,28 +1498,93 @@ describe("Core", () => {
           expect([...outerEl.classList]).toEqual(expectedClasses);
         }
 
+        function expectExactStyles(
+          element: HTMLElement,
+          expectedStyles: Partial<CSSStyleDeclaration>,
+        ) {
+          const relatedStyles = {
+            position: element.style.position,
+            zIndex: element.style.zIndex,
+            transform: element.style.transform,
+            top: element.style.top,
+            bottom: element.style.bottom,
+            width: element.style.width,
+            height: element.style.height,
+          };
+
+          expect(relatedStyles).toMatchObject(expectedStyles);
+        }
+
+        function expectExactOuterStyles(
+          expectedStyles: Partial<CSSStyleDeclaration>,
+        ) {
+          return expectExactStyles(outerEl, expectedStyles);
+        }
+
+        function expectExactInnerStyles(
+          expectedStyles: Partial<CSSStyleDeclaration>,
+        ) {
+          return expectExactStyles(innerEl, expectedStyles);
+        }
+
+        const initialClasses = ["adhesive__outer", "adhesive--initial"];
+        const initialOuterStyles = {};
+        const initialInnerStyles = {};
+
+        const fixedClasses = ["adhesive__outer", "adhesive--fixed"];
+        const fixedOuterStyles = {
+          height: "50px",
+        };
+        const fixedInnerStyles = {
+          position: "fixed",
+          zIndex: "1",
+          transform: "",
+          width: "100px",
+          top: "0px",
+        };
+
+        const relativeClasses = ["adhesive__outer", "adhesive--relative"];
+        const relativeOuterStyles = {};
+        const relativeInnerStyles = {
+          position: "relative",
+          zIndex: "1",
+          transform: "translate3d(0, 1850px, 0)",
+        };
+
         expectElementToBeInState(adhesive, "INITIAL");
-        expectExactOuterClasses(["adhesive__outer", "adhesive--initial"]);
+        expectExactOuterClasses(initialClasses);
+        expectExactOuterStyles(initialOuterStyles);
+        expectExactInnerStyles(initialInnerStyles);
 
         await simulateScrollToPosition(200);
         expectElementToBeInState(adhesive, "FIXED");
-        expectExactOuterClasses(["adhesive__outer", "adhesive--fixed"]);
+        expectExactOuterClasses(fixedClasses);
+        expectExactOuterStyles(fixedOuterStyles);
+        expectExactInnerStyles(fixedInnerStyles);
 
         await simulateScrollToPosition(0);
         expectElementToBeInState(adhesive, "INITIAL");
-        expectExactOuterClasses(["adhesive__outer", "adhesive--initial"]);
+        expectExactOuterClasses(initialClasses);
+        expectExactOuterStyles(initialOuterStyles);
+        expectExactInnerStyles(initialInnerStyles);
 
         await simulateScrollToPosition(2000);
         expectElementToBeInState(adhesive, "RELATIVE");
-        expectExactOuterClasses(["adhesive__outer", "adhesive--relative"]);
+        expectExactOuterClasses(relativeClasses);
+        expectExactOuterStyles(relativeOuterStyles);
+        expectExactInnerStyles(relativeInnerStyles);
 
         await simulateScrollToPosition(200);
         expectElementToBeInState(adhesive, "FIXED");
-        expectExactOuterClasses(["adhesive__outer", "adhesive--fixed"]);
+        expectExactOuterClasses(fixedClasses);
+        expectExactOuterStyles(fixedOuterStyles);
+        expectExactInnerStyles(fixedInnerStyles);
 
         await simulateScrollToPosition(0);
         expectElementToBeInState(adhesive, "INITIAL");
-        expectExactOuterClasses(["adhesive__outer", "adhesive--initial"]);
+        expectExactOuterClasses(initialClasses);
+        expectExactOuterStyles(initialOuterStyles);
+        expectExactInnerStyles(initialInnerStyles);
       });
 
       it("handles rapid enable/disable cycles", () => {

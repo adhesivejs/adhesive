@@ -78,4 +78,7 @@ export function useAdhesive(
   useEffect(() => {
     adhesive.current?.updateOptions(getValidatedOptions());
   }, [options]);
+
+  // TODO: Return current Adhesive status (`initial`, `fixed`, `relative`)
+  // as memo state for easier access in components
 }

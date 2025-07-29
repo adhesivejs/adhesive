@@ -648,20 +648,21 @@ export class Adhesive {
 
     if (!this.#innerWrapper || !this.#outerWrapper) return;
 
+    this.#outerWrapper.classList.remove(
+      this.#options.fixedClassName,
+      this.#options.relativeClassName,
+    );
+    this.#outerWrapper.classList.add(this.#options.initialClassName);
+
+    const outerStyle = this.#outerWrapper.style;
+    outerStyle.height = "";
+
     const innerStyle = this.#innerWrapper.style;
     innerStyle.position = this.#state.originalPosition;
     innerStyle.top = this.#state.originalTop;
     innerStyle.zIndex = this.#state.originalZIndex;
     innerStyle.transform = this.#state.originalTransform;
     innerStyle.width = "";
-
-    const outerStyle = this.#outerWrapper.style;
-    outerStyle.height = "";
-    this.#outerWrapper.classList.remove(
-      this.#options.fixedClassName,
-      this.#options.relativeClassName,
-    );
-    this.#outerWrapper.classList.add(this.#options.initialClassName);
 
     this.#setState({
       status: ADHESIVE_STATUS.INITIAL,
@@ -674,10 +675,19 @@ export class Adhesive {
 
     if (!this.#innerWrapper || !this.#outerWrapper) return;
 
+    this.#outerWrapper.classList.remove(
+      this.#options.initialClassName,
+      this.#options.relativeClassName,
+    );
+    this.#outerWrapper.classList.add(this.#options.fixedClassName);
+
+    const outerStyle = this.#outerWrapper.style;
+    outerStyle.height = `${this.#state.elementHeight}px`;
+
     const innerStyle = this.#innerWrapper.style;
     innerStyle.position = "fixed";
-    innerStyle.transform = "";
     innerStyle.zIndex = String(this.#options.zIndex);
+    innerStyle.transform = "";
     innerStyle.width = `${this.#state.elementWidth}px`;
 
     if (this.#options.position === ADHESIVE_POSITION.TOP) {
@@ -687,14 +697,6 @@ export class Adhesive {
       innerStyle.bottom = `${this.#options.offset}px`;
       innerStyle.top = "";
     }
-
-    const outerStyle = this.#outerWrapper.style;
-    outerStyle.height = `${this.#state.elementHeight}px`;
-    this.#outerWrapper.classList.remove(
-      this.#options.initialClassName,
-      this.#options.relativeClassName,
-    );
-    this.#outerWrapper.classList.add(this.#options.fixedClassName);
 
     if (!wasAlreadyFixed) {
       this.#setState({
@@ -713,20 +715,22 @@ export class Adhesive {
 
     if (!this.#innerWrapper || !this.#outerWrapper) return;
 
-    const innerStyle = this.#innerWrapper.style;
-    innerStyle.position = "relative";
-    innerStyle.transform = `translate3d(0, ${position}px, 0)`;
-    innerStyle.top = "";
-    innerStyle.bottom = "";
-    innerStyle.width = "";
-
-    const outerStyle = this.#outerWrapper.style;
-    outerStyle.height = "";
     this.#outerWrapper.classList.remove(
       this.#options.initialClassName,
       this.#options.fixedClassName,
     );
     this.#outerWrapper.classList.add(this.#options.relativeClassName);
+
+    const outerStyle = this.#outerWrapper.style;
+    outerStyle.height = "";
+
+    const innerStyle = this.#innerWrapper.style;
+    innerStyle.position = "relative";
+    innerStyle.zIndex = String(this.#options.zIndex);
+    innerStyle.transform = `translate3d(0, ${position}px, 0)`;
+    innerStyle.top = "";
+    innerStyle.bottom = "";
+    innerStyle.width = "";
 
     this.#setState({
       status: ADHESIVE_STATUS.RELATIVE,
