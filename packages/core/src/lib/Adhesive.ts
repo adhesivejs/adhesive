@@ -396,7 +396,7 @@ export class Adhesive {
 
   // Performance optimization: cache frequently accessed values
   #scrollTop = -1;
-  #winHeight = -1;
+  #viewportHeight = -1;
 
   // Request Animation Frame optimization for smooth updates
   #rafId: number | null = null;
@@ -494,7 +494,7 @@ export class Adhesive {
     this.#state = createInitialState(this.#innerWrapper);
     this.#state.bottomBoundary = this.#getBottomBoundary();
 
-    this.#winHeight = getViewportHeight();
+    this.#viewportHeight = getViewportHeight();
     this.#scrollTop = getScrollTop();
   }
 
@@ -572,7 +572,7 @@ export class Adhesive {
     this.#createWrappers();
     this.#state = createInitialState(this.#innerWrapper);
     this.#state.bottomBoundary = this.#getBottomBoundary();
-    this.#winHeight = getViewportHeight();
+    this.#viewportHeight = getViewportHeight();
     this.#scrollTop = getScrollTop();
   }
 
@@ -793,7 +793,7 @@ export class Adhesive {
   }
 
   #updateForTopPosition(offset: number): void {
-    const { bottomBoundary, topBoundary, elementHeight, elementY } =
+    const { topBoundary, bottomBoundary, elementHeight, elementY } =
       this.#state;
     const top = this.#scrollTop + offset;
     const bottom = top + elementHeight;
@@ -807,7 +807,7 @@ export class Adhesive {
     // Check if element is below the bottom boundary
     if (bottom >= bottomBoundary) {
       const stickyTop = bottomBoundary - elementHeight;
-      const relativePos = stickyTop - this.#state.elementY;
+      const relativePos = stickyTop - elementY;
       this.#release(relativePos);
       return;
     }
@@ -819,8 +819,8 @@ export class Adhesive {
       return;
     }
 
-    // Check if element is within the boundaries
-    if (elementHeight > this.#winHeight - offset) {
+    // Handle tall elements
+    if (elementHeight > this.#viewportHeight - offset) {
       this.#handleTallElementTop(top, bottom);
       return;
     }
@@ -829,9 +829,10 @@ export class Adhesive {
   }
 
   #updateForBottomPosition(offset: number): void {
-    const { bottomBoundary, topBoundary, elementHeight: height } = this.#state;
-    const viewportBottom = this.#scrollTop + this.#winHeight;
-    const elementNaturalBottom = this.#state.elementY + height;
+    const { topBoundary, bottomBoundary, elementHeight, elementY } =
+      this.#state;
+    const viewportBottom = this.#scrollTop + this.#viewportHeight;
+    const elementNaturalBottom = elementY + elementHeight;
 
     // Check if element's natural position is above viewport bottom
     if (elementNaturalBottom >= viewportBottom - offset) {
@@ -841,21 +842,21 @@ export class Adhesive {
 
     // Calculate position if stuck to viewport bottom
     const stuckElementBottom = viewportBottom - offset;
-    const stuckElementTop = stuckElementBottom - height;
+    const stuckElementTop = stuckElementBottom - elementHeight;
 
     // Check boundary constraints
     if (stuckElementTop < topBoundary) {
-      this.#release(topBoundary - this.#state.elementY);
+      this.#release(topBoundary - elementY);
       return;
     }
 
     if (stuckElementBottom > bottomBoundary) {
-      this.#release(bottomBoundary - height - this.#state.elementY);
+      this.#release(bottomBoundary - elementHeight - elementY);
       return;
     }
 
     // Handle tall elements
-    if (height > this.#winHeight - offset) {
+    if (elementHeight > this.#viewportHeight - offset) {
       this.#handleTallElementBottom(stuckElementTop, stuckElementBottom);
       return;
     }
@@ -873,11 +874,11 @@ export class Adhesive {
 
     switch (status) {
       case ADHESIVE_STATUS.INITIAL:
-        this.#release(0); // Start at natural position
+        this.#release(0);
         break;
       case ADHESIVE_STATUS.RELATIVE:
         if (bottom > elementY + elementHeight) {
-          this.#fixed(offset + elementHeight - this.#winHeight);
+          this.#fixed(offset + elementHeight - this.#viewportHeight);
         } else if (top < elementY) {
           this.#fixed(offset);
         }
@@ -893,7 +894,7 @@ export class Adhesive {
   }
 
   #handleTallElementBottom(elementTop: number, elementBottom: number): void {
-    const { status, elementY, elementHeight } = this.#state;
+    const { status, elementY, elementHeight, pos } = this.#state;
     const { offset } = this.#options;
 
     switch (status) {
@@ -901,16 +902,16 @@ export class Adhesive {
         this.#release(0);
         break;
       case ADHESIVE_STATUS.RELATIVE: {
-        const currentTop = elementY + this.#state.pos;
+        const currentTop = elementY + pos;
         const currentBottom = currentTop + elementHeight;
         const viewportTop = this.#scrollTop;
-        const viewportBottom = this.#scrollTop + this.#winHeight;
+        const viewportBottom = this.#scrollTop + this.#viewportHeight;
 
         // Check scroll direction and viewport boundaries
         if (elementBottom < currentBottom && currentTop < viewportTop) {
           this.#fixed(offset); // Stick to bottom
         } else if (elementTop > currentTop && currentBottom > viewportBottom) {
-          this.#fixed(elementHeight - this.#winHeight + offset); // Stick to top
+          this.#fixed(elementHeight - this.#viewportHeight + offset); // Stick to top
         }
         break;
       }
@@ -938,7 +939,7 @@ export class Adhesive {
       return { release: true, position: top - elementY };
     }
 
-    if (pos === offset + elementHeight - this.#winHeight) {
+    if (pos === offset + elementHeight - this.#viewportHeight) {
       return { release: true, position: bottom - elementHeight - elementY };
     }
 
@@ -958,7 +959,7 @@ export class Adhesive {
     }
 
     // If currently stuck to top (for tall elements) and should be released
-    if (pos === elementHeight - this.#winHeight + offset) {
+    if (pos === elementHeight - this.#viewportHeight + offset) {
       return {
         release: true,
         position: elementBottom - elementHeight - elementY,
@@ -999,7 +1000,7 @@ export class Adhesive {
 
   readonly #onWindowResize = (): void => {
     this.#scheduleUpdate(() => {
-      this.#winHeight = getViewportHeight();
+      this.#viewportHeight = getViewportHeight();
       this.#update();
     });
   };
