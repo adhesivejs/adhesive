@@ -1,5 +1,6 @@
 export {
   Adhesive,
+  ADHESIVE_POSITION,
   ADHESIVE_STATUS,
   AdhesiveError,
   Adhesive as default,

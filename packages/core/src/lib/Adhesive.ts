@@ -1,97 +1,32 @@
 type ElementSelector = HTMLElement | string;
 
-/**
- * Defines the position where the element should stick when activated.
- *
- * @example
- * ```ts
- * // Stick to the top of the viewport/container
- * position: "top"
- *
- * // Stick to the bottom of the viewport/container
- * position: "bottom"
- * ```
- */
-export type AdhesivePosition = "top" | "bottom";
+export const ADHESIVE_POSITION = {
+  TOP: "top",
+  BOTTOM: "bottom",
+} as const;
 
-/**
- * Configuration options for the Adhesive sticky positioning behavior.
- *
- * Provides comprehensive control over how elements stick within their boundaries,
- * including positioning, offsets, styling, and boundary constraints.
- */
+export type AdhesivePosition =
+  (typeof ADHESIVE_POSITION)[keyof typeof ADHESIVE_POSITION];
+
+export const ADHESIVE_STATUS = {
+  INITIAL: "initial",
+  FIXED: "fixed",
+  RELATIVE: "relative",
+} as const;
+
+export type AdhesiveStatus =
+  (typeof ADHESIVE_STATUS)[keyof typeof ADHESIVE_STATUS];
+
 export interface AdhesiveOptions {
-  /**
-   * The element to make sticky. Can be an HTMLElement instance or a CSS selector string.
-   * @example
-   * ```ts
-   * targetEl: '#target-element' // CSS selector
-   * targetEl: document.querySelector('#target-element') // HTMLElement
-   * ```
-   */
   readonly targetEl: ElementSelector;
-
-  /**
-   * The element that defines the boundaries for the sticky behavior.
-   * Defaults to document.body if not provided.
-   *
-   * @default `document.body`
-   * @example
-   * ```ts
-   * boundingEl: '.container' // CSS selector
-   * boundingEl: document.querySelector('.container') // HTMLElement
-   * boundingEl: null // Use document.body
-   * ```
-   */
   readonly boundingEl?: ElementSelector | null;
-
-  /**
-   * Whether the sticky behavior is enabled.
-   * @default true
-   */
   readonly enabled?: boolean;
-
-  /**
-   * The offset from the top or bottom of the bounding element in pixels.
-   * @default 0
-   */
   readonly offset?: number;
-
-  /**
-   * The position where the element should stick.
-   *
-   * @default "top"
-   */
   readonly position?: AdhesivePosition;
-
-  /**
-   * The z-index value for the sticky element when fixed.
-   * @default 1
-   */
   readonly zIndex?: number;
-
-  /**
-   * Additional CSS class to add to the outer element.
-   * @default "adhesive__outer"
-   */
   readonly outerClassName?: string;
-
-  /**
-   * Additional CSS class to add to the inner element.
-   * @default "adhesive__inner"
-   */
   readonly innerClassName?: string;
-
-  /**
-   * CSS class to add when the element is in active (fixed) state.
-   * @default "adhesive--active"
-   */
   readonly activeClassName?: string;
-
-  /**
-   * CSS class to add when the element is in released (relative) state.
-   * @default "adhesive--released"
-   */
   readonly releasedClassName?: string;
 }
 
@@ -106,99 +41,26 @@ interface InternalAdhesiveOptions {
   releasedClassName: string;
 }
 
-const DEFAULTS = {
-  OFFSET: 0,
-  POSITION: "top" as const satisfies AdhesivePosition,
-  Z_INDEX: 1,
-  ENABLED: true,
-  OUTER_CLASS: "adhesive__outer",
-  INNER_CLASS: "adhesive__inner",
-  ACTIVE_CLASS: "adhesive--active",
-  RELEASED_CLASS: "adhesive--released",
-} as const;
-
-/**
- * Constants representing the different states an Adhesive element can be in.
- *
- * These states track the current positioning behavior of the sticky element
- * as it responds to scroll events and boundary constraints.
- *
- * @example
- * ```ts
- * import { ADHESIVE_STATUS } from '@adhesivejs/core';
- *
- * const state = adhesive.getState();
- * if (state.status === ADHESIVE_STATUS.FIXED) {
- *   console.log('Element is currently stuck to viewport');
- * }
- * ```
- */
-export const ADHESIVE_STATUS = {
-  /** Element is in its original position, not affected by sticky positioning */
-  INITIAL: "initial",
-  /** Element is positioned relative within its boundaries, following scroll */
-  RELATIVE: "relative",
-  /** Element is stuck to the bounding element (top or bottom) */
-  FIXED: "fixed",
-} as const;
-
-/**
- * Union type representing all possible Adhesive status values.
- *
- * @see {@link ADHESIVE_STATUS} for available status constants
- */
-export type AdhesiveStatus =
-  (typeof ADHESIVE_STATUS)[keyof typeof ADHESIVE_STATUS];
-
-/**
- * Read-only state information for an Adhesive instance.
- *
- * Provides comprehensive information about the current positioning state,
- * dimensions, boundaries, and behavior of the sticky element.
- *
- * @example
- * ```ts
- * const state = adhesive.getState();
- * console.log(`Status: ${state.status}`);
- * console.log(`Is currently sticky: ${state.isSticky}`);
- * console.log(`Element dimensions: ${state.elementWidth}x${state.elementHeight}`);
- * console.log(`Current position: (${state.elementX}, ${state.elementY})`);
- * ```
- */
 export interface AdhesiveState {
-  /** Current positioning status of the element */
   readonly status: AdhesiveStatus;
-  /** Whether the element is currently in a sticky state (fixed or relative positioning) */
-  readonly isSticky: boolean;
-  /** Original CSS position value before Adhesive was applied */
-  readonly originalPosition: string;
-  /** Original CSS top value before Adhesive was applied */
-  readonly originalTop: string;
-  /** Original CSS z-index value before Adhesive was applied */
-  readonly originalZIndex: string;
-  /** Original CSS transform value before Adhesive was applied */
-  readonly originalTransform: string;
-  /** Current width of the element in pixels */
-  readonly elementWidth: number;
-  /** Current height of the element in pixels */
-  readonly elementHeight: number;
-  /** Current horizontal position (left offset) in pixels */
-  readonly elementX: number;
-  /** Current vertical position (top offset) in pixels */
-  readonly elementY: number;
-  /** Top boundary position where sticky behavior begins */
-  readonly topBoundary: number;
-  /** Bottom boundary position where sticky behavior ends */
-  readonly bottomBoundary: number;
-  /** Current positioning offset applied to the element */
-  readonly pos: number;
-  /** Whether the Adhesive instance has been activated (initialized) */
   readonly activated: boolean;
+  readonly position: number;
+  readonly originalPosition: string;
+  readonly originalTop: string;
+  readonly originalZIndex: string;
+  readonly originalTransform: string;
+  readonly elementWidth: number;
+  readonly elementHeight: number;
+  readonly elementX: number;
+  readonly elementY: number;
+  readonly topBoundary: number;
+  readonly bottomBoundary: number;
 }
 
 interface InternalAdhesiveState {
   status: AdhesiveStatus;
-  isSticky: boolean;
+  activated: boolean;
+  position: number;
   originalPosition: string;
   originalTop: string;
   originalZIndex: string;
@@ -209,387 +71,378 @@ interface InternalAdhesiveState {
   elementY: number;
   topBoundary: number;
   bottomBoundary: number;
-  pos: number;
-  activated: boolean;
 }
 
-/**
- * Custom error class for Adhesive-related errors.
- *
- * Provides structured error information with error codes and context
- * to help developers diagnose and fix configuration or runtime issues.
- *
- * @example
- * ```ts
- * try {
- *   new Adhesive({ targetEl: '#non-existent' });
- * } catch (error) {
- *   if (error instanceof AdhesiveError) {
- *     console.log(`Error code: ${error.code}`);
- *     console.log(`Context:`, error.context);
- *   }
- * }
- * ```
- */
 export class AdhesiveError extends Error {
-  /** Specific error code for programmatic error handling */
   public readonly code: string;
 
-  /**
-   * Creates a new AdhesiveError instance.
-   *
-   * @param message - Human-readable error message
-   * @param code - Specific error code for programmatic handling
-   */
-  constructor(message: string, code: string) {
+  constructor(code: string, message: string) {
     super(`@adhesivejs/core: ${message}`);
     this.name = "AdhesiveError";
     this.code = code;
-
-    // Maintain proper stack trace for where error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, AdhesiveError);
-    }
   }
 }
 
-const ERROR_CODES = {
-  TARGET_EL_REQUIRED: "targetEl is required",
-  TARGET_EL_NOT_FOUND: "targetEl not found in DOM",
-  TARGET_EL_NO_PARENT: "targetEl must have a parent node for wrapper creation",
-  BOUNDING_EL_NOT_FOUND: "boundingEl not found in DOM",
-  RESIZE_OBSERVER_NOT_SUPPORTED:
-    "ResizeObserver not supported in this environment",
-} as const;
+const DEFAULT_OPTIONS = {
+  enabled: true as boolean,
+  offset: 0 as number,
+  position: ADHESIVE_POSITION.TOP as AdhesivePosition,
+  zIndex: 1 as number,
+  outerClassName: "adhesive__outer",
+  innerClassName: "adhesive__inner",
+  activeClassName: "adhesive--active",
+  releasedClassName: "adhesive--released",
+} satisfies Omit<AdhesiveOptions, "targetEl" | "boundingEl">;
 
-function createAdhesiveError(code: keyof typeof ERROR_CODES): AdhesiveError {
-  return new AdhesiveError(ERROR_CODES[code], code);
-}
+const isBrowser = () =>
+  typeof window !== "undefined" && typeof document !== "undefined";
 
-function isBrowser(): boolean {
-  const windowExists = typeof window !== "undefined";
-  const documentExists = typeof document !== "undefined";
-  return windowExists && documentExists;
-}
-
-function resolveElement(element: HTMLElement | string): HTMLElement | null {
+const resolveElement = (element: ElementSelector): HTMLElement | null => {
   if (!isBrowser()) return null;
-  if (typeof element === "string") {
-    const resolved = document.querySelector(element);
-    return resolved instanceof HTMLElement ? resolved : null;
+  return typeof element === "string"
+    ? document.querySelector(element)
+    : element;
+};
+
+const getScrollTop = () =>
+  isBrowser()
+    ? (window.scrollY ?? document.documentElement?.scrollTop ?? 0)
+    : 0;
+
+const getViewportHeight = () =>
+  isBrowser()
+    ? (window.innerHeight ?? document.documentElement?.clientHeight ?? 0)
+    : 0;
+
+/**
+ * Adhesive - A lightweight sticky positioning solution
+ */
+export class Adhesive {
+  static create(options: AdhesiveOptions): Adhesive {
+    return new Adhesive(options).init();
   }
-  return element;
-}
 
-function getScrollTop(): number {
-  if (!isBrowser()) return 0;
-  return window.scrollY ?? document.documentElement?.scrollTop ?? 0;
-}
+  #targetEl: HTMLElement;
+  #boundingEl: HTMLElement;
+  #targetElSelector: ElementSelector;
+  #boundingElSelector: ElementSelector | null;
 
-function getViewportHeight(): number {
-  if (!isBrowser()) return 0;
-  return window.innerHeight ?? document.documentElement?.clientHeight ?? 0;
-}
+  #outerWrapper: HTMLElement | null = null;
+  #innerWrapper: HTMLElement | null = null;
 
-function validateElement(
-  element: HTMLElement | null,
-  errorKey: keyof typeof ERROR_CODES,
-): asserts element is HTMLElement {
-  if (!element) {
-    throw createAdhesiveError(errorKey);
-  }
-}
+  #options: InternalAdhesiveOptions = {
+    enabled: DEFAULT_OPTIONS.enabled,
+    offset: DEFAULT_OPTIONS.offset,
+    position: DEFAULT_OPTIONS.position,
+    zIndex: DEFAULT_OPTIONS.zIndex,
+    outerClassName: DEFAULT_OPTIONS.outerClassName,
+    innerClassName: DEFAULT_OPTIONS.innerClassName,
+    activeClassName: DEFAULT_OPTIONS.activeClassName,
+    releasedClassName: DEFAULT_OPTIONS.releasedClassName,
+  };
 
-function createInitialState(
-  innerWrapper?: HTMLElement | null,
-): InternalAdhesiveState {
-  return {
+  #state: InternalAdhesiveState = {
     status: ADHESIVE_STATUS.INITIAL,
-    isSticky: false,
-    originalPosition: innerWrapper?.style.position ?? "",
-    originalTop: innerWrapper?.style.top ?? "",
-    originalZIndex: innerWrapper?.style.zIndex ?? "",
-    originalTransform: innerWrapper?.style.transform ?? "",
+    activated: false,
+    position: 0,
+    originalPosition: "",
+    originalTop: "",
+    originalZIndex: "",
+    originalTransform: "",
     elementWidth: 0,
     elementHeight: 0,
     elementX: 0,
     elementY: 0,
     topBoundary: 0,
     bottomBoundary: Number.POSITIVE_INFINITY,
-    pos: 0,
-    activated: false,
   };
-}
 
-/**
- * Adhesive - A modern, performant, lightweight, dependency-free sticky positioning solution
- *
- * Provides smooth, performant sticky positioning for DOM elements with configurable boundaries,
- * offsets, and positioning modes. Built with modern TypeScript features and optimized for
- * performance through passive event listeners, ResizeObserver, and efficient DOM operations.
- *
- * ## Key Features
- * - 🚀 **High Performance**: Optimized with passive listeners and minimal DOM operations
- * - 📱 **Cross-platform**: Works seamlessly across all modern browsers and devices
- * - 🎯 **Flexible Positioning**: Supports both top and bottom sticky positioning modes
- * - 🔒 **Boundary Aware**: Intelligent boundary detection and tall element handling
- * - 📦 **Zero Dependencies**: No external dependencies, minimal bundle footprint
- * - 🛡️ **Type Safe**: Full TypeScript support with comprehensive type definitions
- * - 🖥️ **SSR Ready**: Safe for server-side rendering environments
- *
- * ## Performance Characteristics
- * - Uses `ResizeObserver` for efficient resize detection
- * - Leverages `transform3d` for hardware-accelerated animations
- * - Implements passive event listeners for optimal scroll performance
- * - Minimal DOM queries and intelligent state caching
- *
- * @example
- * ```ts
- * // Basic usage with automatic initialization
- * Adhesive.create({ targetEl: '#target-element' });
- * ```
- *
- * @example
- * ```ts
- * // Advanced configuration with boundary container
- * Adhesive.create({
- *   targetEl: document.querySelector('.sidebar'),
- *   boundingEl: '.main-content',
- *   position: 'bottom',
- *   offset: 20,
- *   zIndex: 999,
- *   outerClassName: 'custom-outer',
- *   innerClassName: 'custom-inner',
- *   activeClassName: 'custom-active',
- *   releasedClassName: 'custom-released',
- * });
- * ```
- *
- * @example
- * ```ts
- * const adhesive = Adhesive.create({ targetEl: '#target-element' });
- *
- * // Dynamic configuration updates
- * adhesive.updateOptions({
- *   position: 'bottom',
- *   offset: 50
- * });
- *
- * // State monitoring
- * const state = adhesive.getState();
- * console.log(`Status: ${state.status}, Sticky: ${state.isSticky}`);
- * ```
- */
-export class Adhesive {
-  #isEnabled = true;
-  #targetEl!: HTMLElement;
-  #boundingEl!: HTMLElement;
-  #options!: InternalAdhesiveOptions;
-  #state!: InternalAdhesiveState;
   #observer: ResizeObserver | null = null;
-  #outerWrapper: HTMLElement | null = null;
-  #innerWrapper: HTMLElement | null = null;
-  #originalSelectors: {
-    targetEl: ElementSelector;
-    boundingEl: ElementSelector | null;
-  } | null = null;
-
-  // Performance optimization: cache frequently accessed values
-  #scrollTop = -1;
-  #viewportHeight = -1;
-
-  // Request Animation Frame optimization for smooth updates
+  #trackedElements = new Set<Element>();
   #rafId: number | null = null;
-  #pendingUpdate = false;
-  #pendingResizeUpdate = false;
 
-  /**
-   * Static factory method for convenient instance creation and initialization
-   *
-   * @param options - Configuration options for the sticky behavior
-   * @returns Initialized Adhesive instance ready for use
-   *
-   * @example
-   * ```ts
-   * // Convenient one-liner initialization
-   * Adhesive.create({
-   *   targetEl: '#target-element',
-   *   offset: 20
-   * });
-   * ```
-   */
-  static create(options: AdhesiveOptions): Adhesive {
-    return new Adhesive(options).init();
-  }
-
-  /**
-   * Creates a new Adhesive instance.
-   *
-   * @param options - Configuration options for the sticky behavior
-   * @throws {Error} When targetEl is not provided or not found in the DOM
-   * @throws {Error} When targetEl doesn't have a parent node (required for wrapper creation)
-   * @throws {Error} When boundingEl is specified but not found in the DOM
-   *
-   * @example
-   * ```ts
-   * // Basic usage with element selector
-   * new Adhesive({
-   *   targetEl: '#target-element',
-   *   offset: 10
-   * });
-   * ```
-   *
-   * @example
-   * ```ts
-   * // Advanced usage with all options
-   * new Adhesive({
-   *   targetEl: document.querySelector('.sidebar'),
-   *   boundingEl: '.main-content',
-   *   position: 'bottom',
-   *   offset: 20,
-   *   zIndex: 999,
-   *   outerClassName: 'custom-outer',
-   *   innerClassName: 'custom-inner',
-   *   activeClassName: 'custom-active',
-   *   releasedClassName: 'custom-released',
-   * });
-   * ```
-   */
   constructor(options: AdhesiveOptions) {
-    const { targetEl, boundingEl } = options;
+    if (!options.targetEl) {
+      throw new AdhesiveError("TARGET_EL_REQUIRED", "targetEl is required");
+    }
 
-    if (!targetEl) throw createAdhesiveError("TARGET_EL_REQUIRED");
+    this.#targetElSelector = options.targetEl;
+    this.#boundingElSelector = options.boundingEl ?? null;
 
     if (!isBrowser()) {
-      this.#initializeSSRInstance(options);
+      this.#targetEl = this.#boundingEl = Object.create(null);
       return;
     }
 
-    const _targetEl = resolveElement(targetEl);
-    validateElement(_targetEl, "TARGET_EL_NOT_FOUND");
-    this.#targetEl = _targetEl;
-
-    const _boundingEl = boundingEl ? resolveElement(boundingEl) : document.body;
-    validateElement(_boundingEl, "BOUNDING_EL_NOT_FOUND");
-    this.#boundingEl = _boundingEl;
-
-    this.#options = {
-      enabled: options.enabled ?? DEFAULTS.ENABLED,
-      offset: options.offset ?? DEFAULTS.OFFSET,
-      position: options.position ?? DEFAULTS.POSITION,
-      zIndex: options.zIndex ?? DEFAULTS.Z_INDEX,
-      outerClassName: options.outerClassName ?? DEFAULTS.OUTER_CLASS,
-      innerClassName: options.innerClassName ?? DEFAULTS.INNER_CLASS,
-      activeClassName: options.activeClassName ?? DEFAULTS.ACTIVE_CLASS,
-      releasedClassName: options.releasedClassName ?? DEFAULTS.RELEASED_CLASS,
-    };
-
-    if (options.enabled === false) {
-      this.#isEnabled = false;
-      this.#state = createInitialState();
-      return;
-    }
-
-    this.#createWrappers();
-    this.#state = createInitialState(this.#innerWrapper);
-    this.#state.bottomBoundary = this.#getBottomBoundary();
-
-    this.#viewportHeight = getViewportHeight();
-    this.#scrollTop = getScrollTop();
-  }
-
-  #initializeSSRInstance(options: AdhesiveOptions): void {
-    this.#isEnabled = false;
-
-    this.#originalSelectors = {
-      targetEl: options.targetEl,
-      boundingEl: options.boundingEl ?? null,
-    };
-
-    const dummyElement: HTMLElement = Object.create(null);
-
-    this.#targetEl = dummyElement;
-    this.#boundingEl = dummyElement;
-
-    this.#options = {
-      enabled: false,
-      offset: options.offset ?? DEFAULTS.OFFSET,
-      position: options.position ?? DEFAULTS.POSITION,
-      zIndex: options.zIndex ?? DEFAULTS.Z_INDEX,
-      outerClassName: options.outerClassName ?? DEFAULTS.OUTER_CLASS,
-      innerClassName: options.innerClassName ?? DEFAULTS.INNER_CLASS,
-      activeClassName: options.activeClassName ?? DEFAULTS.ACTIVE_CLASS,
-      releasedClassName: options.releasedClassName ?? DEFAULTS.RELEASED_CLASS,
-    };
-
-    this.#state = createInitialState();
-  }
-
-  #resolveSSRElements(): void {
-    if (!this.#originalSelectors) return;
-
-    const targetEl = resolveElement(this.#originalSelectors.targetEl);
-    const boundingEl = this.#originalSelectors.boundingEl
-      ? resolveElement(this.#originalSelectors.boundingEl)!
+    const targetEl = resolveElement(options.targetEl);
+    const boundingEl = options.boundingEl
+      ? resolveElement(options.boundingEl)
       : document.body;
 
     if (!targetEl) {
-      throw createAdhesiveError("TARGET_EL_REQUIRED");
+      throw new AdhesiveError("TARGET_EL_NOT_FOUND", "targetEl not found");
+    }
+    if (!boundingEl) {
+      throw new AdhesiveError("BOUNDING_EL_NOT_FOUND", "boundingEl not found");
     }
 
     this.#targetEl = targetEl;
     this.#boundingEl = boundingEl;
+    this.#options.enabled = options.enabled ?? DEFAULT_OPTIONS.enabled;
+    this.#options.offset = options.offset ?? DEFAULT_OPTIONS.offset;
+    this.#options.position = options.position ?? DEFAULT_OPTIONS.position;
+    this.#options.zIndex = options.zIndex ?? DEFAULT_OPTIONS.zIndex;
+    this.#options.outerClassName =
+      options.outerClassName ?? DEFAULT_OPTIONS.outerClassName;
+    this.#options.innerClassName =
+      options.innerClassName ?? DEFAULT_OPTIONS.innerClassName;
+    this.#options.activeClassName =
+      options.activeClassName ?? DEFAULT_OPTIONS.activeClassName;
+    this.#options.releasedClassName =
+      options.releasedClassName ?? DEFAULT_OPTIONS.releasedClassName;
 
-    this.#originalSelectors = null;
+    if (this.#options.enabled) {
+      this.#createWrappers();
+      this.#initializeState();
+    }
   }
 
-  // =============================================================================
-  // DOM Manipulation Methods
-  // =============================================================================
+  init(): this {
+    if (!isBrowser() || !this.#options.enabled) return this;
 
-  #createWrappers(): void {
-    const { outerClassName, innerClassName } = this.#options;
+    this.#state.activated = true;
+    this.#setupListeners();
+    this.#update();
+    return this;
+  }
 
-    this.#outerWrapper = document.createElement("div");
-    this.#outerWrapper.className = outerClassName;
+  enable(): this {
+    this.#options.enabled = true;
+    if (isBrowser()) {
+      if (!this.#outerWrapper && !this.#innerWrapper) {
+        // Re-resolve elements if transitioning from SSR to browser
+        if (!this.#targetEl.parentNode) {
+          const targetEl = resolveElement(this.#targetElSelector);
+          const boundingEl = this.#boundingElSelector
+            ? resolveElement(this.#boundingElSelector)
+            : document.body;
 
-    this.#innerWrapper = document.createElement("div");
-    this.#innerWrapper.className = innerClassName;
+          if (!targetEl) {
+            throw new AdhesiveError(
+              "TARGET_EL_NOT_FOUND",
+              "targetEl not found",
+            );
+          }
+          if (!boundingEl) {
+            throw new AdhesiveError(
+              "BOUNDING_EL_NOT_FOUND",
+              "boundingEl not found",
+            );
+          }
 
-    const parent = this.#targetEl.parentNode;
-    if (!parent) {
-      throw createAdhesiveError("TARGET_EL_NO_PARENT");
+          this.#targetEl = targetEl;
+          this.#boundingEl = boundingEl;
+        }
+
+        this.#createWrappers();
+        this.#initializeState();
+      }
+      this.init();
+    }
+    return this;
+  }
+
+  disable(): this {
+    this.#options.enabled = false;
+    this.#state.activated = false;
+    this.#cancelRAF();
+    this.#setInitial();
+    return this;
+  }
+
+  updateOptions(
+    newOptions: Partial<Omit<AdhesiveOptions, "targetEl" | "boundingEl">>,
+  ): this {
+    if (newOptions.enabled === false) return this.disable();
+    if (newOptions.enabled === true) this.enable();
+
+    if (newOptions.offset !== undefined)
+      this.#options.offset = newOptions.offset;
+    if (newOptions.position) this.#options.position = newOptions.position;
+    if (newOptions.zIndex !== undefined)
+      this.#options.zIndex = newOptions.zIndex;
+    if (newOptions.outerClassName)
+      this.#options.outerClassName = newOptions.outerClassName;
+    if (newOptions.innerClassName)
+      this.#options.innerClassName = newOptions.innerClassName;
+    if (newOptions.activeClassName)
+      this.#options.activeClassName = newOptions.activeClassName;
+    if (newOptions.releasedClassName)
+      this.#options.releasedClassName = newOptions.releasedClassName;
+
+    this.#update();
+    return this;
+  }
+
+  getState(): AdhesiveState {
+    return { ...this.#state };
+  }
+
+  refresh(): this {
+    if (this.#options.enabled) this.#update();
+    return this;
+  }
+
+  cleanup(): void {
+    if (!isBrowser()) return;
+
+    this.#cancelRAF();
+    window.removeEventListener("scroll", this.#onScroll);
+    window.removeEventListener("resize", this.#onResize);
+    this.#observer?.disconnect();
+    this.#observer = null;
+    this.#trackedElements.clear();
+    this.#setInitial();
+    this.#state.activated = false;
+
+    if (this.#outerWrapper?.parentNode) {
+      const parent = this.#outerWrapper.parentNode;
+      parent.insertBefore(this.#targetEl, this.#outerWrapper);
+      this.#outerWrapper.remove();
     }
 
+    this.#outerWrapper = null;
+    this.#innerWrapper = null;
+  }
+
+  #createWrappers(): void {
+    if (!this.#targetEl.parentNode) {
+      throw new AdhesiveError(
+        "WRAPPER_CREATION_FAILED",
+        "targetEl must have a parent node for wrapper creation",
+      );
+    }
+
+    this.#outerWrapper = document.createElement("div");
+    this.#outerWrapper.className = this.#options.outerClassName;
+
+    this.#innerWrapper = document.createElement("div");
+    this.#innerWrapper.className = this.#options.innerClassName;
+
+    const parent = this.#targetEl.parentNode;
     parent.insertBefore(this.#outerWrapper, this.#targetEl);
     this.#outerWrapper.append(this.#innerWrapper);
     this.#innerWrapper.append(this.#targetEl);
   }
 
-  #ensureWrappersExist(): void {
-    if (this.#outerWrapper && this.#innerWrapper) return;
+  #initializeState(): void {
+    const style = this.#innerWrapper?.style || this.#targetEl.style;
+    this.#state.originalPosition = style.position;
+    this.#state.originalTop = style.top;
+    this.#state.originalZIndex = style.zIndex;
+    this.#state.originalTransform = style.transform;
+    this.#updateBoundaries();
+  }
 
-    this.#createWrappers();
-    this.#state = createInitialState(this.#innerWrapper);
+  #setupListeners(): void {
+    window.addEventListener("scroll", this.#onScroll, { passive: true });
+    window.addEventListener("resize", this.#onResize, { passive: true });
+
+    if ("ResizeObserver" in window) {
+      this.#observer = new ResizeObserver(this.#onElementResize);
+      this.#observer.observe(this.#targetEl);
+      this.#observer.observe(this.#boundingEl);
+      if (this.#outerWrapper) this.#observer.observe(this.#outerWrapper);
+
+      this.#trackedElements.add(this.#targetEl);
+      this.#trackedElements.add(this.#boundingEl);
+      if (this.#outerWrapper) this.#trackedElements.add(this.#outerWrapper);
+    } else {
+      console.warn(
+        "ResizeObserver is not supported in this browser. Dynamic resizing may not work properly.",
+      );
+    }
+  }
+
+  #onScroll = (): void => {
+    this.#scheduleUpdate();
+  };
+
+  #onResize = (): void => {
+    this.#scheduleUpdate();
+  };
+
+  #onElementResize = (entries: ResizeObserverEntry[]): void => {
+    const trackedEntries = entries.filter((entry) =>
+      this.#trackedElements.has(entry.target),
+    );
+
+    if (trackedEntries.length > 0) {
+      this.#scheduleUpdate();
+    }
+  };
+
+  #scheduleUpdate(): void {
+    if (!this.#options.enabled) return;
+    this.#cancelRAF();
+    this.#rafId = requestAnimationFrame(() => this.#update());
+  }
+
+  #cancelRAF(): void {
+    if (this.#rafId !== null) {
+      cancelAnimationFrame(this.#rafId);
+      this.#rafId = null;
+    }
+  }
+
+  #update(): void {
+    if (!this.#options.enabled) return;
+
+    this.#updateDimensions();
+
+    const { bottomBoundary, topBoundary, elementWidth, elementHeight } =
+      this.#state;
+    const isDisabled =
+      bottomBoundary - topBoundary <= elementHeight ||
+      (elementWidth === 0 && elementHeight === 0);
+
+    if (isDisabled) {
+      if (this.#state.status !== ADHESIVE_STATUS.INITIAL) {
+        this.#setInitial();
+      }
+      return;
+    }
+
+    if (this.#options.position === ADHESIVE_POSITION.TOP) {
+      this.#updateForTop();
+    } else {
+      this.#updateForBottom();
+    }
+  }
+
+  #updateDimensions(): void {
+    if (!this.#outerWrapper || !this.#innerWrapper) return;
+
+    const outerRect = this.#outerWrapper.getBoundingClientRect();
+    const innerRect = this.#innerWrapper.getBoundingClientRect();
+    const scrollTop = getScrollTop();
+
+    this.#state.elementWidth =
+      outerRect.width || this.#outerWrapper.offsetWidth;
+    this.#state.elementHeight =
+      innerRect.height || this.#innerWrapper.offsetHeight;
+    this.#state.elementX = outerRect.left;
+    this.#state.elementY = outerRect.top + scrollTop;
+    this.#updateBoundaries();
+  }
+
+  #updateBoundaries(): void {
+    this.#state.topBoundary = this.#getTopBoundary();
     this.#state.bottomBoundary = this.#getBottomBoundary();
-    this.#viewportHeight = getViewportHeight();
-    this.#scrollTop = getScrollTop();
   }
-
-  #translate(style: CSSStyleDeclaration, pos: number): void {
-    // Use translate3d for hardware acceleration and smooth animations
-    const roundedPos = Math.round(pos * 100) / 100; // Round to 2 decimal places for precision
-    style.transform = `translate3d(0, ${roundedPos}px, 0)`;
-  }
-
-  // =============================================================================
-  // Calculation and Measurement Methods
-  // =============================================================================
 
   #getTopBoundary(): number {
-    if (!isBrowser() || this.#boundingEl === document.body) {
-      return 0;
-    }
+    if (!isBrowser() || this.#boundingEl === document.body) return 0;
     const rect = this.#boundingEl.getBoundingClientRect();
     return getScrollTop() + rect.top;
   }
@@ -602,701 +455,135 @@ export class Adhesive {
     return getScrollTop() + rect.bottom;
   }
 
-  #updateDimensions(): void {
-    if (!this.#outerWrapper || !this.#innerWrapper) return;
+  #updateForTop(): void {
+    const { bottomBoundary, elementHeight, elementY } = this.#state;
+    const scrollTop = getScrollTop();
+    const stickyTop = scrollTop + this.#options.offset;
+    const elementTop = elementY;
 
-    const wasPositioned = this.#state.status !== ADHESIVE_STATUS.INITIAL;
-
-    if (wasPositioned) {
-      // Temporarily reset positioning to get accurate measurements
-      const innerStyle = this.#innerWrapper.style;
-
-      const originalStyles = {
-        position: innerStyle.position,
-        transform: innerStyle.transform,
-        top: innerStyle.top,
-        bottom: innerStyle.bottom,
-        width: innerStyle.width,
-      };
-
-      Object.assign(innerStyle, {
-        position: "static",
-        transform: "",
-        top: "",
-        bottom: "",
-        width: "",
-      });
-
-      // Force reflow and measure both outer and inner wrappers
-      this.#outerWrapper.offsetHeight; // eslint-disable-line @typescript-eslint/no-unused-expressions
-
-      this.#updateDimensionsState();
-
-      Object.assign(innerStyle, originalStyles);
-    } else {
-      this.#updateDimensionsState();
+    // Check if element should stop at boundary
+    if (stickyTop + elementHeight >= bottomBoundary) {
+      const relativePos = bottomBoundary - elementHeight - elementTop;
+      this.#setRelative(relativePos);
+      return;
     }
-  }
 
-  #updateDimensionsState(): void {
-    if (!this.#outerWrapper || !this.#innerWrapper) return;
-
-    const outerRect = this.#outerWrapper.getBoundingClientRect();
-    const innerRect = this.#innerWrapper.getBoundingClientRect();
-
-    const newElementWidth =
-      outerRect.width ||
-      outerRect.right - outerRect.left ||
-      this.#outerWrapper.offsetWidth;
-    const newElementHeight =
-      innerRect.height ||
-      innerRect.bottom - innerRect.top ||
-      this.#innerWrapper.offsetHeight;
-    const newElementX = outerRect.left;
-    const newElementY = outerRect.top + this.#scrollTop;
-
-    this.#state.elementWidth = newElementWidth;
-    this.#state.elementHeight = newElementHeight;
-    this.#state.elementX = newElementX;
-    this.#state.elementY = newElementY;
-    this.#state.topBoundary = this.#getTopBoundary();
-    this.#state.bottomBoundary = this.#getBottomBoundary();
-  }
-
-  // =============================================================================
-  // State Management Methods
-  // =============================================================================
-
-  #setState(newState: Partial<InternalAdhesiveState>): void {
-    const prevStatus = this.#state.status;
-
-    Object.assign(this.#state, newState);
-
-    if (prevStatus !== this.#state.status) {
-      this.#updateStyles();
+    // Check if element should stick
+    if (stickyTop >= elementTop) {
+      this.#setFixed();
+      return;
     }
+
+    this.#setInitial();
   }
 
-  #ensureOptionsAreMutable(): void {
-    if (Object.isFrozen(this.#options)) {
-      this.#options = { ...this.#options };
+  #updateForBottom(): void {
+    const { bottomBoundary, elementHeight, elementY } = this.#state;
+    const scrollTop = getScrollTop();
+    const viewportHeight = getViewportHeight();
+    const stickyBottom = scrollTop + viewportHeight - this.#options.offset;
+    const elementBottom = elementY + elementHeight;
+
+    // Check if element should stop at boundary
+    if (stickyBottom >= bottomBoundary) {
+      const relativePos = bottomBoundary - elementHeight - elementY;
+      this.#setRelative(relativePos);
+      return;
     }
+
+    // Check if element should stick
+    if (stickyBottom >= elementBottom) {
+      this.#setFixed();
+      return;
+    }
+
+    this.#setInitial();
   }
 
-  #reset(): void {
-    this.#setState({
-      status: ADHESIVE_STATUS.INITIAL,
-      pos: 0,
-      isSticky: false,
-    });
-  }
+  #setInitial(): void {
+    if (this.#state.status === ADHESIVE_STATUS.INITIAL) return;
 
-  #release(pos: number): void {
-    this.#setState({
-      status: ADHESIVE_STATUS.RELATIVE,
-      pos,
-      isSticky: false,
-    });
-  }
-
-  #fixed(pos: number): void {
-    this.#setState({
-      status: ADHESIVE_STATUS.FIXED,
-      pos,
-      isSticky: true,
-    });
-  }
-
-  // =============================================================================
-  // Style and CSS Management Methods
-  // =============================================================================
-
-  #updateStyles(): void {
     if (!this.#innerWrapper || !this.#outerWrapper) return;
 
-    const { status, pos, elementWidth, elementHeight } = this.#state;
-    const { position, zIndex } = this.#options;
-    const isFixed = status === ADHESIVE_STATUS.FIXED;
-    const isRelative = status === ADHESIVE_STATUS.RELATIVE;
-
-    // Reset all positioning styles
     const innerStyle = this.#innerWrapper.style;
-    innerStyle.position = isFixed ? "fixed" : isRelative ? "relative" : "";
+    innerStyle.position = this.#state.originalPosition;
+    innerStyle.top = this.#state.originalTop;
+    innerStyle.zIndex = this.#state.originalZIndex;
+    innerStyle.transform = this.#state.originalTransform;
+    innerStyle.width = "";
+
+    const outerStyle = this.#outerWrapper.style;
+    outerStyle.height = "";
+    this.#outerWrapper.classList.remove(
+      this.#options.activeClassName,
+      this.#options.releasedClassName,
+    );
+
+    this.#setState({
+      status: ADHESIVE_STATUS.INITIAL,
+      position: 0,
+    });
+  }
+
+  #setFixed(): void {
+    const wasAlreadyFixed = this.#state.status === ADHESIVE_STATUS.FIXED;
+
+    if (!this.#innerWrapper || !this.#outerWrapper) return;
+
+    const innerStyle = this.#innerWrapper.style;
+    innerStyle.position = "fixed";
+    innerStyle.transform = "";
+    innerStyle.zIndex = String(this.#options.zIndex);
+    innerStyle.width = `${this.#state.elementWidth}px`;
+
+    if (this.#options.position === ADHESIVE_POSITION.TOP) {
+      innerStyle.top = `${this.#options.offset}px`;
+      innerStyle.bottom = "";
+    } else {
+      innerStyle.bottom = `${this.#options.offset}px`;
+      innerStyle.top = "";
+    }
+
+    const outerStyle = this.#outerWrapper.style;
+    outerStyle.height = `${this.#state.elementHeight}px`;
+    this.#outerWrapper.classList.add(this.#options.activeClassName);
+
+    if (!wasAlreadyFixed) {
+      this.#setState({
+        status: ADHESIVE_STATUS.FIXED,
+        position: this.#options.offset,
+      });
+    }
+  }
+
+  #setRelative(position: number): void {
+    if (
+      this.#state.status === ADHESIVE_STATUS.RELATIVE &&
+      this.#state.position === position
+    )
+      return;
+
+    if (!this.#innerWrapper || !this.#outerWrapper) return;
+
+    const innerStyle = this.#innerWrapper.style;
+    innerStyle.position = "relative";
+    innerStyle.transform = `translate3d(0, ${position}px, 0)`;
     innerStyle.top = "";
     innerStyle.bottom = "";
-    innerStyle.transform = "";
+    innerStyle.width = "";
 
-    // Apply common styles
-    innerStyle.zIndex = String(zIndex);
-    innerStyle.width = isFixed ? `${elementWidth}px` : "";
-    this.#outerWrapper.style.height = isFixed ? `${elementHeight}px` : "";
+    const outerStyle = this.#outerWrapper.style;
+    outerStyle.height = "";
+    this.#outerWrapper.classList.remove(this.#options.activeClassName);
+    this.#outerWrapper.classList.add(this.#options.releasedClassName);
 
-    // Apply positioning based on state
-    if (isFixed) {
-      if (position === "bottom") {
-        innerStyle.bottom = `${pos}px`;
-      } else {
-        innerStyle.top = `${pos}px`;
-      }
-    } else if (isRelative) {
-      this.#translate(innerStyle, pos);
-    }
-
-    this.#updateClassNames();
-  }
-
-  #updateClassNames(): void {
-    if (!this.#outerWrapper) return;
-
-    const { status } = this.#state;
-    const { outerClassName, activeClassName, releasedClassName } =
-      this.#options;
-
-    const classes = [outerClassName];
-    if (status === ADHESIVE_STATUS.FIXED) classes.push(activeClassName);
-    if (status === ADHESIVE_STATUS.RELATIVE) classes.push(releasedClassName);
-
-    this.#outerWrapper.className = classes.join(" ");
-  }
-
-  // =============================================================================
-  // Positioning Logic Methods
-  // =============================================================================
-
-  #update(): void {
-    if (!this.#isEnabled) return;
-
-    this.#updateDimensions();
-    this.#updateStyles();
-
-    const { bottomBoundary, topBoundary, elementWidth, elementHeight } =
-      this.#state;
-
-    const isDisabled =
-      bottomBoundary - topBoundary <= elementHeight ||
-      (elementWidth === 0 && elementHeight === 0);
-
-    if (isDisabled) {
-      if (this.#state.status !== ADHESIVE_STATUS.INITIAL) {
-        this.#reset();
-      }
-      return;
-    }
-
-    const { offset, position } = this.#options;
-
-    if (position === "bottom") {
-      this.#updateForBottomPosition(offset);
-    } else {
-      this.#updateForTopPosition(offset);
-    }
-  }
-
-  #updateForTopPosition(offset: number): void {
-    const { topBoundary, bottomBoundary, elementHeight, elementY } =
-      this.#state;
-    const top = this.#scrollTop + offset;
-    const bottom = top + elementHeight;
-
-    // Check if element is above the top boundary
-    if (top <= topBoundary) {
-      this.#reset();
-      return;
-    }
-
-    // Check if element is below the bottom boundary
-    if (bottom >= bottomBoundary) {
-      const stickyTop = bottomBoundary - elementHeight;
-      const relativePos = stickyTop - elementY;
-      this.#release(relativePos);
-      return;
-    }
-
-    // Core sticking logic: only stick if element has scrolled above the sticky position
-    if (elementY > top) {
-      // Element is naturally below the sticky position, don't stick
-      this.#reset();
-      return;
-    }
-
-    // Handle tall elements
-    if (elementHeight > this.#viewportHeight - offset) {
-      this.#handleTallElementTop(top, bottom);
-      return;
-    }
-
-    this.#fixed(offset);
-  }
-
-  #updateForBottomPosition(offset: number): void {
-    const { topBoundary, bottomBoundary, elementHeight, elementY } =
-      this.#state;
-    const viewportBottom = this.#scrollTop + this.#viewportHeight;
-    const elementNaturalBottom = elementY + elementHeight;
-
-    // Check if element's natural position is above viewport bottom
-    if (elementNaturalBottom >= viewportBottom - offset) {
-      this.#reset();
-      return;
-    }
-
-    // Calculate position if stuck to viewport bottom
-    const stuckElementBottom = viewportBottom - offset;
-    const stuckElementTop = stuckElementBottom - elementHeight;
-
-    // Check boundary constraints
-    if (stuckElementTop < topBoundary) {
-      this.#release(topBoundary - elementY);
-      return;
-    }
-
-    if (stuckElementBottom > bottomBoundary) {
-      this.#release(bottomBoundary - elementHeight - elementY);
-      return;
-    }
-
-    // Handle tall elements
-    if (elementHeight > this.#viewportHeight - offset) {
-      this.#handleTallElementBottom(stuckElementTop, stuckElementBottom);
-      return;
-    }
-
-    this.#fixed(offset);
-  }
-
-  // =============================================================================
-  // Tall Element Handling Methods
-  // =============================================================================
-
-  #handleTallElementTop(top: number, bottom: number): void {
-    const { status, elementY, elementHeight } = this.#state;
-    const { offset } = this.#options;
-
-    switch (status) {
-      case ADHESIVE_STATUS.INITIAL:
-        this.#release(0);
-        break;
-      case ADHESIVE_STATUS.RELATIVE:
-        if (bottom > elementY + elementHeight) {
-          this.#fixed(offset + elementHeight - this.#viewportHeight);
-        } else if (top < elementY) {
-          this.#fixed(offset);
-        }
-        break;
-      case ADHESIVE_STATUS.FIXED: {
-        const releaseInfo = this.#shouldReleaseFromFixedTop(top, bottom);
-        if (releaseInfo.release) {
-          this.#release(releaseInfo.position);
-        }
-        break;
-      }
-    }
-  }
-
-  #handleTallElementBottom(elementTop: number, elementBottom: number): void {
-    const { status, elementY, elementHeight, pos } = this.#state;
-    const { offset } = this.#options;
-
-    switch (status) {
-      case ADHESIVE_STATUS.INITIAL:
-        this.#release(0);
-        break;
-      case ADHESIVE_STATUS.RELATIVE: {
-        const currentTop = elementY + pos;
-        const currentBottom = currentTop + elementHeight;
-        const viewportTop = this.#scrollTop;
-        const viewportBottom = this.#scrollTop + this.#viewportHeight;
-
-        // Check scroll direction and viewport boundaries
-        if (elementBottom < currentBottom && currentTop < viewportTop) {
-          this.#fixed(offset); // Stick to bottom
-        } else if (elementTop > currentTop && currentBottom > viewportBottom) {
-          this.#fixed(elementHeight - this.#viewportHeight + offset); // Stick to top
-        }
-        break;
-      }
-      case ADHESIVE_STATUS.FIXED: {
-        const releaseInfo = this.#shouldReleaseFromFixedBottom(
-          elementTop,
-          elementBottom,
-        );
-        if (releaseInfo.release) {
-          this.#release(releaseInfo.position);
-        }
-        break;
-      }
-    }
-  }
-
-  #shouldReleaseFromFixedTop(
-    top: number,
-    bottom: number,
-  ): { release: boolean; position: number } {
-    const { pos, elementY, elementHeight } = this.#state;
-    const { offset } = this.#options;
-
-    if (pos === offset) {
-      return { release: true, position: top - elementY };
-    }
-
-    if (pos === offset + elementHeight - this.#viewportHeight) {
-      return { release: true, position: bottom - elementHeight - elementY };
-    }
-
-    return { release: false, position: 0 };
-  }
-
-  #shouldReleaseFromFixedBottom(
-    elementTop: number,
-    elementBottom: number,
-  ): { release: boolean; position: number } {
-    const { pos, elementY, elementHeight } = this.#state;
-    const { offset } = this.#options;
-
-    // If currently stuck to bottom and element should be released
-    if (pos === offset) {
-      return { release: true, position: elementTop - elementY };
-    }
-
-    // If currently stuck to top (for tall elements) and should be released
-    if (pos === elementHeight - this.#viewportHeight + offset) {
-      return {
-        release: true,
-        position: elementBottom - elementHeight - elementY,
-      };
-    }
-
-    return { release: false, position: 0 };
-  }
-
-  // =============================================================================
-  // Event Handlers
-  // =============================================================================
-
-  #setupEventListeners(): void {
-    // Add event listeners with optimal performance settings
-    window.addEventListener("scroll", this.#onScroll, { passive: true });
-    window.addEventListener("resize", this.#onWindowResize, { passive: true });
-
-    // Modern ResizeObserver for better performance
-    if ("ResizeObserver" in window) {
-      this.#observer = new ResizeObserver(this.#onElementResize);
-      this.#observer.observe(this.#targetEl);
-      this.#observer.observe(this.#boundingEl);
-      if (this.#outerWrapper) this.#observer.observe(this.#outerWrapper);
-    } else {
-      console.warn(
-        `@adhesivejs/core: ${ERROR_CODES.RESIZE_OBSERVER_NOT_SUPPORTED}`,
-      );
-    }
-  }
-
-  readonly #onScroll = (): void => {
-    this.#scheduleUpdate(() => {
-      this.#scrollTop = getScrollTop();
-      this.#update();
-    });
-  };
-
-  readonly #onWindowResize = (): void => {
-    this.#scheduleUpdate(() => {
-      this.#viewportHeight = getViewportHeight();
-      this.#update();
-    });
-  };
-
-  readonly #onElementResize = (entries: ResizeObserverEntry[]): void => {
-    if (!this.#isEnabled) return;
-
-    if (entries.length === 0) return;
-
-    let updateNeeded = false;
-
-    for (const entry of entries) {
-      const isTarget = entry.target === this.#targetEl;
-      const isBounding = entry.target === this.#boundingEl;
-      const isOuter = entry.target === this.#outerWrapper;
-      const isValidEntry = isTarget || isBounding || isOuter;
-      if (isValidEntry) updateNeeded = true;
-    }
-
-    if (!updateNeeded) return;
-
-    if (this.#pendingResizeUpdate) return;
-
-    this.#pendingResizeUpdate = true;
-
-    // Cancel any existing RAF callback before scheduling a new one
-    if (this.#rafId !== null) {
-      cancelAnimationFrame(this.#rafId);
-    }
-
-    this.#rafId = requestAnimationFrame(() => {
-      // Check if still enabled when callback executes (prevent state corruption)
-      if (!this.#isEnabled) {
-        this.#pendingResizeUpdate = false;
-        return;
-      }
-
-      this.#pendingResizeUpdate = false;
-
-      this.#update();
-    });
-  };
-
-  #scheduleUpdate(updateFn: () => void): void {
-    if (!this.#isEnabled || this.#pendingUpdate) return;
-
-    this.#pendingUpdate = true;
-
-    // Cancel any existing RAF callback before scheduling a new one
-    if (this.#rafId !== null) {
-      cancelAnimationFrame(this.#rafId);
-    }
-
-    this.#rafId = requestAnimationFrame(() => {
-      // Check if still enabled when callback executes (prevent state corruption)
-      if (!this.#isEnabled) {
-        this.#pendingUpdate = false;
-        return;
-      }
-
-      this.#pendingUpdate = false;
-      updateFn();
+    this.#setState({
+      status: ADHESIVE_STATUS.RELATIVE,
+      position,
     });
   }
 
-  // =============================================================================
-  // Public API Methods
-  // =============================================================================
-
-  /**
-   * Initializes the sticky behavior by setting up event listeners and observers.
-   * Must be called after creating the Adhesive instance to activate sticky positioning.
-   *
-   * @returns The Adhesive instance for method chaining
-   *
-   * @example
-   * ```ts
-   * new Adhesive({ targetEl: '#target-element' }).init();
-   *
-   * // Or use the convenient factory method
-   * Adhesive.create({ targetEl: '#target-element' });
-   * ```
-   */
-  init(): this {
-    if (!isBrowser() || !this.#isEnabled) return this;
-
-    this.#state.activated = true;
-    this.#update();
-
-    if (!this.#observer) {
-      this.#setupEventListeners();
-    }
-
-    return this;
-  }
-
-  /**
-   * Enables the sticky behavior if it was previously disabled.
-   *
-   * @returns The Adhesive instance for method chaining
-   *
-   * @example
-   * ```ts
-   * adhesive.enable(); // Re-enable sticky behavior
-   * ```
-   */
-  enable(): this {
-    if (this.#isEnabled) return this;
-
-    this.#isEnabled = true;
-
-    if (!isBrowser()) {
-      this.#state.activated = true;
-      return this;
-    }
-
-    this.#resolveSSRElements();
-    this.#ensureWrappersExist();
-
-    this.#state.activated = true;
-    this.#update();
-
-    if (!this.#observer) {
-      this.#setupEventListeners();
-    }
-
-    return this;
-  }
-
-  /**
-   * Disables the sticky behavior and resets the element to its original position.
-   *
-   * This method safely cancels any pending animation frames to prevent memory leaks
-   * and race conditions that could occur with rapid enable/disable cycles.
-   *
-   * @returns The Adhesive instance for method chaining
-   *
-   * @example
-   * ```ts
-   * adhesive.disable(); // Temporarily disable sticky behavior
-   *
-   * // Safe to call multiple times or during rapid enable/disable cycles
-   * adhesive.disable().enable().disable();
-   * ```
-   */
-  disable(): this {
-    if (!this.#isEnabled) return this;
-
-    this.#isEnabled = false;
-    this.#state.activated = false;
-
-    // Cancel any pending RAF operations to prevent memory leaks and race conditions
-    if (this.#rafId !== null) {
-      cancelAnimationFrame(this.#rafId);
-      this.#rafId = null;
-    }
-    this.#pendingUpdate = false;
-    this.#pendingResizeUpdate = false;
-
-    this.#reset();
-    return this;
-  }
-
-  /**
-   * Updates the configuration options of the Adhesive instance.
-   * The instance will recalculate dimensions and update behavior based on new options.
-   *
-   * @param newOptions - Partial options object with properties to update
-   * @returns The Adhesive instance for method chaining
-   *
-   * @example
-   * ```ts
-   * adhesive.updateOptions({
-   *   offset: 50,
-   *   zIndex: 2000
-   * });
-   * ```
-   */
-  updateOptions(
-    newOptions: Partial<Omit<AdhesiveOptions, "targetEl" | "boundingEl">>,
-  ): this {
-    const optionsToUpdate = Object.entries(newOptions).filter(
-      ([, value]) => value !== undefined,
-    ) as Array<[keyof InternalAdhesiveOptions, unknown]>;
-
-    // Handle enabled state changes first (these may cause early return)
-    for (const [key, value] of optionsToUpdate) {
-      if (key === "enabled") {
-        const isDisabling = value === false;
-        if (isDisabling) return this.disable();
-        this.enable();
-        break; // Only one enabled key possible
-      }
-    }
-
-    // Handle other option updates
-    const otherOptions = optionsToUpdate.filter(([key]) => key !== "enabled");
-    if (otherOptions.length > 0) {
-      this.#ensureOptionsAreMutable();
-
-      for (const [key, value] of otherOptions) {
-        if (key in this.#options) {
-          (this.#options as any)[key] = value;
-        }
-      }
-    }
-
-    this.#update();
-
-    return this;
-  }
-
-  /**
-   * Returns a copy of the current state of the Adhesive instance.
-   * This provides read-only access to internal state properties.
-   *
-   * @returns A copy of the current AdhesiveState
-   *
-   * @example
-   * ```ts
-   * const state = adhesive.getState();
-   * console.log('Current status:', state.status);
-   * console.log('Is sticky:', state.isSticky);
-   * console.log('Element dimensions:', { width: state.elementWidth, height: state.elementHeight });
-   * ```
-   */
-  getState(): AdhesiveState {
-    return { ...this.#state };
-  }
-
-  /**
-   * Manually triggers a refresh for the sticky element.
-   * This is useful when the element's container width changes due to external factors
-   * that might not be detected by the ResizeObserver (e.g., CSS changes via JavaScript).
-   *
-   * @returns The Adhesive instance for method chaining
-   *
-   * @example
-   * ```ts
-   * // After programmatically changing container dimensions
-   * adhesive.refresh();
-   * ```
-   */
-  refresh(): this {
-    if (!this.#isEnabled) return this;
-
-    this.#update();
-    return this;
-  }
-
-  /**
-   * Cleans up the Adhesive instance by removing event listeners, disconnecting observers,
-   * canceling pending animations, and restoring the original DOM structure.
-   *
-   * This method ensures complete cleanup to prevent memory leaks and should be called
-   * when the sticky behavior is no longer needed.
-   *
-   * @example
-   * ```ts
-   * // Clean up when component unmounts or sticky is no longer needed
-   * adhesive.cleanup();
-   * ```
-   */
-  cleanup(): void {
-    if (!isBrowser()) return;
-
-    // Cancel any pending RAF operations and timeouts
-    if (this.#rafId !== null) {
-      cancelAnimationFrame(this.#rafId);
-      this.#rafId = null;
-    }
-
-    this.#pendingUpdate = false;
-    this.#pendingResizeUpdate = false;
-
-    // Remove event listeners
-    window.removeEventListener("scroll", this.#onScroll);
-    window.removeEventListener("resize", this.#onWindowResize);
-
-    // Disconnect observers
-    this.#observer?.disconnect();
-    this.#observer = null;
-
-    // Reset state
-    this.#reset();
-    this.#state.activated = false;
-
-    // Restore original DOM structure
-    if (this.#outerWrapper?.parentNode) {
-      const parent = this.#outerWrapper.parentNode;
-      parent.insertBefore(this.#targetEl, this.#outerWrapper);
-      this.#outerWrapper.remove();
-    }
-
-    // Clear references for garbage collection
-    this.#outerWrapper = null;
-    this.#innerWrapper = null;
+  #setState(newState: Partial<InternalAdhesiveState>): void {
+    Object.assign(this.#state, newState);
   }
 }

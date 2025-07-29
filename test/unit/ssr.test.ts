@@ -183,13 +183,12 @@ describe("SSR Safety", () => {
       expect(state).toEqual(
         expect.objectContaining({
           status: ADHESIVE_STATUS.INITIAL,
-          isSticky: false,
           activated: false,
+          position: 0,
           elementWidth: 0,
           elementHeight: 0,
           elementX: 0,
           elementY: 0,
-          pos: 0,
         }),
       );
     });
@@ -262,7 +261,7 @@ describe("SSR Safety", () => {
 
       // Simulate hydration - restore browser environment
       restoreBrowserEnvironment();
-      document.body.innerHTML = '<div id="target">Test</div>';
+      document.body.innerHTML = '<div><div id="target">Test</div></div>';
 
       // Should be able to enable after hydration
       expect(() => adhesive.enable()).not.toThrow();

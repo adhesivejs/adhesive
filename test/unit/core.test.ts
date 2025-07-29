@@ -408,8 +408,8 @@ describe("Core", () => {
 
         // Verify all expected properties exist
         expect(state).toHaveProperty("status");
-        expect(state).toHaveProperty("isSticky");
         expect(state).toHaveProperty("activated");
+        expect(state).toHaveProperty("position");
         expect(state).toHaveProperty("originalPosition");
         expect(state).toHaveProperty("originalTop");
         expect(state).toHaveProperty("originalZIndex");
@@ -420,28 +420,23 @@ describe("Core", () => {
         expect(state).toHaveProperty("elementY");
         expect(state).toHaveProperty("topBoundary");
         expect(state).toHaveProperty("bottomBoundary");
-        expect(state).toHaveProperty("pos");
 
         // Verify initial state values
-        expect(state.activated).toBe(true);
         expect(state.status).toBe(ADHESIVE_STATUS.INITIAL);
-        expect(state.isSticky).toBe(false);
+        expect(state.activated).toBe(true);
       });
 
       it("provides immutable state object", () => {
         const state = adhesive.getState();
         const originalStatus = state.status;
-        const originalIsSticky = state.isSticky;
 
         // Attempt to modify state properties
         (state as any).status = "modified";
-        (state as any).isSticky = !originalIsSticky;
         (state as any).activated = false;
 
         // Verify internal state unchanged
         const newState = adhesive.getState();
         expect(newState.status).toBe(originalStatus);
-        expect(newState.isSticky).toBe(originalIsSticky);
         expect(newState.activated).toBe(true);
       });
 
@@ -516,7 +511,6 @@ describe("Core", () => {
         adhesive.disable();
         const state = adhesive.getState();
         expect(state.status).toBe(ADHESIVE_STATUS.INITIAL);
-        expect(state.isSticky).toBe(false);
         expect(state.activated).toBe(false);
       });
 

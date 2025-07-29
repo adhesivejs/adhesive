@@ -63,7 +63,6 @@ adhesive.init();
 
 // Listen to state changes
 const state = adhesive.getState();
-console.log('Is sticky:', state.isSticky);
 console.log('Current status:', state.status);
 
 // Update options dynamically

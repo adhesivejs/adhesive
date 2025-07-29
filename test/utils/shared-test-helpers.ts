@@ -198,7 +198,6 @@ export function createMockAdhesive() {
     updateOptions: vi.fn(),
     getState: vi.fn(() => ({
       status: "initial",
-      isSticky: false,
       activated: true,
       width: TEST_DIMENSIONS.TARGET_WIDTH,
       height: TEST_DIMENSIONS.TARGET_HEIGHT,
