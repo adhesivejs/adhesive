@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v0.6.0
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.5.0...v0.6.0)
+
+### 🚀 Enhancements
+
+- Add initial class name option ([00fcfdb](https://github.com/adhesivejs/adhesive/commit/00fcfdb))
+
+### 🩹 Fixes
+
+- **core:** Ensure previously set classes are removed ([4aac5fa](https://github.com/adhesivejs/adhesive/commit/4aac5fa))
+
+### 💅 Refactors
+
+- ⚠️  Rename state based class options ([8bb4c44](https://github.com/adhesivejs/adhesive/commit/8bb4c44))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Rename state based class options ([8bb4c44](https://github.com/adhesivejs/adhesive/commit/8bb4c44))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.5.0
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.4.0...v0.5.0)
