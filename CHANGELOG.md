@@ -1,6 +1,30 @@
 # Changelog
 
 
+## v0.4.0
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.4...v0.4.0)
+
+### 🩹 Fixes
+
+- **core:** ⚠️  Improve dimension updates and rename manual refresh method ([f5b15df](https://github.com/adhesivejs/adhesive/commit/f5b15df))
+- **core:** Ensure inner width is update based on outer width ([0c45136](https://github.com/adhesivejs/adhesive/commit/0c45136))
+
+### 💅 Refactors
+
+- **core:** ⚠️  Clean up adhesive instance and simplify error constructor ([2a6b5b0](https://github.com/adhesivejs/adhesive/commit/2a6b5b0))
+- **core:** ⚠️  Simplify state size updates and make names more clear ([fec2418](https://github.com/adhesivejs/adhesive/commit/fec2418))
+
+#### ⚠️ Breaking Changes
+
+- **core:** ⚠️  Improve dimension updates and rename manual refresh method ([f5b15df](https://github.com/adhesivejs/adhesive/commit/f5b15df))
+- **core:** ⚠️  Clean up adhesive instance and simplify error constructor ([2a6b5b0](https://github.com/adhesivejs/adhesive/commit/2a6b5b0))
+- **core:** ⚠️  Simplify state size updates and make names more clear ([fec2418](https://github.com/adhesivejs/adhesive/commit/fec2418))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.3.4
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.3...v0.3.4)

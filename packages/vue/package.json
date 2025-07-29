@@ -1,6 +1,6 @@
 {
   "name": "@adhesivejs/vue",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "description": "Vue adapter for Adhesive - A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements",
   "type": "module",
   "keywords": [
