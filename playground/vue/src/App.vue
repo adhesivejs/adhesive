@@ -52,8 +52,8 @@ useAdhesive(targetRef, () => ({
       class="custom-class"
       outer-class="custom-outer"
       inner-class="custom-inner"
-      active-class="custom-active"
-      released-class="custom-released"
+      fixed-class="custom-fixed"
+      relative-class="custom-relative"
       style="width: 100%; height: 100px; background-color: lightblue"
     >
       Sticky Element

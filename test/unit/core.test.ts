@@ -152,8 +152,8 @@ describe("Core", () => {
           zIndex: TEST_Z_INDEXES[3],
           outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
           innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
-          activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
-          releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
+          fixedClassName: CUSTOM_CLASS_NAMES.fixedClassName,
+          relativeClassName: CUSTOM_CLASS_NAMES.relativeClassName,
         };
 
         const adhesive = createAdhesiveInstance(customOptions);
@@ -293,8 +293,8 @@ describe("Core", () => {
           zIndex: TEST_Z_INDEXES[2],
           outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
           innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
-          activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
-          releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
+          fixedClassName: CUSTOM_CLASS_NAMES.fixedClassName,
+          relativeClassName: CUSTOM_CLASS_NAMES.relativeClassName,
         });
 
         adhesive.updateOptions({ enabled: true });
@@ -1503,7 +1503,7 @@ describe("Core", () => {
 
         await simulateScrollToPosition(200);
         expectElementToBeInState(adhesive, "FIXED");
-        expectExactOuterClasses(["adhesive__outer", "adhesive--active"]);
+        expectExactOuterClasses(["adhesive__outer", "adhesive--fixed"]);
 
         await simulateScrollToPosition(0);
         expectElementToBeInState(adhesive, "INITIAL");
@@ -1511,11 +1511,11 @@ describe("Core", () => {
 
         await simulateScrollToPosition(2000);
         expectElementToBeInState(adhesive, "RELATIVE");
-        expectExactOuterClasses(["adhesive__outer", "adhesive--released"]);
+        expectExactOuterClasses(["adhesive__outer", "adhesive--relative"]);
 
         await simulateScrollToPosition(200);
         expectElementToBeInState(adhesive, "FIXED");
-        expectExactOuterClasses(["adhesive__outer", "adhesive--active"]);
+        expectExactOuterClasses(["adhesive__outer", "adhesive--fixed"]);
 
         await simulateScrollToPosition(0);
         expectElementToBeInState(adhesive, "INITIAL");

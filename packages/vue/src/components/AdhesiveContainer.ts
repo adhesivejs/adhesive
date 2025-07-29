@@ -17,8 +17,8 @@ type BaseProps = Omit<
   | "boundingRef"
   | "outerClassName"
   | "innerClassName"
-  | "activeClassName"
-  | "releasedClassName"
+  | "fixedClassName"
+  | "relativeClassName"
 >;
 
 /**
@@ -32,10 +32,10 @@ export interface AdhesiveContainerProps extends BaseProps {
   outerClass?: UseAdhesiveOptions["outerClassName"];
   /** CSS class for the inner wrapper element */
   innerClass?: UseAdhesiveOptions["innerClassName"];
-  /** CSS class applied when the element is in active (sticky) state */
-  activeClass?: UseAdhesiveOptions["activeClassName"];
-  /** CSS class applied when the element is in released (relative) state */
-  releasedClass?: UseAdhesiveOptions["releasedClassName"];
+  /** CSS class name applied when the element is sticky */
+  fixedClass?: UseAdhesiveOptions["fixedClassName"];
+  /** CSS class name applied when the element reaches its boundary */
+  relativeClass?: UseAdhesiveOptions["relativeClassName"];
 }
 
 /**
@@ -102,12 +102,12 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
         type: String as PropType<AdhesiveContainerProps["innerClass"]>,
         required: false,
       },
-      activeClass: {
-        type: String as PropType<AdhesiveContainerProps["activeClass"]>,
+      fixedClass: {
+        type: String as PropType<AdhesiveContainerProps["fixedClass"]>,
         required: false,
       },
-      releasedClass: {
-        type: String as PropType<AdhesiveContainerProps["releasedClass"]>,
+      relativeClass: {
+        type: String as PropType<AdhesiveContainerProps["relativeClass"]>,
         required: false,
       },
     } satisfies Required<ComponentObjectPropsOptions<AdhesiveContainerProps>>,
@@ -122,8 +122,8 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
         zIndex: props.zIndex,
         outerClassName: props.outerClass,
         innerClassName: props.innerClass,
-        activeClassName: props.activeClass,
-        releasedClassName: props.releasedClass,
+        fixedClassName: props.fixedClass,
+        relativeClassName: props.relativeClass,
       }));
 
       useAdhesive(targetRef, options);

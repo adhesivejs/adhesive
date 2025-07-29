@@ -74,14 +74,14 @@ export interface AdhesiveOptions {
   readonly innerClassName?: string;
   /**
    * CSS class name applied when the element is sticky.
-   * @default "adhesive--active"
+   * @default "adhesive--fixed"
    */
-  readonly activeClassName?: string;
+  readonly fixedClassName?: string;
   /**
    * CSS class name applied when the element reaches its boundary.
-   * @default "adhesive--released"
+   * @default "adhesive--relative"
    */
-  readonly releasedClassName?: string;
+  readonly relativeClassName?: string;
 }
 
 interface InternalAdhesiveOptions {
@@ -91,8 +91,8 @@ interface InternalAdhesiveOptions {
   zIndex: number;
   outerClassName: string;
   innerClassName: string;
-  activeClassName: string;
-  releasedClassName: string;
+  fixedClassName: string;
+  relativeClassName: string;
 }
 
 /**
@@ -163,8 +163,8 @@ const DEFAULT_OPTIONS = {
   zIndex: 1 as number,
   outerClassName: "adhesive__outer",
   innerClassName: "adhesive__inner",
-  activeClassName: "adhesive--active",
-  releasedClassName: "adhesive--released",
+  fixedClassName: "adhesive--fixed",
+  relativeClassName: "adhesive--relative",
 } satisfies Omit<AdhesiveOptions, "targetEl" | "boundingEl">;
 
 const isBrowser = () =>
@@ -244,8 +244,8 @@ export class Adhesive {
     zIndex: DEFAULT_OPTIONS.zIndex,
     outerClassName: DEFAULT_OPTIONS.outerClassName,
     innerClassName: DEFAULT_OPTIONS.innerClassName,
-    activeClassName: DEFAULT_OPTIONS.activeClassName,
-    releasedClassName: DEFAULT_OPTIONS.releasedClassName,
+    fixedClassName: DEFAULT_OPTIONS.fixedClassName,
+    relativeClassName: DEFAULT_OPTIONS.relativeClassName,
   };
 
   #state: InternalAdhesiveState = {
@@ -303,10 +303,10 @@ export class Adhesive {
       options.outerClassName ?? DEFAULT_OPTIONS.outerClassName;
     this.#options.innerClassName =
       options.innerClassName ?? DEFAULT_OPTIONS.innerClassName;
-    this.#options.activeClassName =
-      options.activeClassName ?? DEFAULT_OPTIONS.activeClassName;
-    this.#options.releasedClassName =
-      options.releasedClassName ?? DEFAULT_OPTIONS.releasedClassName;
+    this.#options.fixedClassName =
+      options.fixedClassName ?? DEFAULT_OPTIONS.fixedClassName;
+    this.#options.relativeClassName =
+      options.relativeClassName ?? DEFAULT_OPTIONS.relativeClassName;
 
     if (this.#options.enabled) {
       this.#createWrappers();
@@ -394,10 +394,10 @@ export class Adhesive {
       this.#options.outerClassName = newOptions.outerClassName;
     if (newOptions.innerClassName)
       this.#options.innerClassName = newOptions.innerClassName;
-    if (newOptions.activeClassName)
-      this.#options.activeClassName = newOptions.activeClassName;
-    if (newOptions.releasedClassName)
-      this.#options.releasedClassName = newOptions.releasedClassName;
+    if (newOptions.fixedClassName)
+      this.#options.fixedClassName = newOptions.fixedClassName;
+    if (newOptions.relativeClassName)
+      this.#options.relativeClassName = newOptions.relativeClassName;
 
     this.#update();
     return this;
@@ -643,8 +643,8 @@ export class Adhesive {
     const outerStyle = this.#outerWrapper.style;
     outerStyle.height = "";
     this.#outerWrapper.classList.remove(
-      this.#options.activeClassName,
-      this.#options.releasedClassName,
+      this.#options.fixedClassName,
+      this.#options.relativeClassName,
     );
 
     this.#setState({
@@ -674,8 +674,8 @@ export class Adhesive {
 
     const outerStyle = this.#outerWrapper.style;
     outerStyle.height = `${this.#state.elementHeight}px`;
-    this.#outerWrapper.classList.remove(this.#options.releasedClassName);
-    this.#outerWrapper.classList.add(this.#options.activeClassName);
+    this.#outerWrapper.classList.remove(this.#options.relativeClassName);
+    this.#outerWrapper.classList.add(this.#options.fixedClassName);
 
     if (!wasAlreadyFixed) {
       this.#setState({
@@ -703,8 +703,8 @@ export class Adhesive {
 
     const outerStyle = this.#outerWrapper.style;
     outerStyle.height = "";
-    this.#outerWrapper.classList.remove(this.#options.activeClassName);
-    this.#outerWrapper.classList.add(this.#options.releasedClassName);
+    this.#outerWrapper.classList.remove(this.#options.fixedClassName);
+    this.#outerWrapper.classList.add(this.#options.relativeClassName);
 
     this.#setState({
       status: ADHESIVE_STATUS.RELATIVE,

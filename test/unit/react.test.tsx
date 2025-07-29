@@ -259,8 +259,8 @@ describe("React Integration", () => {
           className: "custom-class",
           outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
           innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
-          activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
-          releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
+          fixedClassName: CUSTOM_CLASS_NAMES.fixedClassName,
+          relativeClassName: CUSTOM_CLASS_NAMES.relativeClassName,
         };
 
         renderContainer(customProps);
@@ -276,8 +276,8 @@ describe("React Integration", () => {
           expect.objectContaining({
             outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
             innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
-            activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
-            releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
+            fixedClassName: CUSTOM_CLASS_NAMES.fixedClassName,
+            relativeClassName: CUSTOM_CLASS_NAMES.relativeClassName,
           }),
         );
       });

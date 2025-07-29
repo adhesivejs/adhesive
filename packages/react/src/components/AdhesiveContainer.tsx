@@ -46,8 +46,8 @@ export function AdhesiveContainer({
   zIndex,
   outerClassName,
   innerClassName,
-  activeClassName,
-  releasedClassName,
+  fixedClassName,
+  relativeClassName,
   children,
   ...rest
 }: AdhesiveContainerProps): ReactNode {
@@ -63,8 +63,8 @@ export function AdhesiveContainer({
       zIndex,
       outerClassName,
       innerClassName,
-      activeClassName,
-      releasedClassName,
+      fixedClassName,
+      relativeClassName,
     }),
     [
       boundingRef,
@@ -75,8 +75,8 @@ export function AdhesiveContainer({
       zIndex,
       outerClassName,
       innerClassName,
-      activeClassName,
-      releasedClassName,
+      fixedClassName,
+      relativeClassName,
     ],
   );
 

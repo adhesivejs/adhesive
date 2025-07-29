@@ -93,8 +93,8 @@ describe("SSR Safety", () => {
         zIndex: 500,
         outerClassName: "custom-outer",
         innerClassName: "custom-inner",
-        activeClassName: "custom-active",
-        releasedClassName: "custom-released",
+        fixedClassName: "custom-fixed",
+        relativeClassName: "custom-relative",
       };
 
       const adhesive = new Adhesive(options);

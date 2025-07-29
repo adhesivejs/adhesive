@@ -48,8 +48,8 @@ export function App() {
           className="custom-class"
           outerClassName="custom-outer"
           innerClassName="custom-inner"
-          activeClassName="custom-active"
-          releasedClassName="custom-released"
+          fixedClassName="custom-fixed"
+          relativeClassName="custom-relative"
           style={{
             width: "100%",
             height: "100px",

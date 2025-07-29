@@ -261,8 +261,8 @@ describe("Vue Integration", () => {
           class: "custom-class",
           outerClass: CUSTOM_CLASS_NAMES.outerClassName,
           innerClass: CUSTOM_CLASS_NAMES.innerClassName,
-          activeClass: CUSTOM_CLASS_NAMES.activeClassName,
-          releasedClass: CUSTOM_CLASS_NAMES.releasedClassName,
+          fixedClass: CUSTOM_CLASS_NAMES.fixedClassName,
+          relativeClass: CUSTOM_CLASS_NAMES.relativeClassName,
         };
 
         const { getByTestId } = renderContainer(customProps);
@@ -277,8 +277,8 @@ describe("Vue Integration", () => {
           expect.objectContaining({
             outerClassName: CUSTOM_CLASS_NAMES.outerClassName,
             innerClassName: CUSTOM_CLASS_NAMES.innerClassName,
-            activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
-            releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
+            fixedClassName: CUSTOM_CLASS_NAMES.fixedClassName,
+            relativeClassName: CUSTOM_CLASS_NAMES.relativeClassName,
           }),
         );
       });
@@ -394,8 +394,8 @@ describe("Vue Integration", () => {
               offset: TEST_OFFSETS[2],
               zIndex: TEST_Z_INDEXES[3],
               enabled: true,
-              activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
-              releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
+              fixedClassName: CUSTOM_CLASS_NAMES.fixedClassName,
+              relativeClassName: CUSTOM_CLASS_NAMES.relativeClassName,
             },
           }),
         );
@@ -415,8 +415,8 @@ describe("Vue Integration", () => {
             offset: TEST_OFFSETS[2],
             zIndex: TEST_Z_INDEXES[3],
             enabled: true,
-            activeClassName: CUSTOM_CLASS_NAMES.activeClassName,
-            releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
+            fixedClassName: CUSTOM_CLASS_NAMES.fixedClassName,
+            relativeClassName: CUSTOM_CLASS_NAMES.relativeClassName,
           }),
         );
       });

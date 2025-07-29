@@ -77,8 +77,8 @@ useAdhesive(
     offset: 20,
     enabled: enabled.value,
     zIndex: 999,
-    activeClassName: 'custom-active',
-    releasedClassName: 'custom-released'
+    fixedClassName: 'custom-fixed',
+    relativeClassName: 'custom-relative'
   })
 );
 </script>
@@ -117,8 +117,8 @@ import { ref } from 'vue';
 const adhesiveOptions = ref({
   offset: 20,
   zIndex: 999,
-  activeClassName: 'custom-active',
-  releasedClassName: 'custom-released'
+  fixedClassName: 'custom-fixed',
+  relativeClassName: 'custom-relative'
 });
 </script>
 
@@ -196,7 +196,7 @@ A simple wrapper component that automatically applies sticky positioning to its 
 - All props from `UseAdhesiveOptions` (see below)
 
 > [!NOTE]
-> Class props like `outerClassName`, `innerClassName`, `activeClassName`, and `releasedClassName` become `outerClass`, `innerClass`, `activeClass`, and `releasedClass` in Vue for brevity.
+> Class props like `outerClassName`, `innerClassName`, `fixedClassName`, and `relativeClassName` become `outerClass`, `innerClass`, `fixedClass`, and `relativeClass` in Vue for brevity.
 
 ```vue
 <AdhesiveContainer
@@ -229,8 +229,8 @@ For more control over the sticky behavior with full Vue reactivity support.
 | `enabled` | `boolean` | `true` | Whether to enable sticky behavior |
 | `outerClassName` | `string` | `'adhesive__outer'` | Class for the outer wrapper |
 | `innerClassName` | `string` | `'adhesive__inner'` | Class for the inner wrapper |
-| `activeClassName` | `string` | `'adhesive--active'` | Class when element is sticky |
-| `releasedClassName` | `string` | `'adhesive--released'` | Class when element returns to normal |
+| `fixedClassName` | `string` | `'adhesive--fixed'` | Class when element is sticky |
+| `relativeClassName` | `string` | `'adhesive--relative'` | Class when element returns to normal |
 
 #### `v-adhesive` Directive
 

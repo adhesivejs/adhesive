@@ -48,8 +48,8 @@ export const customClassTestProps = {
   className: "custom-class",
   outerClassName: "custom-outer",
   innerClassName: "custom-inner",
-  activeClassName: "custom-active",
-  releasedClassName: "custom-released",
+  fixedClassName: "custom-fixed",
+  relativeClassName: "custom-relative",
 } as const;
 
 export const errorTestCases = [
@@ -68,8 +68,8 @@ export const TEST_Z_INDEXES = [1, 10, 100, 999, 1000] as const;
 export const CUSTOM_CLASS_NAMES = {
   outerClassName: "test-outer",
   innerClassName: "test-inner",
-  activeClassName: "test-active",
-  releasedClassName: "test-released",
+  fixedClassName: "test-active",
+  relativeClassName: "test-relative",
 } as const;
 
 export function mockGetBoundingClientRect(

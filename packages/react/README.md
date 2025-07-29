@@ -72,8 +72,8 @@ export function Component() {
       offset: 20,
       enabled,
       zIndex: 999,
-      activeClassName: 'custom-active',
-      releasedClassName: 'custom-released'
+      fixedClassName: 'custom-fixed',
+      relativeClassName: 'custom-relative'
     }
   );
 
@@ -142,5 +142,5 @@ For more control over the sticky behavior.
 | `enabled` | `boolean` | `true` | Whether to enable sticky behavior |
 | `outerClassName` | `string` | `'adhesive__outer'` | Class for the outer wrapper |
 | `innerClassName` | `string` | `'adhesive__inner'` | Class for the inner wrapper |
-| `activeClassName` | `string` | `'adhesive--active'` | Class when element is sticky |
-| `releasedClassName` | `string` | `'adhesive--released'` | Class when element returns to normal |
+| `fixedClassName` | `string` | `'adhesive--fixed'` | Class when element is sticky |
+| `relativeClassName` | `string` | `'adhesive--relative'` | Class when element returns to normal |
