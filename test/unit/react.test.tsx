@@ -77,7 +77,6 @@ describe("React Integration", () => {
     cleanup();
   });
 
-  // Helper functions
   const renderTestComponent = () => render(<TestHookComponent />);
 
   const getTestElements = () => ({
@@ -131,14 +130,11 @@ describe("React Integration", () => {
         renderTestComponent();
         const { toggleEnabledButton } = getTestElements();
 
-        // Initial state
         expect(screen.getByText("Toggle (enabled)")).toBeInTheDocument();
 
-        // Toggle to disabled
         await user.click(toggleEnabledButton);
         expect(screen.getByText("Toggle (disabled)")).toBeInTheDocument();
 
-        // Toggle back to enabled
         await user.click(toggleEnabledButton);
         expect(screen.getByText("Toggle (enabled)")).toBeInTheDocument();
       });
@@ -148,14 +144,11 @@ describe("React Integration", () => {
         renderTestComponent();
         const { togglePositionButton } = getTestElements();
 
-        // Initial position
         expect(screen.getByText("Position: top")).toBeInTheDocument();
 
-        // Change to bottom
         await user.click(togglePositionButton);
         expect(screen.getByText("Position: bottom")).toBeInTheDocument();
 
-        // Change back to top
         await user.click(togglePositionButton);
         expect(screen.getByText("Position: top")).toBeInTheDocument();
       });
@@ -165,18 +158,15 @@ describe("React Integration", () => {
         renderTestComponent();
         const { toggleOffsetButton } = getTestElements();
 
-        // Initial offset
         expect(
           screen.getByText(`Offset: ${TEST_OFFSETS[1]}`),
         ).toBeInTheDocument();
 
-        // Change offset
         await user.click(toggleOffsetButton);
         expect(
           screen.getByText(`Offset: ${TEST_OFFSETS[2]}`),
         ).toBeInTheDocument();
 
-        // Change back
         await user.click(toggleOffsetButton);
         expect(
           screen.getByText(`Offset: ${TEST_OFFSETS[1]}`),
@@ -192,10 +182,8 @@ describe("React Integration", () => {
           toggleOffsetButton,
         } = getTestElements();
 
-        // Reset the mock to clear initial calls
         mockAdhesiveInstance.updateOptions.mockClear();
 
-        // Test enabled toggle
         await user.click(toggleEnabledButton);
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -203,7 +191,6 @@ describe("React Integration", () => {
           }),
         );
 
-        // Test position change
         await user.click(togglePositionButton);
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -211,7 +198,6 @@ describe("React Integration", () => {
           }),
         );
 
-        // Test offset change
         await user.click(toggleOffsetButton);
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -264,7 +250,6 @@ describe("React Integration", () => {
 
       it("handles empty children", () => {
         render(<AdhesiveContainer />);
-        // Should not throw errors
       });
     });
 
@@ -283,11 +268,9 @@ describe("React Integration", () => {
         const child = screen.getByTestId("container-child");
         expect(child).toBeInTheDocument();
 
-        // The className should be applied to the target div
         const targetDiv = child.parentElement;
         expect(targetDiv).toHaveClass("custom-class");
 
-        // Verify Adhesive.create was called with correct options
         const { Adhesive } = await import("@adhesivejs/core");
         expect(Adhesive.create).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -313,7 +296,6 @@ describe("React Integration", () => {
 
           expect(screen.getByTestId("container-child")).toBeInTheDocument();
 
-          // Test that re-rendering with different props works
           rerender(
             <AdhesiveContainer {...props}>
               <div data-testid="container-child">Container Content</div>

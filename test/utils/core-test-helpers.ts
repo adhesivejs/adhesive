@@ -1,11 +1,3 @@
-/**
- * Core-specific test helpers for DOM manipulation testing
- * These utilities are specific to core Adhesive testing and complement shared-test-helpers.ts
- */
-
-/**
- * Creates a mock DOM structure for core Adhesive testing
- */
 export function createMockDOM() {
   document.body.innerHTML = `
     <div id="bounding" style="height: 2000px; position: relative;">

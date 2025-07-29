@@ -1,11 +1,6 @@
 import { vi } from "vitest";
 import type { AdhesivePosition } from "@adhesivejs/core";
 
-/**
- * Shared test utilities for Adhesive testing across all frameworks
- */
-
-// Test data constants for better maintainability
 export const TEST_DIMENSIONS = {
   CONTAINER_HEIGHT: 2000,
   BOUNDING_HEIGHT: 1000,
@@ -26,9 +21,6 @@ export const DEFAULT_RECT: DOMRect = {
   toJSON: () => ({}),
 };
 
-/**
- * Test configuration test cases for parameterized testing
- */
 export const configurationTestCases = [
   {
     name: "position prop",
@@ -52,9 +44,6 @@ export const configurationTestCases = [
   },
 ] as const;
 
-/**
- * Custom class name test configuration
- */
 export const customClassTestProps = {
   className: "custom-class",
   outerClassName: "custom-outer",
@@ -63,15 +52,13 @@ export const customClassTestProps = {
   releasedClassName: "custom-released",
 } as const;
 
-/**
- * Error test cases for comprehensive error handling tests
- */
 export const errorTestCases = [
   { selector: "", expectedCode: "TARGET_EL_REQUIRED" },
   { selector: "#nonexistent", expectedCode: "TARGET_EL_NOT_FOUND" },
   { selector: ".missing-class", expectedCode: "TARGET_EL_NOT_FOUND" },
   { selector: "invalid>>selector", expectedCode: "TARGET_EL_NOT_FOUND" },
 ] as const;
+
 export const TEST_POSITIONS: AdhesivePosition[] = ["top", "bottom"];
 
 export const TEST_OFFSETS = [0, 10, 20, 50, 100] as const;
@@ -85,10 +72,6 @@ export const CUSTOM_CLASS_NAMES = {
   releasedClassName: "test-released",
 } as const;
 
-/**
- * Enhanced getBoundingClientRect mock for dynamic testing
- * Allows per-element rect overrides for realistic core testing
- */
 export function mockGetBoundingClientRect(
   overrides: Record<string, Partial<DOMRect>> = {},
   elementOverrides: Map<Element, Partial<DOMRect>> = new Map(),
@@ -134,9 +117,6 @@ export function mockGetBoundingClientRect(
   };
 }
 
-/**
- * Common setup/teardown helpers
- */
 export function commonBeforeEach() {
   vi.clearAllMocks();
   document.body.innerHTML = "";
@@ -170,9 +150,6 @@ export function commonBeforeEach() {
   });
 }
 
-/**
- * Scroll simulation helper used across all tests
- */
 export function simulateScrollToPosition(scrollY: number): Promise<void> {
   Object.defineProperty(window, "scrollY", {
     value: scrollY,
@@ -188,9 +165,6 @@ export function simulateScrollToPosition(scrollY: number): Promise<void> {
   return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 }
 
-/**
- * Creates a mock Adhesive instance for testing
- */
 export function createMockAdhesive() {
   const mockInstance = {
     init: vi.fn(),
@@ -207,20 +181,15 @@ export function createMockAdhesive() {
     refresh: vi.fn(),
   };
 
-  // Make init return the instance for chaining
   mockInstance.init.mockReturnValue(mockInstance);
 
   return mockInstance;
 }
 
-/**
- * Creates a comprehensive mock for the Adhesive constructor
- */
 export function createMockAdhesiveConstructor() {
   return vi.fn((options) => {
     const instance = createMockAdhesive();
 
-    // Simulate DOM wrapper creation like the real Adhesive does
     const targetEl =
       typeof options.targetEl === "string"
         ? document.querySelector(options.targetEl)
@@ -242,14 +211,9 @@ export function createMockAdhesiveConstructor() {
   });
 }
 
-/**
- * Setup function for consistent test environment
- */
 export function setupTestEnvironment() {
-  // Clear DOM
   document.body.innerHTML = "";
 
-  // Mock getBoundingClientRect for consistent testing
   Element.prototype.getBoundingClientRect = vi.fn(() => DEFAULT_RECT);
 
   // Mock window dimensions
@@ -275,28 +239,16 @@ export function setupTestEnvironment() {
   });
 }
 
-/**
- * Cleanup function for test environment
- */
 export function cleanupTestEnvironment() {
   document.body.innerHTML = "";
   vi.restoreAllMocks();
 }
 
-/**
- * Assertion helpers for common test scenarios
- */
 export const assertions = {
-  /**
-   * Assert that an element has the expected sticky behavior setup
-   */
   expectStickySetup: (element: HTMLElement, className = "adhesive__inner") => {
     expect(element.parentElement?.className).toContain(className);
   },
 
-  /**
-   * Assert that Adhesive.create was called with expected options
-   */
   expectAdhesiveCreatedWith: (
     AdhesiveMock: any,
     expectedOptions: Record<string, any>,
@@ -306,17 +258,11 @@ export const assertions = {
     );
   },
 
-  /**
-   * Assert that component renders without errors
-   */
   expectRenderedWithoutErrors: (element: HTMLElement | null) => {
     expect(element).toBeTruthy();
     expect(element).toBeInstanceOf(HTMLElement);
   },
 
-  /**
-   * Assert element state for Adhesive core testing
-   */
   expectElementToBeInState: (adhesive: any, expectedStatus: string) => {
     const state = adhesive.getState();
     expect(state.status).toBe(expectedStatus);
@@ -324,37 +270,22 @@ export const assertions = {
   },
 };
 
-/**
- * Test data generators for parameterized tests
- */
 export const testData = {
-  /**
-   * Generate test cases for position testing
-   */
   positionTestCases: TEST_POSITIONS.map((position) => ({
     position,
     description: `handles ${position} positioning`,
   })),
 
-  /**
-   * Generate test cases for offset testing
-   */
   offsetTestCases: TEST_OFFSETS.map((offset) => ({
     offset,
     description: `applies offset ${offset}px correctly`,
   })),
 
-  /**
-   * Generate test cases for enabled/disabled states
-   */
   enabledStateTestCases: [
     { enabled: true, description: "enabled state" },
     { enabled: false, description: "disabled state" },
   ],
 
-  /**
-   * Generate test cases for custom class names
-   */
   classNameTestCases: [
     {
       props: CUSTOM_CLASS_NAMES,
@@ -367,9 +298,6 @@ export const testData = {
   ],
 };
 
-/**
- * Common test scenarios that can be reused across frameworks
- */
 export const testScenarios = {
   basicRender: {
     description: "renders without errors",
@@ -399,13 +327,7 @@ export const testScenarios = {
   },
 };
 
-/**
- * Performance testing helpers
- */
 export const performanceHelpers = {
-  /**
-   * Measure time for multiple operations
-   */
   measureOperations: (operation: () => void, iterations = 100): number => {
     const start = globalThis.performance.now();
     for (let i = 0; i < iterations; i++) {
@@ -415,21 +337,12 @@ export const performanceHelpers = {
     return end - start;
   },
 
-  /**
-   * Test memory usage (if available)
-   */
   getMemoryUsage: (): number => {
     return (globalThis.performance as any)?.memory?.usedJSHeapSize || 0;
   },
 };
 
-/**
- * Animation frame utilities for testing
- */
 export const animationHelpers = {
-  /**
-   * Waits for RequestAnimationFrame to complete
-   */
   waitForRAF: (): Promise<void> => {
     return new Promise((resolve) => {
       requestAnimationFrame(() => {
@@ -438,9 +351,6 @@ export const animationHelpers = {
     });
   },
 
-  /**
-   * Waits for multiple RAF cycles
-   */
   waitForRAFCycles: (cycles: number): Promise<void> => {
     return new Promise((resolve) => {
       let count = 0;

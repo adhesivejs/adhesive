@@ -159,14 +159,13 @@ describe("Core", () => {
         const adhesive = createAdhesiveInstance(customOptions);
 
         expect(adhesive).toBeInstanceOf(Adhesive);
-        // Verify options are applied by checking they don't throw
+
         expect(() => adhesive.init()).not.toThrow();
 
         adhesive.cleanup();
       });
 
       it("validates option types and ranges", () => {
-        // Test valid numeric options
         expect(() =>
           createAdhesiveInstance({ offset: TEST_OFFSETS[3] }),
         ).not.toThrow();
@@ -174,7 +173,6 @@ describe("Core", () => {
           createAdhesiveInstance({ zIndex: TEST_Z_INDEXES[4] }),
         ).not.toThrow();
 
-        // Test valid string options
         expect(() => createAdhesiveInstance({ position: "top" })).not.toThrow();
         expect(() =>
           createAdhesiveInstance({ position: "bottom" }),
@@ -200,11 +198,9 @@ describe("Core", () => {
       it("handles enable/disable option updates correctly", () => {
         const adhesive = createInitializedAdhesive();
 
-        // Test disabling
         adhesive.updateOptions({ enabled: false });
         expect(adhesive.getState().activated).toBe(false);
 
-        // Test re-enabling
         adhesive.updateOptions({ enabled: true });
         expect(adhesive.getState().activated).toBe(true);
 
@@ -239,13 +235,11 @@ describe("Core", () => {
       });
 
       it("handles creating instance with enabled:false then updating options", () => {
-        // Create an instance that starts disabled (uses frozen options)
         const adhesive = Adhesive.create({
           targetEl,
           enabled: false,
         });
 
-        // Try to update options while disabled - this should not throw
         expect(() => {
           adhesive.updateOptions({
             position: "bottom",
@@ -253,7 +247,6 @@ describe("Core", () => {
           });
         }).not.toThrow();
 
-        // Try to enable with additional options - this should not throw
         expect(() => {
           adhesive.updateOptions({
             enabled: true,
@@ -267,24 +260,17 @@ describe("Core", () => {
       });
 
       it("preserves all default options when updating frozen options", () => {
-        // Create an instance that starts disabled (uses frozen options with defaults)
         const adhesive = Adhesive.create({
           targetEl,
           enabled: false,
         });
 
-        // Try to update one option - this should preserve all other defaults
-        adhesive.updateOptions({
-          offset: TEST_OFFSETS[2],
-        });
+        adhesive.updateOptions({ offset: TEST_OFFSETS[2] });
 
-        // Now enable to access the unfrozen options
         adhesive.updateOptions({ enabled: true });
 
-        // Verify that defaults are still intact after the unfreezing process
         expectElementToBeInState(adhesive, "INITIAL");
 
-        // Test with multiple updates to ensure robustness
         adhesive.updateOptions({
           position: "bottom",
           zIndex: TEST_Z_INDEXES[3],
@@ -296,13 +282,11 @@ describe("Core", () => {
       });
 
       it("preserves all option properties when unfreezing frozen options", () => {
-        // This test specifically verifies that no options are lost during the unfreezing process
         const adhesive = Adhesive.create({
           targetEl,
           enabled: false,
         });
 
-        // Perform an update that will trigger unfreezing
         adhesive.updateOptions({
           offset: TEST_OFFSETS[1],
           position: "bottom",
@@ -313,16 +297,11 @@ describe("Core", () => {
           releasedClassName: CUSTOM_CLASS_NAMES.releasedClassName,
         });
 
-        // Enable the instance
         adhesive.updateOptions({ enabled: true });
 
-        // All the options should have been applied correctly
         expect(adhesive.getState().activated).toBe(true);
 
-        // Verify we can still update options after unfreezing
-        adhesive.updateOptions({
-          offset: TEST_OFFSETS[3],
-        });
+        adhesive.updateOptions({ offset: TEST_OFFSETS[3] });
 
         expect(adhesive.getState().activated).toBe(true);
 
@@ -332,17 +311,14 @@ describe("Core", () => {
       it("handle multiple consecutive updates from disabled state", () => {
         const adhesive = createInitializedAdhesive();
 
-        // Disable first
         adhesive.updateOptions({ enabled: false });
 
-        // Multiple updates while disabled - none should throw
         expect(() => {
           adhesive.updateOptions({ enabled: false, position: "bottom" });
           adhesive.updateOptions({ enabled: false, offset: TEST_OFFSETS[2] });
           adhesive.updateOptions({ enabled: false, zIndex: TEST_Z_INDEXES[2] });
         }).not.toThrow();
 
-        // Final re-enable
         expect(() => {
           adhesive.updateOptions({ enabled: true });
         }).not.toThrow();
@@ -353,30 +329,23 @@ describe("Core", () => {
       });
 
       it("correctly re-enables instance that started in disabled state", () => {
-        // Create an instance that starts disabled with real target element
         const adhesive = new Adhesive({
           targetEl,
           enabled: false,
         });
 
-        // Verify it starts disabled
         expect(adhesive.getState().activated).toBe(false);
 
-        // Initialize the instance (this should work for disabled instances)
         adhesive.init();
 
-        // Instance should still be disabled after init
         expect(adhesive.getState().activated).toBe(false);
 
-        // Now enable it via updateOptions
         expect(() => {
           adhesive.updateOptions({ enabled: true });
         }).not.toThrow();
 
-        // The instance should now be properly enabled and functional
         expect(adhesive.getState().activated).toBe(true);
 
-        // Check if wrapper elements were created correctly
         const outerWrapper = targetEl.parentElement?.parentElement;
         const innerWrapper = targetEl.parentElement;
 
@@ -385,7 +354,6 @@ describe("Core", () => {
         expect(outerWrapper?.className).toContain("adhesive__outer");
         expect(innerWrapper?.className).toContain("adhesive__inner");
 
-        // Clean up
         adhesive.cleanup();
       });
     });
@@ -406,7 +374,6 @@ describe("Core", () => {
       it("returns complete state object with all required properties", () => {
         const state = adhesive.getState();
 
-        // Verify all expected properties exist
         expect(state).toHaveProperty("status");
         expect(state).toHaveProperty("activated");
         expect(state).toHaveProperty("position");
@@ -421,7 +388,6 @@ describe("Core", () => {
         expect(state).toHaveProperty("topBoundary");
         expect(state).toHaveProperty("bottomBoundary");
 
-        // Verify initial state values
         expect(state.status).toBe(ADHESIVE_STATUS.INITIAL);
         expect(state.activated).toBe(true);
       });
@@ -430,11 +396,9 @@ describe("Core", () => {
         const state = adhesive.getState();
         const originalStatus = state.status;
 
-        // Attempt to modify state properties
         (state as any).status = "modified";
         (state as any).activated = false;
 
-        // Verify internal state unchanged
         const newState = adhesive.getState();
         expect(newState.status).toBe(originalStatus);
         expect(newState.activated).toBe(true);
@@ -444,7 +408,6 @@ describe("Core", () => {
         const state1 = adhesive.getState();
         const state2 = adhesive.getState();
 
-        // Objects should contain same data but be different instances
         expect(state1).toEqual(state2);
         expect(state1).not.toBe(state2);
       });
@@ -462,15 +425,12 @@ describe("Core", () => {
       });
 
       it("maintains consistent state during enable/disable cycles", () => {
-        // Initial state
         expectElementToBeInState(adhesive, "INITIAL");
 
-        // Disable
         adhesive.disable();
         expect(adhesive.getState().activated).toBe(false);
         expectElementToBeInState(adhesive, "INITIAL");
 
-        // Re-enable
         adhesive.enable();
         expect(adhesive.getState().activated).toBe(true);
         expectElementToBeInState(adhesive, "INITIAL");
@@ -491,23 +451,18 @@ describe("Core", () => {
       });
 
       it("toggles between enabled and disabled states correctly", () => {
-        // Initially enabled
         expect(adhesive.getState().activated).toBe(true);
 
-        // Disable
         adhesive.disable();
         expect(adhesive.getState().activated).toBe(false);
 
-        // Re-enable
         adhesive.enable();
         expect(adhesive.getState().activated).toBe(true);
       });
 
       it("resets state to initial when disabled", () => {
-        // Ensure we start in initial state
         expectElementToBeInState(adhesive, "INITIAL");
 
-        // Disable and verify state reset
         adhesive.disable();
         const state = adhesive.getState();
         expect(state.status).toBe(ADHESIVE_STATUS.INITIAL);
@@ -527,7 +482,6 @@ describe("Core", () => {
 
         expect(adhesive.getState().activated).toBe(false);
 
-        // Should be safe to call init on disabled instance
         expect(() => adhesive.init()).not.toThrow();
         expect(adhesive.getState().activated).toBe(false);
       });
@@ -536,7 +490,6 @@ describe("Core", () => {
         const adhesive = createInitializedAdhesive();
         adhesive.disable();
 
-        // These should not cause errors or state changes
         window.dispatchEvent(new Event("scroll"));
         window.dispatchEvent(new Event("resize"));
 
@@ -603,7 +556,6 @@ describe("Core", () => {
         const state = adhesive.getState();
         expect(state.activated).toBe(true);
 
-        // Should handle the position update without errors
         expect(() =>
           adhesive.updateOptions({ position: "bottom" }),
         ).not.toThrow();
@@ -612,7 +564,6 @@ describe("Core", () => {
       it("responds to scroll events in bottom mode", async () => {
         await simulateScrollToPosition(100);
 
-        // Should handle scroll without throwing errors
         const state = adhesive.getState();
         expect(state.activated).toBe(true);
       });
@@ -636,17 +587,15 @@ describe("Core", () => {
       it("respects bounding element constraints", () => {
         const state = adhesive.getState();
 
-        // Boundary should be calculated based on bounding element
         expect(state.bottomBoundary).toBeGreaterThan(state.topBoundary);
         expect(state.topBoundary).toBeGreaterThanOrEqual(0);
       });
 
       it("handles edge case scroll positions", async () => {
-        // Test extreme scroll positions
-        await simulateScrollToPosition(-100); // Negative scroll
+        await simulateScrollToPosition(-100);
         expect(adhesive.getState().activated).toBe(true);
 
-        await simulateScrollToPosition(10000); // Very large scroll
+        await simulateScrollToPosition(10000);
         expect(adhesive.getState().activated).toBe(true);
       });
     });
@@ -677,7 +626,6 @@ describe("Core", () => {
 
         const adhesive = createAdhesiveInstance(customClasses);
 
-        // Verify wrapper structure
         const outerWrapper = targetEl.parentElement;
         expect(outerWrapper).not.toBeNull();
         expect(outerWrapper!.className).toContain(customClasses.innerClassName);
@@ -693,7 +641,6 @@ describe("Core", () => {
       it("creates wrappers with default class names", () => {
         const adhesive = createAdhesiveInstance();
 
-        // Check default class names are applied
         const targetParent = targetEl.parentElement;
         expect(targetParent?.className).toContain("adhesive__inner");
 
@@ -707,7 +654,6 @@ describe("Core", () => {
 
         const adhesive = createAdhesiveInstance();
 
-        // Verify target element properties preserved
         expect(targetEl.id).toBe(originalId);
         expect(targetEl.textContent).toBe(originalTextContent);
         expect(targetEl.style.cssText).toBe(originalStyle);
@@ -724,12 +670,10 @@ describe("Core", () => {
 
         const adhesive = createAdhesiveInstance();
 
-        // Verify wrappers were created
         expect(targetEl.parentElement?.className).toContain("adhesive__inner");
 
         adhesive.cleanup();
 
-        // Verify complete restoration
         expect(targetEl.parentElement).toBe(originalParent);
         expect(targetEl.nextElementSibling).toBe(originalNextSibling);
         expect(targetEl.previousElementSibling).toBe(originalPreviousSibling);
@@ -738,13 +682,11 @@ describe("Core", () => {
       it("removes all wrapper elements after cleanup", () => {
         const adhesive = createAdhesiveInstance();
 
-        // Capture wrapper references
         const innerWrapper = targetEl.parentElement;
         const outerWrapper = innerWrapper?.parentElement;
 
         adhesive.cleanup();
 
-        // Verify wrappers are removed from DOM
         if (innerWrapper) {
           expect(document.contains(innerWrapper)).toBe(false);
         }
@@ -756,10 +698,8 @@ describe("Core", () => {
       it("handles cleanup when element is already removed", () => {
         const adhesive = createAdhesiveInstance();
 
-        // Manually remove the target element
         targetEl.remove();
 
-        // Cleanup should not throw
         expect(() => adhesive.cleanup()).not.toThrow();
       });
     });
@@ -811,13 +751,11 @@ describe("Core", () => {
       });
 
       it("processes multiple rapid scroll events efficiently", () => {
-        // Simulate rapid scrolling
         for (let i = 0; i < 10; i++) {
           const scrollEvent = new Event("scroll");
           window.dispatchEvent(scrollEvent);
         }
 
-        // Should handle all events without errors
         expect(adhesive.getState().activated).toBe(true);
       });
 
@@ -855,7 +793,6 @@ describe("Core", () => {
       it("recalculates dimensions on resize", () => {
         const initialState = adhesive.getState();
 
-        // Simulate viewport resize
         Object.defineProperty(window, "innerHeight", {
           value: 1000,
           writable: true,
@@ -864,7 +801,6 @@ describe("Core", () => {
         const resizeEvent = new Event("resize");
         window.dispatchEvent(resizeEvent);
 
-        // State should remain activated
         expect(adhesive.getState().activated).toBe(true);
         expect(adhesive.getState().elementWidth).toBe(
           initialState.elementWidth,
@@ -875,7 +811,6 @@ describe("Core", () => {
       });
 
       it("updates fixed element dimensions when resized in active state", async () => {
-        // Create a more realistic test setup with actual ResizeObserver
         let resizeObserverCallback: ResizeObserverCallback | null = null;
         const mockObserver = {
           observe: vi.fn(),
@@ -883,17 +818,14 @@ describe("Core", () => {
           disconnect: vi.fn(),
         };
 
-        // Mock ResizeObserver to capture the callback
         const originalResizeObserver = window.ResizeObserver;
         window.ResizeObserver = vi.fn((callback) => {
           resizeObserverCallback = callback;
           return mockObserver;
         }) as any;
 
-        // Create and initialize adhesive
         const adhesive = createInitializedAdhesive();
 
-        // Force the element into fixed state by scrolling
         await simulateScrollToPosition(200);
 
         const initialState = adhesive.getState();
@@ -903,11 +835,9 @@ describe("Core", () => {
         expect(initialState.elementWidth).toBe(DEFAULT_RECT.width);
         expect(initialState.elementHeight).toBe(DEFAULT_RECT.height);
 
-        // Mock new dimensions after resize
         const newWidth = 150;
         const newX = 25;
 
-        // Update the mock to return new dimensions for the target element
         const mock = mockGetBoundingClientRect({
           target: {
             ...DEFAULT_RECT,
@@ -929,13 +859,11 @@ describe("Core", () => {
           },
         });
 
-        // Find the outer wrapper in the DOM (should have the adhesive__outer class)
         const innerWrapper = targetEl.parentElement;
         const outerWrapper = innerWrapper?.parentElement;
         expect(outerWrapper).toBeTruthy();
         expect(outerWrapper?.classList.contains("adhesive__outer")).toBe(true);
 
-        // Set up element-specific override for the outer wrapper since it doesn't have an ID
         mock.setElementOverride(outerWrapper!, {
           ...DEFAULT_RECT,
           width: newWidth,
@@ -944,7 +872,6 @@ describe("Core", () => {
           x: newX,
         });
 
-        // Create mock ResizeObserver entry simulating element resize
         const mockEntry: ResizeObserverEntry = {
           target: outerWrapper!,
           contentRect: {
@@ -978,7 +905,6 @@ describe("Core", () => {
           ],
         };
 
-        // Trigger the ResizeObserver callback if it was captured
         if (resizeObserverCallback) {
           (resizeObserverCallback as ResizeObserverCallback)(
             [mockEntry],
@@ -986,16 +912,13 @@ describe("Core", () => {
           );
         }
 
-        // Wait for RAF to complete
         await animationHelpers.waitForRAF();
 
-        // Verify the element's width was updated
         const updatedState = adhesive.getState();
         expect(updatedState.status).toBe(ADHESIVE_STATUS.FIXED);
         expect(updatedState.elementWidth).toBe(newWidth);
         expect(updatedState.elementX).toBe(newX);
 
-        // Verify the fixed element's CSS width was updated by checking the inner wrapper
         const innerWrapperElement = outerWrapper?.querySelector(
           ".adhesive__inner",
         ) as HTMLElement;
@@ -1004,36 +927,29 @@ describe("Core", () => {
 
         adhesive.cleanup();
 
-        // Restore ResizeObserver
         window.ResizeObserver = originalResizeObserver;
         mock.restore();
       });
 
       it("correctly handles resize without full repositioning update", () => {
-        // Create and initialize adhesive
         const adhesive = createInitializedAdhesive();
 
-        // Test that refresh doesn't break anything
         const stateBefore = adhesive.getState();
 
-        // This should work without throwing errors
         expect(() => {
           adhesive.refresh();
         }).not.toThrow();
 
         const stateAfter = adhesive.getState();
 
-        // Status should remain consistent (shouldn't change just from width refresh)
         expect(stateAfter.status).toBe(stateBefore.status);
 
         adhesive.cleanup();
       });
 
       it("refresh preserves state status during resize operations", () => {
-        // Create and initialize adhesive
         const adhesive = createInitializedAdhesive();
 
-        // Mock updated width
         const newWidth = 200;
 
         const mock = mockGetBoundingClientRect({
@@ -1053,7 +969,6 @@ describe("Core", () => {
           },
         });
 
-        // Set up element-specific override for the outer wrapper
         const innerWrapperRefresh = targetEl.parentElement;
         const outerWrapperRefresh = innerWrapperRefresh?.parentElement;
         if (outerWrapperRefresh) {
@@ -1072,17 +987,14 @@ describe("Core", () => {
 
         const updatedState = adhesive.getState();
 
-        // Key validation: status should be preserved during width-only updates
         expect(updatedState.status).toBe(initialState.status);
 
-        // Width should be updated
         expect(updatedState.elementWidth).toBe(newWidth);
 
         adhesive.cleanup();
       });
 
       it("ResizeObserver callback handles width-only updates correctly", async () => {
-        // Mock ResizeObserver to capture the callback
         let resizeObserverCallback: ResizeObserverCallback | null = null;
         const mockObserver = {
           observe: vi.fn(),
@@ -1096,13 +1008,10 @@ describe("Core", () => {
           return mockObserver;
         }) as any;
 
-        // Create and initialize adhesive
         const adhesive = createInitializedAdhesive();
 
-        // Get initial state
         const initialState = adhesive.getState();
 
-        // Mock updated dimensions (width change only)
         const newWidth = 200;
         const originalHeight = DEFAULT_RECT.height;
 
@@ -1123,7 +1032,6 @@ describe("Core", () => {
           },
         });
 
-        // Set up element-specific override for the outer wrapper
         const innerWrapperResize = targetEl.parentElement;
         const outerWrapperResize = innerWrapperResize?.parentElement;
         if (outerWrapperResize) {
@@ -1136,7 +1044,6 @@ describe("Core", () => {
           });
         }
 
-        // Get the outer wrapper and simulate ResizeObserver with width-only change
         const outerWrapperForResize = targetEl.parentElement?.parentElement;
         expect(outerWrapperForResize).toBeTruthy();
 
@@ -1160,7 +1067,6 @@ describe("Core", () => {
           ],
         };
 
-        // Trigger the ResizeObserver callback - this should NOT call #update()
         if (resizeObserverCallback) {
           expect(() => {
             (resizeObserverCallback as any)(
@@ -1170,11 +1076,8 @@ describe("Core", () => {
           }).not.toThrow();
         }
 
-        // Wait for RAF to complete since ResizeObserver uses requestAnimationFrame
         await animationHelpers.waitForRAF();
 
-        // The key fix: status should be preserved after width-only resize
-        // (The fix prevents #update() from being called which would reset status)
         const updatedState = adhesive.getState();
         expect(updatedState.status).toBe(initialState.status);
         expect(updatedState.elementWidth).toBe(newWidth);
@@ -1225,19 +1128,16 @@ describe("Core", () => {
 
     describe("ResizeObserver integration", () => {
       it("sets up ResizeObserver when available", () => {
-        // ResizeObserver should be available in test environment
         expect(window.ResizeObserver).toBeDefined();
 
         const adhesive = createInitializedAdhesive();
 
-        // Should initialize without errors
         expect(adhesive.getState().activated).toBe(true);
 
         adhesive.cleanup();
       });
 
       it("handles missing ResizeObserver gracefully", () => {
-        // Temporarily remove ResizeObserver
         const originalResizeObserver = window.ResizeObserver;
         delete (window as any).ResizeObserver;
 
@@ -1252,7 +1152,6 @@ describe("Core", () => {
 
         adhesive.cleanup();
 
-        // Restore ResizeObserver
         window.ResizeObserver = originalResizeObserver;
         consoleSpy.mockRestore();
       });
@@ -1265,7 +1164,6 @@ describe("Core", () => {
           disconnect: vi.fn(),
         };
 
-        // Mock ResizeObserver constructor to capture callback
         const originalResizeObserver = window.ResizeObserver;
         window.ResizeObserver = vi.fn((callback) => {
           capturedCallback = callback;
@@ -1274,13 +1172,10 @@ describe("Core", () => {
 
         const rafSpy = vi.spyOn(window, "requestAnimationFrame");
 
-        // Create adhesive instance which will create the ResizeObserver
         const adhesive = createInitializedAdhesive();
 
-        // Trigger resize with empty entries
         capturedCallback!([], mockObserver as any);
 
-        // Should not schedule any updates for empty entries
         expect(rafSpy).not.toHaveBeenCalled();
 
         adhesive.cleanup();
@@ -1296,7 +1191,6 @@ describe("Core", () => {
           disconnect: vi.fn(),
         };
 
-        // Mock ResizeObserver constructor to capture callback
         const originalResizeObserver = window.ResizeObserver;
         window.ResizeObserver = vi.fn((callback) => {
           capturedCallback = callback;
@@ -1306,10 +1200,8 @@ describe("Core", () => {
         const rafSpy = vi.spyOn(window, "requestAnimationFrame");
         const unrelatedElement = document.createElement("div");
 
-        // Create adhesive instance
         const adhesive = createInitializedAdhesive();
 
-        // Create mock entries for unrelated elements
         const mockEntry: ResizeObserverEntry = {
           target: unrelatedElement,
           contentRect: new DOMRectReadOnly(0, 0, 200, 100),
@@ -1318,10 +1210,8 @@ describe("Core", () => {
           devicePixelContentBoxSize: [{ inlineSize: 200, blockSize: 100 }],
         };
 
-        // Trigger resize with unrelated entries
         capturedCallback!([mockEntry], mockObserver as any);
 
-        // Should not schedule updates for unrelated elements
         expect(rafSpy).not.toHaveBeenCalled();
 
         adhesive.cleanup();
@@ -1337,7 +1227,6 @@ describe("Core", () => {
           disconnect: vi.fn(),
         };
 
-        // Mock ResizeObserver constructor to capture callback
         const originalResizeObserver = window.ResizeObserver;
         window.ResizeObserver = vi.fn((callback) => {
           capturedCallback = callback;
@@ -1347,10 +1236,8 @@ describe("Core", () => {
         const rafSpy = vi.spyOn(window, "requestAnimationFrame");
         const unrelatedElement = document.createElement("div");
 
-        // Create adhesive instance
         const adhesive = createInitializedAdhesive();
 
-        // Create mixed entries - both tracked and untracked
         const unrelatedEntry: ResizeObserverEntry = {
           target: unrelatedElement,
           contentRect: new DOMRectReadOnly(0, 0, 200, 100),
@@ -1367,10 +1254,8 @@ describe("Core", () => {
           devicePixelContentBoxSize: [{ inlineSize: 100, blockSize: 50 }],
         };
 
-        // Trigger resize with mixed entries
         capturedCallback!([unrelatedEntry, trackedEntry], mockObserver as any);
 
-        // Should schedule update since we have a tracked element
         expect(rafSpy).toHaveBeenCalled();
 
         adhesive.cleanup();
@@ -1403,12 +1288,10 @@ describe("Core", () => {
 
         const adhesive = createInitializedAdhesive();
 
-        // Trigger a scroll to potentially queue RAF
         window.dispatchEvent(new Event("scroll"));
 
         adhesive.cleanup();
 
-        // May or may not have been called depending on timing, but should not error
         expect(adhesive.getState().activated).toBe(false);
       });
 
@@ -1425,7 +1308,6 @@ describe("Core", () => {
         const adhesive = createInitializedAdhesive();
         adhesive.cleanup();
 
-        // After cleanup, state should still be accessible but show deactivated
         expect(adhesive.getState().activated).toBe(false);
       });
     });
@@ -1444,7 +1326,6 @@ describe("Core", () => {
       it("handles cleanup when DOM is already modified", () => {
         const adhesive = createInitializedAdhesive();
 
-        // Manually remove some DOM structure
         const wrapper = targetEl.parentElement?.parentElement;
         wrapper?.remove();
 
@@ -1496,7 +1377,6 @@ describe("Core", () => {
 
     describe("boundary condition handling", () => {
       it("handles elements with zero dimensions", () => {
-        // Create element with zero dimensions
         const zeroElement = document.createElement("div");
         zeroElement.style.width = "0px";
         zeroElement.style.height = "0px";
@@ -1522,10 +1402,8 @@ describe("Core", () => {
       it("maintains stability when DOM structure changes unexpectedly", () => {
         const adhesive = createInitializedAdhesive();
 
-        // Remove bounding element while instance is active
         boundingEl.remove();
 
-        // Should handle this gracefully
         expect(() => {
           window.dispatchEvent(new Event("scroll"));
           window.dispatchEvent(new Event("resize"));
@@ -1545,10 +1423,8 @@ describe("Core", () => {
           boundingEl,
         });
 
-        // Initial state
         expectElementToBeInState(adhesive, "INITIAL");
 
-        // Scroll past trigger point
         await simulateScrollToPosition(200);
         const scrolledState = adhesive.getState();
         expect([
@@ -1557,7 +1433,6 @@ describe("Core", () => {
           ADHESIVE_STATUS.RELATIVE,
         ]).toContain(scrolledState.status);
 
-        // Scroll back to top
         await simulateScrollToPosition(0);
         expectElementToBeInState(adhesive, "INITIAL");
 
@@ -1570,10 +1445,8 @@ describe("Core", () => {
           offset: 10,
         });
 
-        // Scroll to activate
         await simulateScrollToPosition(200);
 
-        // Change configuration while active
         adhesive.updateOptions({
           position: "bottom",
           offset: TEST_OFFSETS[2],
@@ -1587,7 +1460,6 @@ describe("Core", () => {
       it("maintains performance under stress conditions", async () => {
         const adhesive = createInitializedAdhesive();
 
-        // Simulate rapid interactions
         for (let i = 0; i < 20; i++) {
           await simulateScrollToPosition(i * 10);
           window.dispatchEvent(new Event("resize"));
@@ -1601,7 +1473,6 @@ describe("Core", () => {
 
     describe("multiple instance scenarios", () => {
       it("handles multiple adhesive instances independently", () => {
-        // Create additional elements
         const element2 = document.createElement("div");
         element2.id = "target2";
         boundingEl.append(element2);
@@ -1612,7 +1483,6 @@ describe("Core", () => {
         expect(adhesive1.getState().activated).toBe(true);
         expect(adhesive2.getState().activated).toBe(true);
 
-        // Each should work independently
         adhesive1.disable();
         expect(adhesive1.getState().activated).toBe(false);
         expect(adhesive2.getState().activated).toBe(true);
@@ -1626,7 +1496,6 @@ describe("Core", () => {
       it("handles rapid enable/disable cycles", () => {
         const adhesive = createInitializedAdhesive();
 
-        // Rapid enable/disable cycles
         for (let i = 0; i < 10; i++) {
           adhesive.disable();
           adhesive.enable();
@@ -1640,12 +1509,10 @@ describe("Core", () => {
       it("maintains stability with DOM mutations", () => {
         const adhesive = createInitializedAdhesive();
 
-        // Add/remove siblings
         const sibling = document.createElement("div");
         boundingEl.append(sibling);
         sibling.remove();
 
-        // Change target element properties
         targetEl.style.width = "200px";
         targetEl.className = "modified";
 
@@ -1659,85 +1526,70 @@ describe("Core", () => {
         let cancelRafSpy: any;
 
         beforeEach(() => {
-          // Spy on requestAnimationFrame and cancelAnimationFrame
           rafSpy = vi.spyOn(window, "requestAnimationFrame");
           cancelRafSpy = vi.spyOn(window, "cancelAnimationFrame");
         });
 
-        it("should cancel pending RAF callbacks when disabled rapidly", () => {
+        it("cancels pending RAF callbacks when disabled rapidly", () => {
           const adhesive = createInitializedAdhesive();
 
-          // Trigger multiple scroll events rapidly to queue RAF callbacks
           window.dispatchEvent(new Event("scroll"));
           window.dispatchEvent(new Event("scroll"));
           window.dispatchEvent(new Event("scroll"));
 
-          // Disable immediately before RAF callbacks execute
           adhesive.disable();
 
-          // Verify that cancelAnimationFrame was called to clean up
           expect(cancelRafSpy).toHaveBeenCalled();
 
           adhesive.cleanup();
         });
 
-        it("should handle multiple RAF callbacks queued before cleanup", () => {
+        it("handles multiple RAF callbacks queued before cleanup", () => {
           const adhesive = createInitializedAdhesive();
 
-          // Queue multiple updates
           window.dispatchEvent(new Event("scroll"));
           window.dispatchEvent(new Event("resize"));
 
-          // Cleanup before callbacks execute
           adhesive.cleanup();
 
-          // Verify RAF was canceled
           expect(cancelRafSpy).toHaveBeenCalled();
         });
 
-        it("should prevent memory leaks during rapid enable/disable cycles", () => {
+        it("prevents memory leaks during rapid enable/disable cycles", () => {
           const adhesive = new Adhesive({ targetEl });
 
-          // Rapid enable/disable cycles
           for (let i = 0; i < 10; i++) {
             adhesive.enable();
             window.dispatchEvent(new Event("scroll"));
             adhesive.disable();
           }
 
-          // Final cleanup
           adhesive.cleanup();
 
-          // Verify no RAF callbacks are left hanging
           expect(cancelRafSpy).toHaveBeenCalled();
         });
 
-        it("should prevent state corruption when RAF callbacks execute after disable", () => {
+        it("prevents state corruption when RAF callbacks execute after disable", () => {
           const adhesive = createInitializedAdhesive();
 
           let callbackExecuted = false;
           let savedCallback: any = null;
 
-          // Override RAF to capture callback
           rafSpy.mockImplementation((callback: any) => {
             savedCallback = callback;
             callbackExecuted = false;
-            return 123; // mock ID
+            return 123;
           });
 
-          // Trigger an event that schedules RAF
           window.dispatchEvent(new Event("scroll"));
 
-          // Disable the adhesive
           adhesive.disable();
 
-          // Now manually execute the captured callback (simulating delayed execution)
           if (savedCallback) {
             savedCallback(performance.now());
             callbackExecuted = true;
           }
 
-          // State should remain disabled/inactive even after callback execution
           const state = adhesive.getState();
           expect(state.activated).toBe(false);
           expect(callbackExecuted).toBe(true);
@@ -1745,12 +1597,11 @@ describe("Core", () => {
           adhesive.cleanup();
         });
 
-        it("should handle overlapping RAF callbacks correctly", () => {
+        it("handles overlapping RAF callbacks correctly", () => {
           const adhesive = createInitializedAdhesive();
 
           const executedCallbacks: number[] = [];
 
-          // Track RAF callback execution order
           rafSpy.mockImplementation((callback: any) => {
             const id = Math.random();
             setTimeout(() => {
@@ -1760,15 +1611,12 @@ describe("Core", () => {
             return id;
           });
 
-          // Trigger multiple events rapidly
           window.dispatchEvent(new Event("scroll"));
           window.dispatchEvent(new Event("scroll"));
           window.dispatchEvent(new Event("resize"));
 
-          // Wait for callbacks to execute
           return new Promise<void>((resolve) => {
             setTimeout(() => {
-              // State should be consistent regardless of callback execution order
               const state = adhesive.getState();
               expect(state.activated).toBe(true);
 
@@ -1778,10 +1626,9 @@ describe("Core", () => {
           });
         });
 
-        it("should handle cleanup when DOM elements are removed externally", () => {
+        it("handles cleanup when DOM elements are removed externally", () => {
           const adhesive = createInitializedAdhesive();
 
-          // Simulate external DOM manipulation (like React strict mode or HMR)
           const outerWrapper = targetEl.parentElement?.parentElement;
           if (
             outerWrapper &&
@@ -1790,14 +1637,12 @@ describe("Core", () => {
             outerWrapper.remove();
           }
 
-          // Cleanup should not throw even with missing DOM elements
           expect(() => adhesive.cleanup()).not.toThrow();
         });
 
-        it("should prevent double cleanup issues", () => {
+        it("prevents double cleanup issues", () => {
           const adhesive = createInitializedAdhesive();
 
-          // Multiple cleanup calls should be safe
           adhesive.cleanup();
           expect(() => adhesive.cleanup()).not.toThrow();
           expect(() => adhesive.cleanup()).not.toThrow();

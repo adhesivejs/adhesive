@@ -135,14 +135,11 @@ describe("Vue Integration", () => {
         const { getByTestId } = renderTestComponent();
         const toggleButton = getByTestId("toggle-enabled");
 
-        // Initial state
         expect(toggleButton).toHaveTextContent("enabled");
 
-        // Toggle to disabled
         await fireEvent.click(toggleButton);
         expect(toggleButton).toHaveTextContent("disabled");
 
-        // Toggle back to enabled
         await fireEvent.click(toggleButton);
         expect(toggleButton).toHaveTextContent("enabled");
       });
@@ -151,14 +148,11 @@ describe("Vue Integration", () => {
         const { getByTestId } = renderTestComponent();
         const positionButton = getByTestId("toggle-position");
 
-        // Initial position
         expect(positionButton).toHaveTextContent("top");
 
-        // Change to bottom
         await fireEvent.click(positionButton);
         expect(positionButton).toHaveTextContent("bottom");
 
-        // Change back to top
         await fireEvent.click(positionButton);
         expect(positionButton).toHaveTextContent("top");
       });
@@ -167,14 +161,11 @@ describe("Vue Integration", () => {
         const { getByTestId } = renderTestComponent();
         const offsetButton = getByTestId("toggle-offset");
 
-        // Initial offset
         expect(offsetButton).toHaveTextContent("10");
 
-        // Change offset
         await fireEvent.click(offsetButton);
         expect(offsetButton).toHaveTextContent("20");
 
-        // Change back
         await fireEvent.click(offsetButton);
         expect(offsetButton).toHaveTextContent("10");
       });
@@ -185,10 +176,8 @@ describe("Vue Integration", () => {
         const togglePositionButton = getByTestId("toggle-position");
         const toggleOffsetButton = getByTestId("toggle-offset");
 
-        // Reset the mock to clear initial calls
         mockAdhesiveInstance.updateOptions.mockClear();
 
-        // Test enabled toggle
         await fireEvent.click(toggleEnabledButton);
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -196,7 +185,6 @@ describe("Vue Integration", () => {
           }),
         );
 
-        // Test position change
         await fireEvent.click(togglePositionButton);
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -204,7 +192,6 @@ describe("Vue Integration", () => {
           }),
         );
 
-        // Test offset change
         await fireEvent.click(toggleOffsetButton);
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -285,7 +272,6 @@ describe("Vue Integration", () => {
           "Container Content",
         );
 
-        // Verify Adhesive.create was called with correct options
         const { Adhesive } = await import("@adhesivejs/core");
         expect(Adhesive.create).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -311,7 +297,6 @@ describe("Vue Integration", () => {
 
           expect(getByTestId("container-child")).toBeTruthy();
 
-          // Test that re-rendering with different props works
           await rerender(props);
 
           expect(getByTestId("container-child")).toBeTruthy();
@@ -331,7 +316,6 @@ describe("Vue Integration", () => {
   });
 
   describe("v-adhesive Directive", () => {
-    // Test component using directive through app registration
     const createTestApp = (template: string, setup?: any) => {
       return defineComponent({
         setup,
@@ -513,10 +497,8 @@ describe("Vue Integration", () => {
         expect(getByTestId("toggle-enabled")).toHaveTextContent("Disable");
         expect(getByTestId("change-offset")).toHaveTextContent("Offset: 10");
 
-        // Reset mock to track updates
         mockAdhesiveInstance.updateOptions.mockClear();
 
-        // Test enabled toggle
         await fireEvent.click(getByTestId("toggle-enabled"));
         expect(getByTestId("toggle-enabled")).toHaveTextContent("Enable");
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
@@ -525,7 +507,6 @@ describe("Vue Integration", () => {
           }),
         );
 
-        // Test offset change
         await fireEvent.click(getByTestId("change-offset"));
         expect(getByTestId("change-offset")).toHaveTextContent("Offset: 30");
         expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
@@ -567,7 +548,6 @@ describe("Vue Integration", () => {
           },
         });
 
-        // Reset mock to track updates
         mockAdhesiveInstance.updateOptions.mockClear();
 
         await fireEvent.click(getByTestId("increment-offset"));
@@ -596,13 +576,10 @@ describe("Vue Integration", () => {
 
         expect(getByTestId("directive-basic")).toBeTruthy();
 
-        // Verify instance was created
         expect(mockAdhesiveInstance.cleanup).not.toHaveBeenCalled();
 
-        // Unmount component
         unmount();
 
-        // Verify cleanup was called
         expect(mockAdhesiveInstance.cleanup).toHaveBeenCalledTimes(1);
       });
 
@@ -621,15 +598,12 @@ describe("Vue Integration", () => {
 
         expect(getByTestId("directive-basic")).toBeTruthy();
 
-        // Get initial call count
         const { Adhesive } = await import("@adhesivejs/core");
         const initialCallCount = (Adhesive.create as any).mock.calls.length;
 
-        // Trigger re-render
         await rerender({});
         await rerender({});
 
-        // Verify no additional instances were created
         expect((Adhesive.create as any).mock.calls.length).toBe(
           initialCallCount,
         );
@@ -670,18 +644,14 @@ describe("Vue Integration", () => {
         expect(getByTestId("conditional-element")).toBeTruthy();
         expect(getByTestId("toggle-visibility")).toHaveTextContent("Hide");
 
-        // Reset cleanup mock
         mockAdhesiveInstance.cleanup.mockClear();
 
-        // Hide element
         await fireEvent.click(getByTestId("toggle-visibility"));
         expect(queryByTestId("conditional-element")).toBeNull();
         expect(getByTestId("toggle-visibility")).toHaveTextContent("Show");
 
-        // Verify cleanup was called when element was removed
         expect(mockAdhesiveInstance.cleanup).toHaveBeenCalledTimes(1);
 
-        // Show element again
         mockAdhesiveInstance.cleanup.mockClear();
         await fireEvent.click(getByTestId("toggle-visibility"));
         expect(getByTestId("conditional-element")).toBeTruthy();
@@ -755,7 +725,7 @@ describe("Vue Integration", () => {
         expect(Adhesive.create).toHaveBeenCalledWith(
           expect.objectContaining({
             targetEl: expect.any(HTMLElement),
-            position: "top", // Argument should override options
+            position: "top",
           }),
         );
       });

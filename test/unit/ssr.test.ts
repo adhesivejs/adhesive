@@ -8,18 +8,13 @@ describe("SSR Safety", () => {
   let originalRequestAnimationFrame: typeof globalThis.requestAnimationFrame;
   let originalCancelAnimationFrame: typeof globalThis.cancelAnimationFrame;
 
-  /**
-   * Simulates an SSR environment by removing browser globals
-   */
   const simulateSSREnvironment = () => {
-    // Store original globals
     originalWindow = globalThis.window;
     originalDocument = globalThis.document;
     originalResizeObserver = globalThis.ResizeObserver;
     originalRequestAnimationFrame = globalThis.requestAnimationFrame;
     originalCancelAnimationFrame = globalThis.cancelAnimationFrame;
 
-    // Remove browser globals to simulate SSR
     // @ts-expect-error - Intentionally deleting for SSR simulation
     delete globalThis.window;
     // @ts-expect-error - Intentionally deleting for SSR simulation
@@ -32,9 +27,6 @@ describe("SSR Safety", () => {
     delete globalThis.cancelAnimationFrame;
   };
 
-  /**
-   * Restores browser environment after SSR simulation
-   */
   const restoreBrowserEnvironment = () => {
     globalThis.window = originalWindow;
     globalThis.document = originalDocument;
@@ -62,7 +54,6 @@ describe("SSR Safety", () => {
     });
 
     it("creates disabled instance when document is undefined", () => {
-      // Only remove document, keep window
       originalDocument = globalThis.document;
       // @ts-expect-error - Intentionally deleting for SSR simulation
       delete globalThis.document;
@@ -75,7 +66,6 @@ describe("SSR Safety", () => {
       expect(state.activated).toBe(false);
       expect(state.status).toBe(ADHESIVE_STATUS.INITIAL);
 
-      // Restore document
       globalThis.document = originalDocument;
     });
 
@@ -109,8 +99,6 @@ describe("SSR Safety", () => {
 
       const adhesive = new Adhesive(options);
 
-      // Options should be preserved even in SSR
-      // We can't directly access private fields, but we can verify behavior
       expect(() => adhesive.getState()).not.toThrow();
     });
   });
@@ -155,7 +143,7 @@ describe("SSR Safety", () => {
 
       const result = adhesive.init();
 
-      expect(result).toBe(adhesive); // Should return self for chaining
+      expect(result).toBe(adhesive);
 
       consoleSpy.mockRestore();
     });
@@ -221,72 +209,52 @@ describe("SSR Safety", () => {
 
   describe("Browser Environment Detection", () => {
     it("correctly detects browser environment when globals are present", () => {
-      // Ensure we're in browser environment
       expect(typeof window).toBe("object");
       expect(typeof document).toBe("object");
 
-      // Should work normally in browser
       document.body.innerHTML = '<div id="target">Test</div>';
 
       expect(() => {
-        new Adhesive({
-          targetEl: "#target",
-        });
+        new Adhesive({ targetEl: "#target" });
       }).not.toThrow();
     });
 
     it("correctly detects SSR environment when globals are missing", () => {
       simulateSSREnvironment();
 
-      // Should still work but be disabled
       expect(() => {
-        new Adhesive({
-          targetEl: "#target",
-        });
+        new Adhesive({ targetEl: "#target" });
       }).not.toThrow();
     });
   });
 
   describe("Hybrid SSR/Hydration Scenarios", () => {
     it("transitions from SSR to browser environment correctly", () => {
-      // Start in SSR
       simulateSSREnvironment();
 
-      const adhesive = new Adhesive({
-        targetEl: "#target",
-      });
+      const adhesive = new Adhesive({ targetEl: "#target" });
 
       const state = adhesive.getState();
       expect(state.activated).toBe(false);
 
-      // Simulate hydration - restore browser environment
       restoreBrowserEnvironment();
       document.body.innerHTML = '<div><div id="target">Test</div></div>';
 
-      // Should be able to enable after hydration
       expect(() => adhesive.enable()).not.toThrow();
-
-      // Note: In real SSR scenarios, you'd create a new instance after hydration
-      // This test verifies the transition doesn't crash
     });
 
     it("handles multiple instances across SSR/browser transitions", () => {
-      // Create in SSR
       simulateSSREnvironment();
       const ssrInstance = new Adhesive({ targetEl: "#target" });
 
-      // Restore browser environment
       restoreBrowserEnvironment();
       document.body.innerHTML = '<div id="target">Test</div>';
 
-      // Create new instance in browser
       const browserInstance = new Adhesive({ targetEl: "#target" });
 
-      // Both should be functional
       expect(() => ssrInstance.getState()).not.toThrow();
       expect(() => browserInstance.getState()).not.toThrow();
 
-      // Clean up both
       expect(() => {
         ssrInstance.cleanup();
         browserInstance.cleanup();
@@ -298,7 +266,6 @@ describe("SSR Safety", () => {
     it("does not throw AdhesiveError for missing elements in SSR", () => {
       simulateSSREnvironment();
 
-      // These would normally throw in browser environment
       expect(() => {
         new Adhesive({
           targetEl: "#non-existent",
@@ -338,10 +305,8 @@ describe("SSR Safety", () => {
         targetEl: "#target",
       });
 
-      // Should not attempt to add event listeners
       expect(() => adhesive.init()).not.toThrow();
 
-      // Cleanup should be safe even if no listeners were added
       expect(() => adhesive.cleanup()).not.toThrow();
     });
 
@@ -352,7 +317,6 @@ describe("SSR Safety", () => {
         targetEl: "#target",
       });
 
-      // Should handle missing ResizeObserver gracefully
       expect(() => adhesive.init()).not.toThrow();
       expect(() => adhesive.cleanup()).not.toThrow();
     });
@@ -364,7 +328,6 @@ describe("SSR Safety", () => {
 
       const start = performance.now();
 
-      // Create multiple instances
       for (let i = 0; i < 100; i++) {
         const adhesive = new Adhesive({
           targetEl: `#target-${i}`,
@@ -377,8 +340,7 @@ describe("SSR Safety", () => {
       const end = performance.now();
       const duration = end - start;
 
-      // Should complete quickly (adjust threshold as needed)
-      expect(duration).toBeLessThan(100); // 100ms threshold
+      expect(duration).toBeLessThan(100);
     });
   });
 });
