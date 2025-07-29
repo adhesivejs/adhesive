@@ -1,6 +1,36 @@
 # Changelog
 
 
+## v0.5.0
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.4.0...v0.5.0)
+
+### 💅 Refactors
+
+- **core:** ⚠️  Drastically simplify adhesive class and export positions ([ec60cda](https://github.com/adhesivejs/adhesive/commit/ec60cda))
+
+### 📖 Documentation
+
+- Add back jsdoc for jsr publishing ([bf8806d](https://github.com/adhesivejs/adhesive/commit/bf8806d))
+
+### 🏡 Chore
+
+- **core:** Update variable names and usage for readability ([59b1e70](https://github.com/adhesivejs/adhesive/commit/59b1e70))
+- Use typescript for eslint configs ([cf8f388](https://github.com/adhesivejs/adhesive/commit/cf8f388))
+
+### ✅ Tests
+
+- Use shared helpers more often ([b50b5e8](https://github.com/adhesivejs/adhesive/commit/b50b5e8))
+- Clean up tests ([b6579c1](https://github.com/adhesivejs/adhesive/commit/b6579c1))
+
+#### ⚠️ Breaking Changes
+
+- **core:** ⚠️  Drastically simplify adhesive class and export positions ([ec60cda](https://github.com/adhesivejs/adhesive/commit/ec60cda))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.4.0
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.3.4...v0.4.0)
