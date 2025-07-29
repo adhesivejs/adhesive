@@ -52,6 +52,7 @@ useAdhesive(targetRef, () => ({
       class="custom-class"
       outer-class="custom-outer"
       inner-class="custom-inner"
+      initial-class="custom-initial"
       fixed-class="custom-fixed"
       relative-class="custom-relative"
       style="width: 100%; height: 100px; background-color: lightblue"

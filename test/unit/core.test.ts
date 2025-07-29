@@ -1499,7 +1499,7 @@ describe("Core", () => {
         }
 
         expectElementToBeInState(adhesive, "INITIAL");
-        expectExactOuterClasses(["adhesive__outer"]);
+        expectExactOuterClasses(["adhesive__outer", "adhesive--initial"]);
 
         await simulateScrollToPosition(200);
         expectElementToBeInState(adhesive, "FIXED");
@@ -1507,7 +1507,7 @@ describe("Core", () => {
 
         await simulateScrollToPosition(0);
         expectElementToBeInState(adhesive, "INITIAL");
-        expectExactOuterClasses(["adhesive__outer"]);
+        expectExactOuterClasses(["adhesive__outer", "adhesive--initial"]);
 
         await simulateScrollToPosition(2000);
         expectElementToBeInState(adhesive, "RELATIVE");
@@ -1519,7 +1519,7 @@ describe("Core", () => {
 
         await simulateScrollToPosition(0);
         expectElementToBeInState(adhesive, "INITIAL");
-        expectExactOuterClasses(["adhesive__outer"]);
+        expectExactOuterClasses(["adhesive__outer", "adhesive--initial"]);
       });
 
       it("handles rapid enable/disable cycles", () => {

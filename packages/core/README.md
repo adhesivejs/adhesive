@@ -54,6 +54,7 @@ const adhesive = new Adhesive({
   zIndex: 999,
   outerClassName: 'custom-outer',
   innerClassName: 'custom-inner',
+  initialClassName: 'custom-initial',
   fixedClassName: 'custom-fixed',
   relativeClassName: 'custom-relative'
 });
@@ -93,8 +94,9 @@ adhesive.cleanup();
 | `enabled` | `boolean` | `true` | Whether to enable sticky behavior |
 | `outerClassName` | `string` | `'adhesive__outer'` | Class for the outer wrapper |
 | `innerClassName` | `string` | `'adhesive__inner'` | Class for the inner wrapper |
+| `initialClassName` | `string` | `'adhesive--initial'` | Class when element is in its initial state |
 | `fixedClassName` | `string` | `'adhesive--fixed'` | Class when element is sticky |
-| `relativeClassName` | `string` | `'adhesive--relative'` | Class when element returns to normal |
+| `relativeClassName` | `string` | `'adhesive--relative'` | Class when element reaches its boundary |
 
 #### Methods
 

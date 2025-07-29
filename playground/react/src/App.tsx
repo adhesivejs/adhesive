@@ -48,6 +48,7 @@ export function App() {
           className="custom-class"
           outerClassName="custom-outer"
           innerClassName="custom-inner"
+          initialClassName="custom-initial"
           fixedClassName="custom-fixed"
           relativeClassName="custom-relative"
           style={{

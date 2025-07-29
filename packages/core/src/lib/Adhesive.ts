@@ -63,22 +63,27 @@ export interface AdhesiveOptions {
    */
   readonly zIndex?: number;
   /**
-   * CSS class name for the outer wrapper element.
+   * CSS class for the outer wrapper element.
    * @default "adhesive__outer"
    */
   readonly outerClassName?: string;
   /**
-   * CSS class name for the inner wrapper element.
+   * CSS class for the inner wrapper element.
    * @default "adhesive__inner"
    */
   readonly innerClassName?: string;
   /**
-   * CSS class name applied when the element is sticky.
+   * CSS class applied when the element is in its initial state.
+   * @default "adhesive--initial"
+   */
+  readonly initialClassName?: string;
+  /**
+   * CSS class applied when the element is sticky.
    * @default "adhesive--fixed"
    */
   readonly fixedClassName?: string;
   /**
-   * CSS class name applied when the element reaches its boundary.
+   * CSS class applied when the element reaches its boundary.
    * @default "adhesive--relative"
    */
   readonly relativeClassName?: string;
@@ -91,6 +96,7 @@ interface InternalAdhesiveOptions {
   zIndex: number;
   outerClassName: string;
   innerClassName: string;
+  initialClassName: string;
   fixedClassName: string;
   relativeClassName: string;
 }
@@ -163,6 +169,7 @@ const DEFAULT_OPTIONS = {
   zIndex: 1 as number,
   outerClassName: "adhesive__outer",
   innerClassName: "adhesive__inner",
+  initialClassName: "adhesive--initial",
   fixedClassName: "adhesive--fixed",
   relativeClassName: "adhesive--relative",
 } satisfies Omit<AdhesiveOptions, "targetEl" | "boundingEl">;
@@ -244,6 +251,7 @@ export class Adhesive {
     zIndex: DEFAULT_OPTIONS.zIndex,
     outerClassName: DEFAULT_OPTIONS.outerClassName,
     innerClassName: DEFAULT_OPTIONS.innerClassName,
+    initialClassName: DEFAULT_OPTIONS.initialClassName,
     fixedClassName: DEFAULT_OPTIONS.fixedClassName,
     relativeClassName: DEFAULT_OPTIONS.relativeClassName,
   };
@@ -303,6 +311,8 @@ export class Adhesive {
       options.outerClassName ?? DEFAULT_OPTIONS.outerClassName;
     this.#options.innerClassName =
       options.innerClassName ?? DEFAULT_OPTIONS.innerClassName;
+    this.#options.initialClassName =
+      options.initialClassName ?? DEFAULT_OPTIONS.initialClassName;
     this.#options.fixedClassName =
       options.fixedClassName ?? DEFAULT_OPTIONS.fixedClassName;
     this.#options.relativeClassName =
@@ -394,6 +404,8 @@ export class Adhesive {
       this.#options.outerClassName = newOptions.outerClassName;
     if (newOptions.innerClassName)
       this.#options.innerClassName = newOptions.innerClassName;
+    if (newOptions.initialClassName)
+      this.#options.initialClassName = newOptions.initialClassName;
     if (newOptions.fixedClassName)
       this.#options.fixedClassName = newOptions.fixedClassName;
     if (newOptions.relativeClassName)
@@ -452,10 +464,13 @@ export class Adhesive {
     }
 
     this.#outerWrapper = document.createElement("div");
-    this.#outerWrapper.className = this.#options.outerClassName;
+    this.#outerWrapper.classList.add(
+      this.#options.outerClassName,
+      this.#options.initialClassName,
+    );
 
     this.#innerWrapper = document.createElement("div");
-    this.#innerWrapper.className = this.#options.innerClassName;
+    this.#innerWrapper.classList.add(this.#options.innerClassName);
 
     const parent = this.#targetEl.parentNode;
     parent.insertBefore(this.#outerWrapper, this.#targetEl);
@@ -646,6 +661,7 @@ export class Adhesive {
       this.#options.fixedClassName,
       this.#options.relativeClassName,
     );
+    this.#outerWrapper.classList.add(this.#options.initialClassName);
 
     this.#setState({
       status: ADHESIVE_STATUS.INITIAL,
@@ -674,7 +690,10 @@ export class Adhesive {
 
     const outerStyle = this.#outerWrapper.style;
     outerStyle.height = `${this.#state.elementHeight}px`;
-    this.#outerWrapper.classList.remove(this.#options.relativeClassName);
+    this.#outerWrapper.classList.remove(
+      this.#options.initialClassName,
+      this.#options.relativeClassName,
+    );
     this.#outerWrapper.classList.add(this.#options.fixedClassName);
 
     if (!wasAlreadyFixed) {
@@ -703,7 +722,10 @@ export class Adhesive {
 
     const outerStyle = this.#outerWrapper.style;
     outerStyle.height = "";
-    this.#outerWrapper.classList.remove(this.#options.fixedClassName);
+    this.#outerWrapper.classList.remove(
+      this.#options.initialClassName,
+      this.#options.fixedClassName,
+    );
     this.#outerWrapper.classList.add(this.#options.relativeClassName);
 
     this.#setState({

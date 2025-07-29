@@ -17,6 +17,7 @@ type BaseProps = Omit<
   | "boundingRef"
   | "outerClassName"
   | "innerClassName"
+  | "initialClassName"
   | "fixedClassName"
   | "relativeClassName"
 >;
@@ -28,13 +29,15 @@ type BaseProps = Omit<
  * Uses Vue-specific naming conventions (e.g., outerClass instead of outerClassName).
  */
 export interface AdhesiveContainerProps extends BaseProps {
-  /** CSS class for the outer wrapper element */
+  /** CSS class for the outer wrapper element. */
   outerClass?: UseAdhesiveOptions["outerClassName"];
-  /** CSS class for the inner wrapper element */
+  /** CSS class for the inner wrapper element. */
   innerClass?: UseAdhesiveOptions["innerClassName"];
-  /** CSS class name applied when the element is sticky */
+  /** CSS class applied when the element is in its initial state. */
+  initialClass?: UseAdhesiveOptions["initialClassName"];
+  /** CSS class applied when the element is sticky. */
   fixedClass?: UseAdhesiveOptions["fixedClassName"];
-  /** CSS class name applied when the element reaches its boundary */
+  /** CSS class applied when the element reaches its boundary. */
   relativeClass?: UseAdhesiveOptions["relativeClassName"];
 }
 
@@ -102,6 +105,10 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
         type: String as PropType<AdhesiveContainerProps["innerClass"]>,
         required: false,
       },
+      initialClass: {
+        type: String as PropType<AdhesiveContainerProps["initialClass"]>,
+        required: false,
+      },
       fixedClass: {
         type: String as PropType<AdhesiveContainerProps["fixedClass"]>,
         required: false,
@@ -122,6 +129,7 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
         zIndex: props.zIndex,
         outerClassName: props.outerClass,
         innerClassName: props.innerClass,
+        initialClassName: props.initialClass,
         fixedClassName: props.fixedClass,
         relativeClassName: props.relativeClass,
       }));
