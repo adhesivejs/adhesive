@@ -86,16 +86,74 @@ export const CUSTOM_CLASS_NAMES = {
 } as const;
 
 /**
+ * Enhanced getBoundingClientRect mock for dynamic testing
+ * Allows per-element rect overrides for realistic core testing
+ */
+export function mockGetBoundingClientRect(
+  overrides: Record<string, Partial<DOMRect>> = {},
+  elementOverrides: Map<Element, Partial<DOMRect>> = new Map(),
+) {
+  const originalGetBoundingClientRect = Element.prototype.getBoundingClientRect;
+
+  Element.prototype.getBoundingClientRect = function (this: Element) {
+    // Check for element-specific override first
+    const elementOverride = elementOverrides.get(this);
+    if (elementOverride) {
+      const baseRect = { ...DEFAULT_RECT, ...elementOverride };
+      const scrollOffset = window.scrollY || 0;
+      return {
+        ...baseRect,
+        top: baseRect.top - scrollOffset,
+        bottom: baseRect.bottom - scrollOffset,
+        y: baseRect.y - scrollOffset,
+      } satisfies DOMRect;
+    }
+
+    // Check for ID-based override
+    const override = overrides[this.id];
+    const baseRect = override ? { ...DEFAULT_RECT, ...override } : DEFAULT_RECT;
+
+    // Simulate how scroll affects viewport-relative positions
+    const scrollOffset = window.scrollY || 0;
+
+    return {
+      ...baseRect,
+      top: baseRect.top - scrollOffset,
+      bottom: baseRect.bottom - scrollOffset,
+      y: baseRect.y - scrollOffset,
+    } satisfies DOMRect;
+  };
+
+  return {
+    restore: () => {
+      Element.prototype.getBoundingClientRect = originalGetBoundingClientRect;
+    },
+    setElementOverride: (element: Element, rect: Partial<DOMRect>) => {
+      elementOverrides.set(element, rect);
+    },
+  };
+}
+
+/**
  * Common setup/teardown helpers
  */
 export function commonBeforeEach() {
   vi.clearAllMocks();
   document.body.innerHTML = "";
 
-  // Mock getBoundingClientRect with realistic values
-  Element.prototype.getBoundingClientRect = vi.fn(() => DEFAULT_RECT);
+  mockGetBoundingClientRect({
+    bounding: {
+      top: 0,
+      bottom: 2000,
+      left: 0,
+      right: 100,
+      width: 100,
+      height: 2000,
+      x: 0,
+      y: 0,
+    },
+  });
 
-  // Mock window properties for consistent testing
   Object.defineProperty(window, "innerHeight", {
     value: TEST_DIMENSIONS.VIEWPORT_HEIGHT,
     writable: true,
@@ -112,15 +170,10 @@ export function commonBeforeEach() {
   });
 }
 
-export function commonAfterEach() {
-  vi.restoreAllMocks();
-  document.body.innerHTML = "";
-}
-
 /**
  * Scroll simulation helper used across all tests
  */
-export const simulateScrollToPosition = (scrollY: number): Promise<void> => {
+export function simulateScrollToPosition(scrollY: number): Promise<void> {
   Object.defineProperty(window, "scrollY", {
     value: scrollY,
     writable: true,
@@ -132,11 +185,8 @@ export const simulateScrollToPosition = (scrollY: number): Promise<void> => {
 
   window.dispatchEvent(new Event("scroll"));
 
-  // Wait for requestAnimationFrame to complete
-  return new Promise<void>((resolve) => {
-    requestAnimationFrame(() => resolve());
-  });
-};
+  return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+}
 
 /**
  * Creates a mock Adhesive instance for testing
@@ -406,21 +456,4 @@ export const animationHelpers = {
       requestAnimationFrame(frame);
     });
   },
-};
-
-/**
- * Resize simulation helper
- */
-export const simulateResize = (width: number, height: number): void => {
-  Object.defineProperty(window, "innerWidth", {
-    value: width,
-    writable: true,
-  });
-
-  Object.defineProperty(window, "innerHeight", {
-    value: height,
-    writable: true,
-  });
-
-  window.dispatchEvent(new Event("resize"));
 };

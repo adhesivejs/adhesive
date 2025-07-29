@@ -161,8 +161,8 @@ export type AdhesiveStatus =
  * const state = adhesive.getState();
  * console.log(`Status: ${state.status}`);
  * console.log(`Is currently sticky: ${state.isSticky}`);
- * console.log(`Element dimensions: ${state.width}x${state.height}`);
- * console.log(`Current position: (${state.x}, ${state.y})`);
+ * console.log(`Element dimensions: ${state.elementWidth}x${state.elementHeight}`);
+ * console.log(`Current position: (${state.elementX}, ${state.elementY})`);
  * ```
  */
 export interface AdhesiveState {
@@ -179,13 +179,13 @@ export interface AdhesiveState {
   /** Original CSS transform value before Adhesive was applied */
   readonly originalTransform: string;
   /** Current width of the element in pixels */
-  readonly width: number;
+  readonly elementWidth: number;
   /** Current height of the element in pixels */
-  readonly height: number;
+  readonly elementHeight: number;
   /** Current horizontal position (left offset) in pixels */
-  readonly x: number;
+  readonly elementX: number;
   /** Current vertical position (top offset) in pixels */
-  readonly y: number;
+  readonly elementY: number;
   /** Top boundary position where sticky behavior begins */
   readonly topBoundary: number;
   /** Bottom boundary position where sticky behavior ends */
@@ -203,10 +203,10 @@ interface InternalAdhesiveState {
   originalTop: string;
   originalZIndex: string;
   originalTransform: string;
-  width: number;
-  height: number;
-  x: number;
-  y: number;
+  elementWidth: number;
+  elementHeight: number;
+  elementX: number;
+  elementY: number;
   topBoundary: number;
   bottomBoundary: number;
   pos: number;
@@ -310,10 +310,10 @@ function createInitialState(
     originalTop: innerWrapper?.style.top ?? "",
     originalZIndex: innerWrapper?.style.zIndex ?? "",
     originalTransform: innerWrapper?.style.transform ?? "",
-    width: 0,
-    height: 0,
-    x: 0,
-    y: 0,
+    elementWidth: 0,
+    elementHeight: 0,
+    elementX: 0,
+    elementY: 0,
     topBoundary: 0,
     bottomBoundary: Number.POSITIVE_INFINITY,
     pos: 0,
@@ -567,7 +567,7 @@ export class Adhesive {
   }
 
   #ensureWrappersExist(): void {
-    if (this.#outerWrapper && !this.#innerWrapper) return;
+    if (this.#outerWrapper && this.#innerWrapper) return;
 
     this.#createWrappers();
     this.#state = createInitialState(this.#innerWrapper);
@@ -606,10 +606,6 @@ export class Adhesive {
     if (!this.#outerWrapper || !this.#innerWrapper) return;
 
     const wasPositioned = this.#state.status !== ADHESIVE_STATUS.INITIAL;
-    let newWidth: number;
-    let newHeight: number;
-    let newX: number;
-    let newY: number;
 
     if (wasPositioned) {
       // Temporarily reset positioning to get accurate measurements
@@ -631,41 +627,36 @@ export class Adhesive {
 
       // Force reflow and measure both outer and inner wrappers
       this.#outerWrapper.offsetHeight; // eslint-disable-line @typescript-eslint/no-unused-expressions
-      const outerRect = this.#outerWrapper.getBoundingClientRect();
-      const innerRect = this.#innerWrapper.getBoundingClientRect();
 
-      newWidth =
-        outerRect.width ||
-        outerRect.right - outerRect.left ||
-        this.#outerWrapper.offsetWidth;
-      newHeight =
-        innerRect.height ||
-        innerRect.bottom - innerRect.top ||
-        this.#innerWrapper.offsetHeight;
-      newX = outerRect.left;
-      newY = outerRect.top + this.#scrollTop;
+      this.#updateDimensionsState();
 
       Object.assign(innerStyle, originalStyles);
     } else {
-      const outerRect = this.#outerWrapper.getBoundingClientRect();
-      const innerRect = this.#innerWrapper.getBoundingClientRect();
-
-      newWidth =
-        outerRect.width ||
-        outerRect.right - outerRect.left ||
-        this.#outerWrapper.offsetWidth;
-      newHeight =
-        innerRect.height ||
-        innerRect.bottom - innerRect.top ||
-        this.#innerWrapper.offsetHeight;
-      newX = outerRect.left;
-      newY = outerRect.top + this.#scrollTop;
+      this.#updateDimensionsState();
     }
+  }
 
-    this.#state.width = newWidth;
-    this.#state.height = newHeight;
-    this.#state.x = newX;
-    this.#state.y = newY;
+  #updateDimensionsState(): void {
+    if (!this.#outerWrapper || !this.#innerWrapper) return;
+
+    const outerRect = this.#outerWrapper.getBoundingClientRect();
+    const innerRect = this.#innerWrapper.getBoundingClientRect();
+
+    const newElementWidth =
+      outerRect.width ||
+      outerRect.right - outerRect.left ||
+      this.#outerWrapper.offsetWidth;
+    const newElementHeight =
+      innerRect.height ||
+      innerRect.bottom - innerRect.top ||
+      this.#innerWrapper.offsetHeight;
+    const newElementX = outerRect.left;
+    const newElementY = outerRect.top + this.#scrollTop;
+
+    this.#state.elementWidth = newElementWidth;
+    this.#state.elementHeight = newElementHeight;
+    this.#state.elementX = newElementX;
+    this.#state.elementY = newElementY;
     this.#state.topBoundary = this.#getTopBoundary();
     this.#state.bottomBoundary = this.#getBottomBoundary();
   }
@@ -726,7 +717,7 @@ export class Adhesive {
   #updateStyles(): void {
     if (!this.#innerWrapper || !this.#outerWrapper) return;
 
-    const { status, pos, width, height } = this.#state;
+    const { status, pos, elementWidth, elementHeight } = this.#state;
     const { position, zIndex } = this.#options;
     const isFixed = status === ADHESIVE_STATUS.FIXED;
     const isRelative = status === ADHESIVE_STATUS.RELATIVE;
@@ -740,8 +731,8 @@ export class Adhesive {
 
     // Apply common styles
     innerStyle.zIndex = String(zIndex);
-    innerStyle.width = isFixed ? `${width}px` : "";
-    this.#outerWrapper.style.height = isFixed ? `${height}px` : "";
+    innerStyle.width = isFixed ? `${elementWidth}px` : "";
+    this.#outerWrapper.style.height = isFixed ? `${elementHeight}px` : "";
 
     // Apply positioning based on state
     if (isFixed) {
@@ -776,14 +767,16 @@ export class Adhesive {
   // =============================================================================
 
   #update(): void {
+    if (!this.#isEnabled) return;
+
     this.#updateDimensions();
 
-    const { bottomBoundary, topBoundary, height, width } = this.#state;
+    const { bottomBoundary, topBoundary, elementWidth, elementHeight } =
+      this.#state;
 
     const isDisabled =
-      !this.#isEnabled ||
-      bottomBoundary - topBoundary <= height ||
-      (width === 0 && height === 0);
+      bottomBoundary - topBoundary <= elementHeight ||
+      (elementWidth === 0 && elementHeight === 0);
 
     if (isDisabled) {
       if (this.#state.status !== ADHESIVE_STATUS.INITIAL) {
@@ -802,9 +795,10 @@ export class Adhesive {
   }
 
   #updateForTopPosition(offset: number): void {
-    const { bottomBoundary, topBoundary, height } = this.#state;
+    const { bottomBoundary, topBoundary, elementHeight, elementY } =
+      this.#state;
     const top = this.#scrollTop + offset;
-    const bottom = top + height;
+    const bottom = top + elementHeight;
 
     // Check if element is above the top boundary
     if (top <= topBoundary) {
@@ -814,14 +808,21 @@ export class Adhesive {
 
     // Check if element is below the bottom boundary
     if (bottom >= bottomBoundary) {
-      const stickyTop = bottomBoundary - height;
-      const relativePos = stickyTop - this.#state.y;
+      const stickyTop = bottomBoundary - elementHeight;
+      const relativePos = stickyTop - this.#state.elementY;
       this.#release(relativePos);
       return;
     }
 
+    // Core sticking logic: only stick if element has scrolled above the sticky position
+    if (elementY > top) {
+      // Element is naturally below the sticky position, don't stick
+      this.#reset();
+      return;
+    }
+
     // Check if element is within the boundaries
-    if (height > this.#winHeight - offset) {
+    if (elementHeight > this.#winHeight - offset) {
       this.#handleTallElementTop(top, bottom);
       return;
     }
@@ -830,9 +831,9 @@ export class Adhesive {
   }
 
   #updateForBottomPosition(offset: number): void {
-    const { bottomBoundary, topBoundary, height } = this.#state;
+    const { bottomBoundary, topBoundary, elementHeight: height } = this.#state;
     const viewportBottom = this.#scrollTop + this.#winHeight;
-    const elementNaturalBottom = this.#state.y + height;
+    const elementNaturalBottom = this.#state.elementY + height;
 
     // Check if element's natural position is above viewport bottom
     if (elementNaturalBottom >= viewportBottom - offset) {
@@ -846,12 +847,12 @@ export class Adhesive {
 
     // Check boundary constraints
     if (stuckElementTop < topBoundary) {
-      this.#release(topBoundary - this.#state.y);
+      this.#release(topBoundary - this.#state.elementY);
       return;
     }
 
     if (stuckElementBottom > bottomBoundary) {
-      this.#release(bottomBoundary - height - this.#state.y);
+      this.#release(bottomBoundary - height - this.#state.elementY);
       return;
     }
 
@@ -869,7 +870,7 @@ export class Adhesive {
   // =============================================================================
 
   #handleTallElementTop(top: number, bottom: number): void {
-    const { status, y, height } = this.#state;
+    const { status, elementY, elementHeight } = this.#state;
     const { offset } = this.#options;
 
     switch (status) {
@@ -877,9 +878,9 @@ export class Adhesive {
         this.#release(0); // Start at natural position
         break;
       case ADHESIVE_STATUS.RELATIVE:
-        if (bottom > y + height) {
-          this.#fixed(offset + height - this.#winHeight);
-        } else if (top < y) {
+        if (bottom > elementY + elementHeight) {
+          this.#fixed(offset + elementHeight - this.#winHeight);
+        } else if (top < elementY) {
           this.#fixed(offset);
         }
         break;
@@ -894,7 +895,7 @@ export class Adhesive {
   }
 
   #handleTallElementBottom(elementTop: number, elementBottom: number): void {
-    const { status, y, height } = this.#state;
+    const { status, elementY, elementHeight } = this.#state;
     const { offset } = this.#options;
 
     switch (status) {
@@ -902,8 +903,8 @@ export class Adhesive {
         this.#release(0);
         break;
       case ADHESIVE_STATUS.RELATIVE: {
-        const currentTop = y + this.#state.pos;
-        const currentBottom = currentTop + height;
+        const currentTop = elementY + this.#state.pos;
+        const currentBottom = currentTop + elementHeight;
         const viewportTop = this.#scrollTop;
         const viewportBottom = this.#scrollTop + this.#winHeight;
 
@@ -911,7 +912,7 @@ export class Adhesive {
         if (elementBottom < currentBottom && currentTop < viewportTop) {
           this.#fixed(offset); // Stick to bottom
         } else if (elementTop > currentTop && currentBottom > viewportBottom) {
-          this.#fixed(height - this.#winHeight + offset); // Stick to top
+          this.#fixed(elementHeight - this.#winHeight + offset); // Stick to top
         }
         break;
       }
@@ -932,15 +933,15 @@ export class Adhesive {
     top: number,
     bottom: number,
   ): { release: boolean; position: number } {
-    const { pos, height, y } = this.#state;
+    const { pos, elementY, elementHeight } = this.#state;
     const { offset } = this.#options;
 
     if (pos === offset) {
-      return { release: true, position: top - y };
+      return { release: true, position: top - elementY };
     }
 
-    if (pos === offset + height - this.#winHeight) {
-      return { release: true, position: bottom - height - y };
+    if (pos === offset + elementHeight - this.#winHeight) {
+      return { release: true, position: bottom - elementHeight - elementY };
     }
 
     return { release: false, position: 0 };
@@ -950,17 +951,20 @@ export class Adhesive {
     elementTop: number,
     elementBottom: number,
   ): { release: boolean; position: number } {
-    const { pos, height, y } = this.#state;
+    const { pos, elementY, elementHeight } = this.#state;
     const { offset } = this.#options;
 
     // If currently stuck to bottom and element should be released
     if (pos === offset) {
-      return { release: true, position: elementTop - y };
+      return { release: true, position: elementTop - elementY };
     }
 
     // If currently stuck to top (for tall elements) and should be released
-    if (pos === height - this.#winHeight + offset) {
-      return { release: true, position: elementBottom - height - y };
+    if (pos === elementHeight - this.#winHeight + offset) {
+      return {
+        release: true,
+        position: elementBottom - elementHeight - elementY,
+      };
     }
 
     return { release: false, position: 0 };
@@ -1230,7 +1234,7 @@ export class Adhesive {
    * const state = adhesive.getState();
    * console.log('Current status:', state.status);
    * console.log('Is sticky:', state.isSticky);
-   * console.log('Element dimensions:', { width: state.width, height: state.height });
+   * console.log('Element dimensions:', { width: state.elementWidth, height: state.elementHeight });
    * ```
    */
   getState(): AdhesiveState {
