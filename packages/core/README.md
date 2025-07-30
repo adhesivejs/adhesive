@@ -66,10 +66,18 @@ adhesive.init();
 const state = adhesive.getState();
 console.log('Current status:', state.status);
 
-// Update options dynamically
+// Update options dynamically (partial update)
 adhesive.updateOptions({
   offset: 50,
   position: 'top'
+  // Other options remain unchanged
+});
+
+// Replace options (full update with fallback to defaults)
+adhesive.replaceOptions({
+  offset: 50,
+  position: 'top'
+  // All other options reset to their default values
 });
 
 // Enable/disable
@@ -103,7 +111,8 @@ adhesive.cleanup();
 - `init()` - Initialize sticky behavior
 - `enable()` - Enable sticky behavior
 - `disable()` - Disable sticky behavior
-- `updateOptions(options)` - Update configuration
+- `updateOptions(options)` - Update configuration options (partial update)
+- `replaceOptions(options)` - Replace configuration options (full update)
 - `getState()` - Get current state
 - `refresh()` - Update dimensions and positions
 - `cleanup()` - Remove all listeners and clean up

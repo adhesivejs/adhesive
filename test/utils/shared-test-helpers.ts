@@ -170,6 +170,7 @@ export function createMockAdhesive() {
     create: vi.fn(),
     cleanup: vi.fn(),
     updateOptions: vi.fn(),
+    replaceOptions: vi.fn(),
     getState: vi.fn(() => ({
       status: "initial",
       activated: true,

@@ -164,6 +164,15 @@ describe("SSR Safety", () => {
       }).not.toThrow();
     });
 
+    it("handles replaceOptions() safely in SSR", () => {
+      expect(() => {
+        adhesive.replaceOptions({
+          offset: 50,
+          position: "bottom",
+        });
+      }).not.toThrow();
+    });
+
     it("returns valid state from getState() in SSR", () => {
       const state = adhesive.getState();
 
@@ -198,6 +207,7 @@ describe("SSR Safety", () => {
           .init()
           .enable()
           .updateOptions({ offset: 20 })
+          .replaceOptions({ offset: 20 })
           .disable()
           .refresh();
 

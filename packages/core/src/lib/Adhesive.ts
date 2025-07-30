@@ -403,7 +403,7 @@ export class Adhesive {
   }
 
   /**
-   * Update configuration options.
+   * Update configuration options (partial update).
    */
   updateOptions(
     newOptions: Partial<Omit<AdhesiveOptions, "targetEl" | "boundingEl">>,
@@ -426,6 +426,34 @@ export class Adhesive {
       this.#options.fixedClassName = newOptions.fixedClassName;
     if (newOptions.relativeClassName !== undefined)
       this.#options.relativeClassName = newOptions.relativeClassName;
+
+    this.#update();
+    this.#rerender();
+    return this;
+  }
+
+  /**
+   * Replace configuration options (full update).
+   */
+  replaceOptions(
+    newOptions: Omit<AdhesiveOptions, "targetEl" | "boundingEl">,
+  ): this {
+    if (newOptions.enabled === false) return this.disable();
+    if (newOptions.enabled === true) this.enable();
+
+    this.#options.offset = newOptions.offset ?? DEFAULT_OPTIONS.offset;
+    this.#options.position = newOptions.position ?? DEFAULT_OPTIONS.position;
+    this.#options.zIndex = newOptions.zIndex ?? DEFAULT_OPTIONS.zIndex;
+    this.#options.outerClassName =
+      newOptions.outerClassName ?? DEFAULT_OPTIONS.outerClassName;
+    this.#options.innerClassName =
+      newOptions.innerClassName ?? DEFAULT_OPTIONS.innerClassName;
+    this.#options.initialClassName =
+      newOptions.initialClassName ?? DEFAULT_OPTIONS.initialClassName;
+    this.#options.fixedClassName =
+      newOptions.fixedClassName ?? DEFAULT_OPTIONS.fixedClassName;
+    this.#options.relativeClassName =
+      newOptions.relativeClassName ?? DEFAULT_OPTIONS.relativeClassName;
 
     this.#update();
     this.#rerender();
