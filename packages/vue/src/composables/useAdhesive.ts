@@ -106,6 +106,6 @@ export function useAdhesive(
 
   watch(
     () => toValue(options),
-    () => adhesive?.updateOptions(getValidatedOptions()),
+    () => adhesive?.replaceOptions(getValidatedOptions()),
   );
 }

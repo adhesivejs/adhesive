@@ -169,30 +169,30 @@ describe("Vue Integration", () => {
         expect(offsetButton).toHaveTextContent("10");
       });
 
-      it("calls updateOptions when options change", async () => {
+      it("calls replaceOptions when options change", async () => {
         const { getByTestId } = renderTestComponent();
         const toggleEnabledButton = getByTestId("toggle-enabled");
         const togglePositionButton = getByTestId("toggle-position");
         const toggleOffsetButton = getByTestId("toggle-offset");
 
-        mockAdhesiveInstance.updateOptions.mockClear();
+        mockAdhesiveInstance.replaceOptions.mockClear();
 
         await fireEvent.click(toggleEnabledButton);
-        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+        expect(mockAdhesiveInstance.replaceOptions).toHaveBeenCalledWith(
           expect.objectContaining({
             enabled: false,
           }),
         );
 
         await fireEvent.click(togglePositionButton);
-        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+        expect(mockAdhesiveInstance.replaceOptions).toHaveBeenCalledWith(
           expect.objectContaining({
             position: "bottom",
           }),
         );
 
         await fireEvent.click(toggleOffsetButton);
-        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+        expect(mockAdhesiveInstance.replaceOptions).toHaveBeenCalledWith(
           expect.objectContaining({
             offset: TEST_OFFSETS[2],
           }),
@@ -496,11 +496,11 @@ describe("Vue Integration", () => {
         expect(getByTestId("toggle-enabled")).toHaveTextContent("Disable");
         expect(getByTestId("change-offset")).toHaveTextContent("Offset: 10");
 
-        mockAdhesiveInstance.updateOptions.mockClear();
+        mockAdhesiveInstance.replaceOptions.mockClear();
 
         await fireEvent.click(getByTestId("toggle-enabled"));
         expect(getByTestId("toggle-enabled")).toHaveTextContent("Enable");
-        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+        expect(mockAdhesiveInstance.replaceOptions).toHaveBeenCalledWith(
           expect.objectContaining({
             enabled: false,
           }),
@@ -508,14 +508,14 @@ describe("Vue Integration", () => {
 
         await fireEvent.click(getByTestId("change-offset"));
         expect(getByTestId("change-offset")).toHaveTextContent("Offset: 30");
-        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+        expect(mockAdhesiveInstance.replaceOptions).toHaveBeenCalledWith(
           expect.objectContaining({
             offset: 30,
           }),
         );
       });
 
-      it("calls updateOptions when directive value changes", async () => {
+      it("calls replaceOptions when directive value changes", async () => {
         const TestComponent = createTestApp(
           `
           <div>
@@ -547,11 +547,11 @@ describe("Vue Integration", () => {
           },
         });
 
-        mockAdhesiveInstance.updateOptions.mockClear();
+        mockAdhesiveInstance.replaceOptions.mockClear();
 
         await fireEvent.click(getByTestId("increment-offset"));
 
-        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+        expect(mockAdhesiveInstance.replaceOptions).toHaveBeenCalledWith(
           expect.objectContaining({
             offset: 20,
           }),

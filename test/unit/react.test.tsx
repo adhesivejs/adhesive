@@ -172,7 +172,7 @@ describe("React Integration", () => {
         ).toBeInTheDocument();
       });
 
-      it("calls updateOptions when options change", async () => {
+      it("calls replaceOptions when options change", async () => {
         const user = userEvent.setup();
         renderTestComponent();
         const {
@@ -181,24 +181,24 @@ describe("React Integration", () => {
           toggleOffsetButton,
         } = getTestElements();
 
-        mockAdhesiveInstance.updateOptions.mockClear();
+        mockAdhesiveInstance.replaceOptions.mockClear();
 
         await user.click(toggleEnabledButton);
-        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+        expect(mockAdhesiveInstance.replaceOptions).toHaveBeenCalledWith(
           expect.objectContaining({
             enabled: false,
           }),
         );
 
         await user.click(togglePositionButton);
-        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+        expect(mockAdhesiveInstance.replaceOptions).toHaveBeenCalledWith(
           expect.objectContaining({
             position: "bottom",
           }),
         );
 
         await user.click(toggleOffsetButton);
-        expect(mockAdhesiveInstance.updateOptions).toHaveBeenCalledWith(
+        expect(mockAdhesiveInstance.replaceOptions).toHaveBeenCalledWith(
           expect.objectContaining({
             offset: TEST_OFFSETS[2],
           }),

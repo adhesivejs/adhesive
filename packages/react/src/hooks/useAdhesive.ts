@@ -76,6 +76,6 @@ export function useAdhesive(
   }, [target]);
 
   useEffect(() => {
-    adhesive.current?.updateOptions(getValidatedOptions());
+    adhesive.current?.replaceOptions(getValidatedOptions());
   }, [options]);
 }

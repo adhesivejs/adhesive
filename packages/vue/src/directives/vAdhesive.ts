@@ -73,6 +73,6 @@ export const vAdhesive: AdhesiveDirective = {
     const options = binding.value;
     const position = binding.arg || options?.position;
 
-    el.__adhesive__?.updateOptions({ ...options, position });
+    el.__adhesive__?.replaceOptions({ ...options, position });
   },
 };
