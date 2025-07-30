@@ -167,6 +167,7 @@ export function simulateScrollToPosition(scrollY: number): Promise<void> {
 export function createMockAdhesive() {
   const mockInstance = {
     init: vi.fn(),
+    create: vi.fn(),
     cleanup: vi.fn(),
     updateOptions: vi.fn(),
     getState: vi.fn(() => ({

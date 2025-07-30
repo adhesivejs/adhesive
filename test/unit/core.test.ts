@@ -724,6 +724,16 @@ describe("Core", () => {
 
         expect(targetEl.className).toBe(existingClasses);
       });
+
+      it("supports multiple class names", () => {
+        const outerClassName = "custom-class-1 custom-class-2";
+
+        createInitializedAdhesive({ boundingEl, outerClassName });
+
+        const outerDomElement = targetEl.parentElement!.parentElement!;
+        const outerDomClassName = outerDomElement.className;
+        expect(outerDomClassName).toBe(`${outerClassName} adhesive--initial`);
+      });
     });
   });
 
