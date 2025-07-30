@@ -206,6 +206,10 @@ const overwriteClassNames = (element: HTMLElement, classNames: string[]) => {
   }
 };
 
+const expectNever = (value: never): never => {
+  throw new TypeError(`Unexpected value: ${value}`);
+};
+
 /**
  * Adhesive - A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements
  *
@@ -412,18 +416,19 @@ export class Adhesive {
     if (newOptions.position) this.#options.position = newOptions.position;
     if (newOptions.zIndex !== undefined)
       this.#options.zIndex = newOptions.zIndex;
-    if (newOptions.outerClassName)
+    if (newOptions.outerClassName !== undefined)
       this.#options.outerClassName = newOptions.outerClassName;
-    if (newOptions.innerClassName)
+    if (newOptions.innerClassName !== undefined)
       this.#options.innerClassName = newOptions.innerClassName;
-    if (newOptions.initialClassName)
+    if (newOptions.initialClassName !== undefined)
       this.#options.initialClassName = newOptions.initialClassName;
-    if (newOptions.fixedClassName)
+    if (newOptions.fixedClassName !== undefined)
       this.#options.fixedClassName = newOptions.fixedClassName;
-    if (newOptions.relativeClassName)
+    if (newOptions.relativeClassName !== undefined)
       this.#options.relativeClassName = newOptions.relativeClassName;
 
     this.#update();
+    this.#rerender();
     return this;
   }
 
@@ -476,13 +481,8 @@ export class Adhesive {
     }
 
     this.#outerWrapper = document.createElement("div");
-    overwriteClassNames(this.#outerWrapper, [
-      this.#options.outerClassName,
-      this.#options.initialClassName,
-    ]);
-
     this.#innerWrapper = document.createElement("div");
-    overwriteClassNames(this.#innerWrapper, [this.#options.innerClassName]);
+    this.#renderInitialClassNames();
 
     const parent = this.#targetEl.parentNode;
     parent.insertBefore(this.#outerWrapper, this.#targetEl);
@@ -496,7 +496,7 @@ export class Adhesive {
     this.#state.originalTop = style.top;
     this.#state.originalZIndex = style.zIndex;
     this.#state.originalTransform = style.transform;
-    this.#updateBoundaries();
+    this.#updateBoundaryState();
   }
 
   #setupListeners(): void {
@@ -553,7 +553,7 @@ export class Adhesive {
   #update(): void {
     if (!this.#options.enabled) return;
 
-    this.#updateDimensions();
+    this.#updateDimensionState();
 
     const { bottomBoundary, topBoundary, elementWidth, elementHeight } =
       this.#state;
@@ -575,7 +575,7 @@ export class Adhesive {
     }
   }
 
-  #updateDimensions(): void {
+  #updateDimensionState(): void {
     if (!this.#outerWrapper || !this.#innerWrapper) return;
 
     const outerRect = this.#outerWrapper.getBoundingClientRect();
@@ -588,10 +588,10 @@ export class Adhesive {
       innerRect.height || this.#innerWrapper.offsetHeight;
     this.#state.elementX = outerRect.left;
     this.#state.elementY = outerRect.top + scrollTop;
-    this.#updateBoundaries();
+    this.#updateBoundaryState();
   }
 
-  #updateBoundaries(): void {
+  #updateBoundaryState(): void {
     this.#state.topBoundary = this.#getTopBoundary();
     this.#state.bottomBoundary = this.#getBottomBoundary();
   }
@@ -658,21 +658,17 @@ export class Adhesive {
   #setInitial(): void {
     if (this.#state.status === ADHESIVE_STATUS.INITIAL) return;
 
-    this.#renderInitial();
-
     this.#setState({
       status: ADHESIVE_STATUS.INITIAL,
       position: 0,
     });
+
+    this.#renderInitialStyles();
+    this.#renderInitialClassNames();
   }
 
-  #renderInitial(): void {
+  #renderInitialStyles(): void {
     if (!this.#outerWrapper || !this.#innerWrapper) return;
-
-    overwriteClassNames(this.#outerWrapper, [
-      this.#options.outerClassName,
-      this.#options.initialClassName,
-    ]);
 
     const outerStyle = this.#outerWrapper.style;
     outerStyle.height = "";
@@ -685,8 +681,12 @@ export class Adhesive {
     innerStyle.width = "";
   }
 
+  #renderInitialClassNames(): void {
+    this.#renderClassNames(this.#options.initialClassName);
+  }
+
   #setFixed(): void {
-    this.#renderFixed();
+    this.#renderFixedStyles();
 
     if (this.#state.status === ADHESIVE_STATUS.FIXED) return;
 
@@ -694,15 +694,12 @@ export class Adhesive {
       status: ADHESIVE_STATUS.FIXED,
       position: this.#options.offset,
     });
+
+    this.#renderFixedClassNames();
   }
 
-  #renderFixed(): void {
+  #renderFixedStyles(): void {
     if (!this.#outerWrapper || !this.#innerWrapper) return;
-
-    overwriteClassNames(this.#outerWrapper, [
-      this.#options.outerClassName,
-      this.#options.fixedClassName,
-    ]);
 
     const outerStyle = this.#outerWrapper.style;
     outerStyle.height = `${this.#state.elementHeight}px`;
@@ -722,28 +719,24 @@ export class Adhesive {
     }
   }
 
-  #setRelative(position: number): void {
-    if (
-      this.#state.status === ADHESIVE_STATUS.RELATIVE &&
-      this.#state.position === position
-    )
-      return;
+  #renderFixedClassNames(): void {
+    this.#renderClassNames(this.#options.fixedClassName);
+  }
 
-    this.#renderRelative(position);
+  #setRelative(position: number): void {
+    if (this.#state.status === ADHESIVE_STATUS.RELATIVE) return;
 
     this.#setState({
       status: ADHESIVE_STATUS.RELATIVE,
       position,
     });
+
+    this.#renderRelativeStyles();
+    this.#renderRelativeClassNames();
   }
 
-  #renderRelative(position: number): void {
+  #renderRelativeStyles(): void {
     if (!this.#outerWrapper || !this.#innerWrapper) return;
-
-    overwriteClassNames(this.#outerWrapper, [
-      this.#options.outerClassName,
-      this.#options.relativeClassName,
-    ]);
 
     const outerStyle = this.#outerWrapper.style;
     outerStyle.height = "";
@@ -751,10 +744,46 @@ export class Adhesive {
     const innerStyle = this.#innerWrapper.style;
     innerStyle.position = "relative";
     innerStyle.zIndex = String(this.#options.zIndex);
-    innerStyle.transform = `translate3d(0, ${position}px, 0)`;
+    innerStyle.transform = `translate3d(0, ${this.#state.position}px, 0)`;
     innerStyle.top = "";
     innerStyle.bottom = "";
     innerStyle.width = "";
+  }
+
+  #renderRelativeClassNames(): void {
+    this.#renderClassNames(this.#options.relativeClassName);
+  }
+
+  #renderClassNames(statusClassName: string): void {
+    if (!this.#outerWrapper || !this.#innerWrapper) return;
+
+    const { outerClassName, innerClassName } = this.#options;
+    const outerClasses = [outerClassName, statusClassName];
+    const innerClasses = [innerClassName];
+
+    overwriteClassNames(this.#outerWrapper, outerClasses);
+    overwriteClassNames(this.#innerWrapper, innerClasses);
+  }
+
+  #rerender(): void {
+    const { status } = this.#state;
+
+    switch (status) {
+      case ADHESIVE_STATUS.INITIAL:
+        this.#renderInitialStyles();
+        this.#renderInitialClassNames();
+        break;
+      case ADHESIVE_STATUS.FIXED:
+        this.#renderFixedStyles();
+        this.#renderFixedClassNames();
+        break;
+      case ADHESIVE_STATUS.RELATIVE:
+        this.#renderRelativeStyles();
+        this.#renderRelativeClassNames();
+        break;
+      default:
+        expectNever(status);
+    }
   }
 
   #setState(newState: Partial<InternalAdhesiveState>): void {
