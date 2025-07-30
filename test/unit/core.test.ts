@@ -1,5 +1,4 @@
 import { Adhesive, ADHESIVE_STATUS, AdhesiveError } from "@adhesivejs/core";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createMockDOM } from "../utils/core-test-helpers.js";
 import {
   animationHelpers,

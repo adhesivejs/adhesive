@@ -1,4 +1,3 @@
-import { vi } from "vitest";
 import type { AdhesivePosition } from "@adhesivejs/core";
 
 export const TEST_DIMENSIONS = {

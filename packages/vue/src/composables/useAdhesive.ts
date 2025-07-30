@@ -108,7 +108,4 @@ export function useAdhesive(
     () => toValue(options),
     () => adhesive?.updateOptions(getValidatedOptions()),
   );
-
-  // TODO: Return current Adhesive status (`initial`, `fixed`, `relative`)
-  // as a computed ref for easier access in components
 }

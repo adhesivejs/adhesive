@@ -1,4 +1,3 @@
-import { vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 
 // Mock ResizeObserver if not available in test environment

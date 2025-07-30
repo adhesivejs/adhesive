@@ -6,7 +6,6 @@ import {
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRef, useState } from "react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   commonBeforeEach,
   configurationTestCases,

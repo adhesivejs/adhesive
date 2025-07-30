@@ -1,5 +1,4 @@
 import { Adhesive, ADHESIVE_STATUS, AdhesiveError } from "@adhesivejs/core";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("SSR Safety", () => {
   let originalWindow: typeof globalThis.window;

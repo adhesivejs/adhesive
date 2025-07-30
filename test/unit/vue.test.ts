@@ -5,7 +5,6 @@ import {
   type AdhesivePosition,
 } from "@adhesivejs/vue";
 import { fireEvent, render } from "@testing-library/vue";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { computed, defineComponent, ref } from "vue";
 import {
   cleanupTestEnvironment,
