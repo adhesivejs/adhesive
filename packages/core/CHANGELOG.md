@@ -1,6 +1,28 @@
 # Changelog
 
 
+## v0.6.2
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.6.1...v0.6.2)
+
+### 🚀 Enhancements
+
+- **core:** Add public method to replace options with defaults fallback ([00d6fd0](https://github.com/adhesivejs/adhesive/commit/00d6fd0))
+
+### 🩹 Fixes
+
+- **core:** Support multiple classes ([3718cdb](https://github.com/adhesivejs/adhesive/commit/3718cdb))
+- **core:** Rerender class names for hmr support ([ee1d2ca](https://github.com/adhesivejs/adhesive/commit/ee1d2ca))
+- Use replace options method for improved hmr support ([0739693](https://github.com/adhesivejs/adhesive/commit/0739693))
+
+### ✅ Tests
+
+- Remove explicit vitest imports ([e45b406](https://github.com/adhesivejs/adhesive/commit/e45b406))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.6.1
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.6.0...v0.6.1)
