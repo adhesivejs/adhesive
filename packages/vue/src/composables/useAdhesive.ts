@@ -1,7 +1,7 @@
 import { Adhesive, type AdhesiveOptions } from "@adhesivejs/core";
 import {
-  onMounted,
   onUnmounted,
+  onWatcherCleanup,
   toValue,
   watch,
   type MaybeRefOrGetter,
@@ -79,7 +79,14 @@ export function useAdhesive(
   target: MaybeRefOrGetter<MaybeVueInstanceOrElementOrSelector>,
   options?: MaybeRefOrGetter<UseAdhesiveOptions>,
 ) {
-  function getValidatedOptions() {
+  let adhesive: Adhesive | null = null;
+
+  const cleanup = () => {
+    adhesive?.cleanup();
+    adhesive = null;
+  };
+
+  const getValidatedOptions = () => {
     const optionsValue = toValue(options);
 
     const targetEl = unwrapElement(target);
@@ -91,18 +98,20 @@ export function useAdhesive(
     }
 
     return { ...optionsValue, targetEl, boundingEl } satisfies AdhesiveOptions;
-  }
+  };
 
-  let adhesive: Adhesive | null = null;
+  watch(
+    () => unwrapElement(target),
+    (targetValue) => {
+      if (!targetValue) return cleanup();
 
-  onMounted(() => {
-    adhesive ??= Adhesive.create(getValidatedOptions());
-  });
+      adhesive ??= Adhesive.create(getValidatedOptions());
 
-  onUnmounted(() => {
-    adhesive?.cleanup();
-    adhesive = null;
-  });
+      onWatcherCleanup(cleanup);
+    },
+  );
+
+  onUnmounted(cleanup);
 
   watch(
     () => toValue(options),
