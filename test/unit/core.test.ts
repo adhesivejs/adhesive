@@ -659,6 +659,16 @@ describe("Core", () => {
 
         adhesive.cleanup();
       });
+
+      it("updates bounding element without breaking functionality", () => {
+        const adhesive = createInitializedAdhesive({ boundingEl });
+
+        expect(() =>
+          adhesive.replaceOptions({ boundingEl: null }),
+        ).not.toThrow();
+
+        adhesive.cleanup();
+      });
     });
 
     describe("DOM restoration", () => {

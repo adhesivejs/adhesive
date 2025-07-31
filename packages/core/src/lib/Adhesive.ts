@@ -1,5 +1,3 @@
-type ElementSelector = HTMLElement | string;
-
 /**
  * Sticky positioning options.
  */
@@ -33,6 +31,8 @@ export const ADHESIVE_STATUS = {
  */
 export type AdhesiveStatus =
   (typeof ADHESIVE_STATUS)[keyof typeof ADHESIVE_STATUS];
+
+type ElementSelector = HTMLElement | string;
 
 /**
  * Configuration options for Adhesive instances.
@@ -177,11 +177,39 @@ const DEFAULT_OPTIONS = {
 const isBrowser = () =>
   typeof window !== "undefined" && typeof document !== "undefined";
 
-const resolveElement = (element: ElementSelector): HTMLElement | null => {
+const resolveElement = (selector: ElementSelector): HTMLElement | null => {
   if (!isBrowser()) return null;
-  return typeof element === "string"
-    ? document.querySelector(element)
-    : element;
+  return typeof selector === "string"
+    ? document.querySelector(selector)
+    : selector;
+};
+
+const assertTargetElement = (
+  selector: AdhesiveOptions["targetEl"],
+): HTMLElement => {
+  if (!isBrowser()) return Object.create(null);
+
+  const element = resolveElement(selector);
+
+  if (!element) {
+    throw new AdhesiveError("TARGET_EL_NOT_FOUND", "targetEl not found");
+  }
+
+  return element;
+};
+
+const assertBoundingElement = (
+  selector: AdhesiveOptions["boundingEl"] | undefined,
+): HTMLElement => {
+  if (!isBrowser()) return Object.create(null);
+
+  const element = selector ? resolveElement(selector) : document.body;
+
+  if (!element) {
+    throw new AdhesiveError("BOUNDING_EL_NOT_FOUND", "boundingEl not found");
+  }
+
+  return element;
 };
 
 const getScrollTop = () =>
@@ -299,26 +327,11 @@ export class Adhesive {
 
     this.#targetElSelector = options.targetEl;
     this.#boundingElSelector = options.boundingEl ?? null;
+    this.#targetEl = assertTargetElement(this.#targetElSelector);
+    this.#boundingEl = assertBoundingElement(this.#boundingElSelector);
 
-    if (!isBrowser()) {
-      this.#targetEl = this.#boundingEl = Object.create(null);
-      return;
-    }
+    if (!isBrowser()) return;
 
-    const targetEl = resolveElement(options.targetEl);
-    const boundingEl = options.boundingEl
-      ? resolveElement(options.boundingEl)
-      : document.body;
-
-    if (!targetEl) {
-      throw new AdhesiveError("TARGET_EL_NOT_FOUND", "targetEl not found");
-    }
-    if (!boundingEl) {
-      throw new AdhesiveError("BOUNDING_EL_NOT_FOUND", "boundingEl not found");
-    }
-
-    this.#targetEl = targetEl;
-    this.#boundingEl = boundingEl;
     this.#options.enabled = options.enabled ?? DEFAULT_OPTIONS.enabled;
     this.#options.offset = options.offset ?? DEFAULT_OPTIONS.offset;
     this.#options.position = options.position ?? DEFAULT_OPTIONS.position;
@@ -361,26 +374,8 @@ export class Adhesive {
       if (!this.#outerWrapper && !this.#innerWrapper) {
         // Re-resolve elements if transitioning from SSR to browser
         if (!this.#targetEl.parentNode) {
-          const targetEl = resolveElement(this.#targetElSelector);
-          const boundingEl = this.#boundingElSelector
-            ? resolveElement(this.#boundingElSelector)
-            : document.body;
-
-          if (!targetEl) {
-            throw new AdhesiveError(
-              "TARGET_EL_NOT_FOUND",
-              "targetEl not found",
-            );
-          }
-          if (!boundingEl) {
-            throw new AdhesiveError(
-              "BOUNDING_EL_NOT_FOUND",
-              "boundingEl not found",
-            );
-          }
-
-          this.#targetEl = targetEl;
-          this.#boundingEl = boundingEl;
+          this.#targetEl = assertTargetElement(this.#targetElSelector);
+          this.#boundingEl = assertBoundingElement(this.#boundingElSelector);
         }
 
         this.#createWrappers();
@@ -405,12 +400,14 @@ export class Adhesive {
   /**
    * Update configuration options (partial update).
    */
-  updateOptions(
-    newOptions: Partial<Omit<AdhesiveOptions, "targetEl" | "boundingEl">>,
-  ): this {
+  updateOptions(newOptions: Partial<Omit<AdhesiveOptions, "targetEl">>): this {
     if (newOptions.enabled === false) return this.disable();
     if (newOptions.enabled === true) this.enable();
 
+    const currentBoundingEl = this.#boundingEl;
+
+    if (newOptions.boundingEl !== undefined)
+      this.#boundingEl = assertBoundingElement(newOptions.boundingEl);
     if (newOptions.offset !== undefined)
       this.#options.offset = newOptions.offset;
     if (newOptions.position) this.#options.position = newOptions.position;
@@ -427,6 +424,8 @@ export class Adhesive {
     if (newOptions.relativeClassName !== undefined)
       this.#options.relativeClassName = newOptions.relativeClassName;
 
+    if (currentBoundingEl !== this.#boundingEl) this.#refreshListeners();
+
     this.#update();
     this.#rerender();
     return this;
@@ -435,12 +434,13 @@ export class Adhesive {
   /**
    * Replace configuration options (full update).
    */
-  replaceOptions(
-    newOptions: Omit<AdhesiveOptions, "targetEl" | "boundingEl">,
-  ): this {
+  replaceOptions(newOptions: Omit<AdhesiveOptions, "targetEl">): this {
     if (newOptions.enabled === false) return this.disable();
     if (newOptions.enabled === true) this.enable();
 
+    const currentBoundingEl = this.#boundingEl;
+
+    this.#boundingEl = assertBoundingElement(newOptions.boundingEl);
     this.#options.offset = newOptions.offset ?? DEFAULT_OPTIONS.offset;
     this.#options.position = newOptions.position ?? DEFAULT_OPTIONS.position;
     this.#options.zIndex = newOptions.zIndex ?? DEFAULT_OPTIONS.zIndex;
@@ -454,6 +454,8 @@ export class Adhesive {
       newOptions.fixedClassName ?? DEFAULT_OPTIONS.fixedClassName;
     this.#options.relativeClassName =
       newOptions.relativeClassName ?? DEFAULT_OPTIONS.relativeClassName;
+
+    if (currentBoundingEl !== this.#boundingEl) this.#refreshListeners();
 
     this.#update();
     this.#rerender();
@@ -482,11 +484,7 @@ export class Adhesive {
     if (!isBrowser()) return;
 
     this.#cancelRAF();
-    window.removeEventListener("scroll", this.#onScroll);
-    window.removeEventListener("resize", this.#onResize);
-    this.#observer?.disconnect();
-    this.#observer = null;
-    this.#trackedElements.clear();
+    this.#cleanupListeners();
     this.#setInitial();
     this.#state.activated = false;
 
@@ -528,6 +526,8 @@ export class Adhesive {
   }
 
   #setupListeners(): void {
+    if (!isBrowser()) return;
+
     window.addEventListener("scroll", this.#onScroll, { passive: true });
     window.addEventListener("resize", this.#onResize, { passive: true });
 
@@ -545,6 +545,23 @@ export class Adhesive {
         "ResizeObserver is not supported in this browser. Dynamic resizing may not work properly.",
       );
     }
+  }
+
+  #cleanupListeners(): void {
+    if (!isBrowser()) return;
+
+    window.removeEventListener("scroll", this.#onScroll);
+    window.removeEventListener("resize", this.#onResize);
+    this.#observer?.disconnect();
+    this.#observer = null;
+    this.#trackedElements.clear();
+  }
+
+  #refreshListeners(): void {
+    if (!isBrowser()) return;
+
+    this.#cleanupListeners();
+    this.#setupListeners();
   }
 
   #onScroll = (): void => {
@@ -625,15 +642,15 @@ export class Adhesive {
   }
 
   #getTopBoundary(): number {
-    if (!isBrowser() || this.#boundingEl === document.body) return 0;
+    if (this.#boundingEl === document.body) return 0;
+
     const rect = this.#boundingEl.getBoundingClientRect();
     return getScrollTop() + rect.top;
   }
 
   #getBottomBoundary(): number {
-    if (!isBrowser() || this.#boundingEl === document.body) {
-      return Number.POSITIVE_INFINITY;
-    }
+    if (this.#boundingEl === document.body) return Number.POSITIVE_INFINITY;
+
     const rect = this.#boundingEl.getBoundingClientRect();
     return getScrollTop() + rect.bottom;
   }
