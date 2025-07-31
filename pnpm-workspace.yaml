@@ -13,20 +13,20 @@ catalog:
   '@testing-library/vue': ^8.1.0
   '@tsconfig/node22': ^22.0.2
   '@types/node': ~22.15.35
-  '@types/react': ^19.1.8
-  '@types/react-dom': ^19.1.6
+  '@types/react': ^19.1.9
+  '@types/react-dom': ^19.1.7
   '@vitejs/plugin-react': ^4.7.0
-  '@vitejs/plugin-vue': ^6.0.0
+  '@vitejs/plugin-vue': ^6.0.1
   '@vue/tsconfig': ^0.7.0
   changelogen: ^0.6.2
   eslint: ^9.32.0
   happy-dom: ^18.0.1
   prettier: ^3.6.2
   publint: ^0.3.12
-  react: ^19.1.0
-  react-dom: ^19.1.0
+  react: ^19.1.1
+  react-dom: ^19.1.1
   tsdown: ^0.13.0
-  typescript: ~5.8.3
+  typescript: ~5.9.2
   vite: ^7.0.6
   vitest: ^3.2.4
   vue: ^3.5.18
