@@ -52,6 +52,13 @@ export function useAdhesive(
   target: MaybeRefObjectOrElementOrSelector,
   options?: UseAdhesiveOptions,
 ) {
+  const adhesive = useRef<Adhesive | null>(null);
+
+  const cleanup = () => {
+    adhesive.current?.cleanup();
+    adhesive.current = null;
+  };
+
   const memoizedOptions = useMemo(
     () => options,
     [
@@ -69,7 +76,7 @@ export function useAdhesive(
     ],
   );
 
-  function getValidatedOptions() {
+  const getValidatedOptions = () => {
     const optionsValue = memoizedOptions;
 
     const targetEl = unwrapElement(target);
@@ -81,20 +88,19 @@ export function useAdhesive(
     }
 
     return { ...optionsValue, targetEl, boundingEl } satisfies AdhesiveOptions;
-  }
-
-  const adhesive = useRef<Adhesive | null>(null);
+  };
 
   useEffect(() => {
+    if (!unwrapElement(target)) return cleanup();
+
     adhesive.current ??= Adhesive.create(getValidatedOptions());
 
-    return () => {
-      adhesive.current?.cleanup();
-      adhesive.current = null;
-    };
-  }, []);
+    return cleanup;
+  }, [unwrapElement(target)]);
 
   useEffect(() => {
+    if (!unwrapElement(target)) return;
+
     adhesive.current?.replaceOptions(getValidatedOptions());
   }, [memoizedOptions]);
 }

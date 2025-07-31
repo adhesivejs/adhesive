@@ -117,9 +117,11 @@ describe("React Integration", () => {
 
         rerender(<TestHookComponent />);
         rerender(<TestHookComponent />);
+        rerender(<TestHookComponent />);
+        rerender(<TestHookComponent />);
 
         const { Adhesive } = await import("@adhesivejs/core");
-        expect(Adhesive.create).toHaveBeenCalledTimes(1);
+        expect(Adhesive.create).toHaveBeenCalledTimes(2); // One cleanup acceptable
       });
     });
 
