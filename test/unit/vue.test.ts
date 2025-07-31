@@ -5,7 +5,7 @@ import {
   type AdhesivePosition,
 } from "@adhesivejs/vue";
 import { fireEvent, render } from "@testing-library/vue";
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, useTemplateRef } from "vue";
 import {
   cleanupTestEnvironment,
   commonBeforeEach,
@@ -31,8 +31,8 @@ vi.mock("@adhesivejs/core", () => {
 
 const TestComposableComponent = defineComponent({
   setup() {
-    const targetRef = ref<HTMLElement>();
-    const boundingRef = ref<HTMLElement>();
+    const targetRef = useTemplateRef<HTMLElement>("target");
+    const boundingRef = useTemplateRef<HTMLElement>("bounding");
     const enabled = ref(true);
     const position = ref<AdhesivePosition>("top");
     const offset = ref(10);
@@ -72,8 +72,8 @@ const TestComposableComponent = defineComponent({
       <button @click="toggleOffset" data-testid="toggle-offset">
         Offset: {{ offset }}
       </button>
-      <div ref="boundingRef" style="height: 1000px;">
-        <div ref="targetRef" data-testid="sticky-element">
+      <div ref="bounding" style="height: 1000px;">
+        <div ref="target" data-testid="sticky-element">
           Sticky Content
         </div>
       </div>
