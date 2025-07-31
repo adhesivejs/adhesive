@@ -1,5 +1,5 @@
 import { Adhesive, type AdhesiveOptions } from "@adhesivejs/core";
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useMemo, useRef, type RefObject } from "react";
 import {
   unwrapElement,
   type MaybeRefObjectOrElementOrSelector,
@@ -52,16 +52,35 @@ export function useAdhesive(
   target: MaybeRefObjectOrElementOrSelector,
   options?: UseAdhesiveOptions,
 ) {
+  const memoizedOptions = useMemo(
+    () => options,
+    [
+      options?.boundingRef,
+      options?.boundingEl,
+      options?.enabled,
+      options?.offset,
+      options?.position,
+      options?.zIndex,
+      options?.outerClassName,
+      options?.innerClassName,
+      options?.initialClassName,
+      options?.fixedClassName,
+      options?.relativeClassName,
+    ],
+  );
+
   function getValidatedOptions() {
+    const optionsValue = memoizedOptions;
+
     const targetEl = unwrapElement(target);
     const boundingEl =
-      unwrapElement(options?.boundingRef) ?? options?.boundingEl;
+      unwrapElement(optionsValue?.boundingRef) ?? optionsValue?.boundingEl;
 
     if (!targetEl) {
       throw new Error("@adhesivejs/react: target element is not defined");
     }
 
-    return { ...options, targetEl, boundingEl } satisfies AdhesiveOptions;
+    return { ...optionsValue, targetEl, boundingEl } satisfies AdhesiveOptions;
   }
 
   const adhesive = useRef<Adhesive | null>(null);
@@ -73,9 +92,9 @@ export function useAdhesive(
       adhesive.current?.cleanup();
       adhesive.current = null;
     };
-  }, [target]);
+  }, []);
 
   useEffect(() => {
     adhesive.current?.replaceOptions(getValidatedOptions());
-  }, [options]);
+  }, [memoizedOptions]);
 }

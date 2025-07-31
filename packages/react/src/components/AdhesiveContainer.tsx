@@ -1,4 +1,4 @@
-import { useMemo, useRef, type ComponentProps, type ReactNode } from "react";
+import { useRef, type ComponentProps, type ReactNode } from "react";
 import { useAdhesive, type UseAdhesiveOptions } from "../hooks/useAdhesive.js";
 
 /**
@@ -54,34 +54,19 @@ export function AdhesiveContainer({
 }: AdhesiveContainerProps): ReactNode {
   const targetRef = useRef<HTMLDivElement>(null);
 
-  const options = useMemo<UseAdhesiveOptions>(
-    () => ({
-      boundingRef,
-      boundingEl,
-      enabled,
-      offset,
-      position,
-      zIndex,
-      outerClassName,
-      innerClassName,
-      initialClassName,
-      fixedClassName,
-      relativeClassName,
-    }),
-    [
-      boundingRef,
-      boundingEl,
-      enabled,
-      offset,
-      position,
-      zIndex,
-      outerClassName,
-      innerClassName,
-      initialClassName,
-      fixedClassName,
-      relativeClassName,
-    ],
-  );
+  const options: UseAdhesiveOptions = {
+    boundingRef,
+    boundingEl,
+    enabled,
+    offset,
+    position,
+    zIndex,
+    outerClassName,
+    innerClassName,
+    initialClassName,
+    fixedClassName,
+    relativeClassName,
+  };
 
   useAdhesive(targetRef, options);
 
