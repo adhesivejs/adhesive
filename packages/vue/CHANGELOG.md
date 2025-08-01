@@ -1,6 +1,24 @@
 # Changelog
 
 
+## v0.7.2
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.1...v0.7.2)
+
+### 📖 Documentation
+
+- Formatting ([ce8f463](https://github.com/adhesivejs/adhesive/commit/ce8f463))
+- **svelte:** Expand on svelte examples and api reference ([f5b9dda](https://github.com/adhesivejs/adhesive/commit/f5b9dda))
+
+### 🏡 Chore
+
+- Update deps ([662b99d](https://github.com/adhesivejs/adhesive/commit/662b99d))
+- Formatting ([d4cc6c1](https://github.com/adhesivejs/adhesive/commit/d4cc6c1))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.1
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.0...v0.7.1)
