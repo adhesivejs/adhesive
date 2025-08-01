@@ -11,12 +11,15 @@
   "dependencies": {
     "@adhesivejs/core": "workspace:*",
     "@adhesivejs/react": "workspace:*",
+    "@adhesivejs/svelte": "workspace:*",
     "@adhesivejs/vue": "workspace:*"
   },
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "catalog:",
     "@testing-library/dom": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
+    "@testing-library/svelte": "catalog:",
     "@testing-library/user-event": "catalog:",
     "@testing-library/vue": "catalog:",
     "@types/node": "catalog:",
