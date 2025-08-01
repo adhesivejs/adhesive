@@ -1,6 +1,43 @@
 # Changelog
 
 
+## v0.7.0
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.6.2...v0.7.0)
+
+### 🚀 Enhancements
+
+- **core:** Support dynamically updating bounding element for improved hmr ([ef975b3](https://github.com/adhesivejs/adhesive/commit/ef975b3))
+- **vue:** Support hmr updates for adhesive elements ([570a42d](https://github.com/adhesivejs/adhesive/commit/570a42d))
+- **react:** Support hmr updates for adhesive elements ([c89680e](https://github.com/adhesivejs/adhesive/commit/c89680e))
+
+### 🔥 Performance
+
+- **react:** Memoize options in `useAdhesive` hook ([03f9ff8](https://github.com/adhesivejs/adhesive/commit/03f9ff8))
+
+### 💅 Refactors
+
+- **vue:** ⚠️  Limit target usage be strictly ref objects and drop `boundingRef`` ([75d10e7](https://github.com/adhesivejs/adhesive/commit/75d10e7))
+- **react:** ⚠️  Enforce ref object usage ([f7d9584](https://github.com/adhesivejs/adhesive/commit/f7d9584))
+
+### 🏡 Chore
+
+- Update deps ([e08f463](https://github.com/adhesivejs/adhesive/commit/e08f463))
+- Use template ref in test suite ([6185f93](https://github.com/adhesivejs/adhesive/commit/6185f93))
+
+### 🤖 CI
+
+- Enable provenance for npm publishing ([fa8caa2](https://github.com/adhesivejs/adhesive/commit/fa8caa2))
+
+#### ⚠️ Breaking Changes
+
+- **vue:** ⚠️  Limit target usage be strictly ref objects and drop `boundingRef`` ([75d10e7](https://github.com/adhesivejs/adhesive/commit/75d10e7))
+- **react:** ⚠️  Enforce ref object usage ([f7d9584](https://github.com/adhesivejs/adhesive/commit/f7d9584))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.6.2
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.6.1...v0.6.2)
