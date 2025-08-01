@@ -9,4 +9,7 @@ export {
   type AdhesiveStatus,
 } from "@adhesivejs/core";
 
-export { adhesive } from "./attachments/AdhesiveAttachment.js";
+export {
+  adhesive,
+  type AdhesiveAttachmentOptions,
+} from "./attachments/AdhesiveAttachment.js";
