@@ -8,8 +8,6 @@ Vue adapter for Adhesive - A modern, performant, lightweight, dependency free, c
 [![bundle size](https://img.shields.io/bundlephobia/minzip/@adhesivejs/vue?color=4c207d)](https://bundlephobia.com/package/@adhesivejs/vue)
 [![license](https://img.shields.io/github/license/adhesivejs/adhesive?color=4c207d)](https://github.com/adhesivejs/adhesive/blob/main/LICENSE)
 
-<!-- Warning -->
-
 > [!WARNING]
 > Vue 2 is not supported and is EOL (End of Life).
 

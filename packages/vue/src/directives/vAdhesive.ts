@@ -9,7 +9,9 @@ type AdhesiveDirectiveElement =
   | (VueInstance & { __adhesive__?: Adhesive | null })
   | (HTMLElement & { __adhesive__?: Adhesive | null });
 
-type AdhesiveDirectiveValue = Omit<AdhesiveOptions, "targetEl"> | undefined;
+type AdhesiveDirectiveValue =
+  | Partial<Omit<AdhesiveOptions, "targetEl">>
+  | undefined;
 
 type AdhesiveDirectiveModifiers = string;
 
