@@ -1,19 +1,14 @@
 import type { RefObject } from "react";
 
-export type MaybeRefObjectOrElementOrSelector =
+type MaybeRefObject =
   | RefObject<HTMLElement | null>
   | HTMLElement
-  | string
   | null
   | undefined;
 
-type UnwrapElementReturn = HTMLElement | string | null | undefined;
-
-export function unwrapElement(
-  value: MaybeRefObjectOrElementOrSelector,
-): UnwrapElementReturn {
+export function unwrapElement(value: MaybeRefObject): HTMLElement | null {
   if (isRefObject(value)) return value.current;
-  return value;
+  return value ?? null;
 }
 
 function isRefObject(value: unknown): value is RefObject<HTMLElement | null> {

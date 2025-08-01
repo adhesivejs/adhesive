@@ -1,9 +1,6 @@
 import { Adhesive, type AdhesiveOptions } from "@adhesivejs/core";
 import { useEffect, useMemo, useRef, type RefObject } from "react";
-import {
-  unwrapElement,
-  type MaybeRefObjectOrElementOrSelector,
-} from "../utils/unwrapElement.js";
+import { unwrapElement } from "../utils/unwrapElement.js";
 
 /**
  * Configuration options for the useAdhesive hook.
@@ -49,7 +46,7 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
  * ```
  */
 export function useAdhesive(
-  target: MaybeRefObjectOrElementOrSelector,
+  target: RefObject<HTMLElement | null>,
   options?: UseAdhesiveOptions,
 ) {
   const adhesive = useRef<Adhesive | null>(null);

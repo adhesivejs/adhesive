@@ -41,7 +41,7 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
  *
  * useAdhesive(
  *   targetRef,
- *   () => ({ boundingRef: boundingRef.value, position: 'top' })
+ *   () => ({ boundingEl: boundingRef.value, position: 'top' })
  * );
  * </script>
  *
