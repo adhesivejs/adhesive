@@ -1,6 +1,6 @@
 {
   "name": "@adhesivejs/vue",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "exports": "./src/index.ts",
   "include": ["LICENSE", "README.md", "src/**/*.ts"],
   "exclude": [
@@ -11,7 +11,7 @@
     "tsdown.config.ts"
   ],
   "imports": {
-    "@adhesivejs/core": "jsr:@adhesivejs/core@0.7.0",
+    "@adhesivejs/core": "jsr:@adhesivejs/core@0.7.1",
     "vue": "npm:vue@^3.5.0"
   }
 }

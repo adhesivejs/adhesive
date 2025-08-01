@@ -1,6 +1,40 @@
 # Changelog
 
 
+## v0.7.1
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.0...v0.7.1)
+
+### 🚀 Enhancements
+
+- **svelte:** Add svelte adapter with attachment ([c5cebba](https://github.com/adhesivejs/adhesive/commit/c5cebba))
+
+### 🩹 Fixes
+
+- **vue:** Ensure adhesive direction options are partially required ([697c29a](https://github.com/adhesivejs/adhesive/commit/697c29a))
+
+### 📖 Documentation
+
+- Update example headings and use getter function for vue options ([ddf7b1d](https://github.com/adhesivejs/adhesive/commit/ddf7b1d))
+- **svelte:** Add jsdoc for adhesive attachment ([8d183ea](https://github.com/adhesivejs/adhesive/commit/8d183ea))
+- **svelte:** Update examples in readme ([23e4047](https://github.com/adhesivejs/adhesive/commit/23e4047))
+- Update playground scripts ([27ef2c7](https://github.com/adhesivejs/adhesive/commit/27ef2c7))
+
+### 🏡 Chore
+
+- **vue:** Remove unused bounding ref type omission ([f953ea5](https://github.com/adhesivejs/adhesive/commit/f953ea5))
+- Ensure eslint config and excluded from jsr dist ([0542cb4](https://github.com/adhesivejs/adhesive/commit/0542cb4))
+- **vue:** Use bounding el from spread options ([90259f6](https://github.com/adhesivejs/adhesive/commit/90259f6))
+- **svelte:** Export adhesive attachment options ([ded8205](https://github.com/adhesivejs/adhesive/commit/ded8205))
+
+### ✅ Tests
+
+- **svelte:** Add basic test suite ([f45d74d](https://github.com/adhesivejs/adhesive/commit/f45d74d))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.0
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.6.2...v0.7.0)
