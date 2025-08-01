@@ -16,7 +16,6 @@ import {
  * Configuration options for the useAdhesive composable.
  *
  * Extends the core AdhesiveOptions but omits targetEl since it's provided via the composable parameter.
- * Adds Vue-specific boundingRef option for convenient ref-based boundary selection.
  */
 export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
 
@@ -86,13 +85,12 @@ export function useAdhesive(
     const optionsValue = toValue(options);
 
     const targetEl = unwrapElement(target);
-    const boundingEl = optionsValue?.boundingEl;
 
     if (!targetEl) {
       throw new Error("@adhesivejs/vue: target element is not defined");
     }
 
-    return { ...optionsValue, targetEl, boundingEl } satisfies AdhesiveOptions;
+    return { ...optionsValue, targetEl } satisfies AdhesiveOptions;
   };
 
   watch(
