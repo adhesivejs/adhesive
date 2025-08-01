@@ -14,7 +14,6 @@ import {
 
 type BaseProps = Omit<
   Partial<UseAdhesiveOptions>,
-  | "boundingRef"
   | "outerClassName"
   | "innerClassName"
   | "initialClassName"
