@@ -36,7 +36,7 @@ deno install @adhesivejs/svelte
 
 ```svelte
 <script lang="ts">
-  import { adhesive } from "@adhesivejs/svelte";
+  import { adhesive } from '@adhesivejs/svelte';
 </script>
 
 <header {@attach adhesive({ position: "top" })}>

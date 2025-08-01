@@ -35,28 +35,28 @@ deno install @adhesivejs/core
 ### Basic Example
 
 ```js
-import { Adhesive } from '@adhesivejs/core';
+import { Adhesive } from "@adhesivejs/core";
 
-Adhesive.create({ targetEl: '#target-element' });
+Adhesive.create({ targetEl: "#target-element" });
 ```
 
 ### Advanced Example
 
 ```js
-import { Adhesive } from '@adhesivejs/core';
+import { Adhesive } from "@adhesivejs/core";
 
 // Advanced configuration with all options
 const adhesive = new Adhesive({
-  targetEl: document.querySelector('.sidebar'),
-  boundingEl: '.main-content',
-  position: 'bottom',
+  targetEl: document.querySelector(".sidebar"),
+  boundingEl: ".main-content",
+  position: "bottom",
   offset: 20,
   zIndex: 999,
-  outerClassName: 'custom-outer',
-  innerClassName: 'custom-inner',
-  initialClassName: 'custom-initial',
-  fixedClassName: 'custom-fixed',
-  relativeClassName: 'custom-relative'
+  outerClassName: "custom-outer",
+  innerClassName: "custom-inner",
+  initialClassName: "custom-initial",
+  fixedClassName: "custom-fixed",
+  relativeClassName: "custom-relative",
 });
 
 // Initialize the sticky behavior
@@ -64,19 +64,19 @@ adhesive.init();
 
 // Listen to state changes
 const state = adhesive.getState();
-console.log('Current status:', state.status);
+console.log("Current status:", state.status);
 
 // Update options dynamically (partial update)
 adhesive.updateOptions({
   offset: 50,
-  position: 'top'
+  position: "top",
   // Other options remain unchanged
 });
 
 // Replace options (full update with fallback to defaults)
 adhesive.replaceOptions({
   offset: 50,
-  position: 'top'
+  position: "top",
   // All other options reset to their default values
 });
 
@@ -92,19 +92,19 @@ adhesive.cleanup();
 
 #### Constructor Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `targetEl` | `HTMLElement \| string` | Required | Element to make sticky or CSS selector |
-| `boundingEl` | `HTMLElement \| string \| null` | `document.body` | Container that defines sticky boundaries |
-| `position` | `'top' \| 'bottom'` | `'top'` | Where the element should stick |
-| `offset` | `number` | `0` | Offset in pixels from the position |
-| `zIndex` | `number` | `1` | Z-index for the fixed element |
-| `enabled` | `boolean` | `true` | Whether to enable sticky behavior |
-| `outerClassName` | `string` | `'adhesive__outer'` | Class for the outer wrapper |
-| `innerClassName` | `string` | `'adhesive__inner'` | Class for the inner wrapper |
-| `initialClassName` | `string` | `'adhesive--initial'` | Class when element is in its initial state |
-| `fixedClassName` | `string` | `'adhesive--fixed'` | Class when element is sticky |
-| `relativeClassName` | `string` | `'adhesive--relative'` | Class when element reaches its boundary |
+| Option              | Type                            | Default                | Description                                |
+| ------------------- | ------------------------------- | ---------------------- | ------------------------------------------ |
+| `targetEl`          | `HTMLElement \| string`         | Required               | Element to make sticky or CSS selector     |
+| `boundingEl`        | `HTMLElement \| string \| null` | `document.body`        | Container that defines sticky boundaries   |
+| `position`          | `'top' \| 'bottom'`             | `'top'`                | Where the element should stick             |
+| `offset`            | `number`                        | `0`                    | Offset in pixels from the position         |
+| `zIndex`            | `number`                        | `1`                    | Z-index for the fixed element              |
+| `enabled`           | `boolean`                       | `true`                 | Whether to enable sticky behavior          |
+| `outerClassName`    | `string`                        | `'adhesive__outer'`    | Class for the outer wrapper                |
+| `innerClassName`    | `string`                        | `'adhesive__inner'`    | Class for the inner wrapper                |
+| `initialClassName`  | `string`                        | `'adhesive--initial'`  | Class when element is in its initial state |
+| `fixedClassName`    | `string`                        | `'adhesive--fixed'`    | Class when element is sticky               |
+| `relativeClassName` | `string`                        | `'adhesive--relative'` | Class when element reaches its boundary    |
 
 #### Methods
 

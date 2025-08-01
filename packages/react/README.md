@@ -35,7 +35,7 @@ deno install @adhesivejs/react
 ### Basic Example
 
 ```tsx
-import { AdhesiveContainer } from '@adhesivejs/react';
+import { AdhesiveContainer } from "@adhesivejs/react";
 
 export function Component() {
   return (
@@ -55,45 +55,51 @@ export function Component() {
 ### Advanced Example with `useAdhesive` Hook
 
 ```tsx
-import { useAdhesive, type AdhesivePosition } from '@adhesivejs/react';
-import { useRef, useState } from 'react';
+import { useAdhesive, type AdhesivePosition } from "@adhesivejs/react";
+import { useRef, useState } from "react";
 
 export function Component() {
   const targetRef = useRef<HTMLDivElement>(null);
   const boundingRef = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(true);
-  const [position, setPosition] = useState<AdhesivePosition>('top');
+  const [position, setPosition] = useState<AdhesivePosition>("top");
 
-  useAdhesive(
-    targetRef,
-    {
-      boundingRef,
-      position,
-      offset: 20,
-      enabled,
-      zIndex: 999,
-      initialClassName: 'custom-initial',
-      fixedClassName: 'custom-fixed',
-      relativeClassName: 'custom-relative'
-    }
-  );
+  useAdhesive(targetRef, {
+    boundingRef,
+    position,
+    offset: 20,
+    enabled,
+    zIndex: 999,
+    initialClassName: "custom-initial",
+    fixedClassName: "custom-fixed",
+    relativeClassName: "custom-relative",
+  });
 
   return (
-    <div ref={boundingRef} style={{ height: '200vh' }}>
+    <div ref={boundingRef} style={{ height: "200vh" }}>
       <button onClick={() => setEnabled(!enabled)}>
-        {enabled ? 'Disable' : 'Enable'} Sticky
+        {enabled ? "Disable" : "Enable"} Sticky
       </button>
 
-      <button onClick={() => setPosition(position === 'top' ? 'bottom' : 'top')}>
-        Switch to {position === 'top' ? 'bottom' : 'top'}
+      <button
+        onClick={() => setPosition(position === "top" ? "bottom" : "top")}
+      >
+        Switch to {position === "top" ? "bottom" : "top"}
       </button>
 
       <div ref={targetRef} className="sticky-element">
         <h2>Dynamic Sticky Element</h2>
-        <p>Position: {position} | Enabled: {enabled ? 'Yes' : 'No'}</p>
+        <p>
+          Position: {position} | Enabled: {enabled ? "Yes" : "No"}
+        </p>
       </div>
 
-      <div style={{ height: '150vh', background: 'linear-gradient(to bottom, #f0f0f0, #ffffff)' }}>
+      <div
+        style={{
+          height: "150vh",
+          background: "linear-gradient(to bottom, #f0f0f0, #ffffff)",
+        }}
+      >
         <p>Scroll to see the sticky behavior in action!</p>
       </div>
     </div>
@@ -113,11 +119,7 @@ A simple wrapper component that automatically applies sticky positioning to its 
 - Standard `div` props (className, style, etc.)
 
 ```tsx
-<AdhesiveContainer
-  position="bottom"
-  offset={30}
-  className="custom-class"
->
+<AdhesiveContainer position="bottom" offset={30} className="custom-class">
   Content to make sticky
 </AdhesiveContainer>
 ```
@@ -133,16 +135,16 @@ For more control over the sticky behavior.
 
 **UseAdhesiveOptions:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `boundingRef` | `React.RefObject` \| `HTMLElement` \| `string` | `document.body` | The element that defines the sticky boundaries |
-| `boundingEl` | `HTMLElement` \| `string` | `document.body` | Alternative way to specify bounding element (for compatibility) |
-| `position` | `'top' \| 'bottom'` | `'top'` | Where the element should stick |
-| `offset` | `number` | `0` | Offset in pixels from the position |
-| `zIndex` | `number` | `1` | Z-index for the fixed element |
-| `enabled` | `boolean` | `true` | Whether to enable sticky behavior |
-| `outerClassName` | `string` | `'adhesive__outer'` | Class for the outer wrapper |
-| `innerClassName` | `string` | `'adhesive__inner'` | Class for the inner wrapper |
-| `initialClassName` | `string` | `'adhesive--initial'` | Class when element is in its initial state |
-| `fixedClassName` | `string` | `'adhesive--fixed'` | Class when element is sticky |
-| `relativeClassName` | `string` | `'adhesive--relative'` | Class when element reaches its boundary |
+| Option              | Type                                           | Default                | Description                                                     |
+| ------------------- | ---------------------------------------------- | ---------------------- | --------------------------------------------------------------- |
+| `boundingRef`       | `React.RefObject` \| `HTMLElement` \| `string` | `document.body`        | The element that defines the sticky boundaries                  |
+| `boundingEl`        | `HTMLElement` \| `string`                      | `document.body`        | Alternative way to specify bounding element (for compatibility) |
+| `position`          | `'top' \| 'bottom'`                            | `'top'`                | Where the element should stick                                  |
+| `offset`            | `number`                                       | `0`                    | Offset in pixels from the position                              |
+| `zIndex`            | `number`                                       | `1`                    | Z-index for the fixed element                                   |
+| `enabled`           | `boolean`                                      | `true`                 | Whether to enable sticky behavior                               |
+| `outerClassName`    | `string`                                       | `'adhesive__outer'`    | Class for the outer wrapper                                     |
+| `innerClassName`    | `string`                                       | `'adhesive__inner'`    | Class for the inner wrapper                                     |
+| `initialClassName`  | `string`                                       | `'adhesive--initial'`  | Class when element is in its initial state                      |
+| `fixedClassName`    | `string`                                       | `'adhesive--fixed'`    | Class when element is sticky                                    |
+| `relativeClassName` | `string`                                       | `'adhesive--relative'` | Class when element reaches its boundary                         |
