@@ -29,7 +29,7 @@ export default defineConfig({
           include: ["LICENSE", "README.md", "src/**/*.ts"],
           exclude: [
             "CHANGELOG.md",
-            "eslint.config.mjs",
+            "eslint.config.ts",
             "package.json",
             "tsconfig.json",
             "tsdown.config.ts",
