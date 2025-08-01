@@ -53,7 +53,7 @@ import { Adhesive } from '@adhesivejs/core';
 Adhesive.create({ targetEl: '#target-element' });
 ```
 
-### React
+### React Examples
 
 #### React Component Example
 
@@ -98,7 +98,7 @@ export function Component() {
 }
 ```
 
-### Vue
+### Vue Examples
 
 #### Vue Component Example
 
@@ -129,7 +129,7 @@ import { useTemplateRef } from 'vue';
 
 const targetRef = useTemplateRef('target');
 
-useAdhesive(targetRef, { position: 'top' });
+useAdhesive(targetRef, () => ({ position: 'top' }));
 </script>
 
 <template>
