@@ -3,15 +3,14 @@
   import svelteLogo from "./assets/svelte.svg";
   import viteLogo from "/vite.svg";
 
-  let count: number = $state(0);
-  const increment = () => {
-    count += 1;
-  };
+  let count = $state(0);
+
+  let boundingEl = $state<HTMLElement | null>(null);
 </script>
 
 <main>
-  <div class="sticky-container">
-    <div {@attach adhesive({ boundingEl: ".sticky-container" })}>
+  <div bind:this={boundingEl}>
+    <div {@attach adhesive({ boundingEl })}>
       Sticky Element
     </div>
     <a href="https://vite.dev" target="_blank" rel="noreferrer">
@@ -24,7 +23,7 @@
   <h1>Vite + Svelte</h1>
 
   <div class="card">
-    <button onclick={increment}>
+    <button onclick={() => count += 1}>
       count is {count}
     </button>
   </div>
