@@ -16,9 +16,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true,
+    "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "erasableSyntaxOnly": true,
     "noUncheckedSideEffectImports": true
   },
   "include": ["vite.config.ts"]
