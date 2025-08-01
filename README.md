@@ -198,9 +198,10 @@ pnpm build
 pnpm test
 
 # Start development playgrounds
-pnpm playground:core  # Core playground
-pnpm playground:react # React playground
-pnpm playground:vue   # Vue playground
+pnpm playground:core   # Core playground
+pnpm playground:react  # React playground
+pnpm playground:svelte # Svelte playground
+pnpm playground:vue    # Vue playground
 
 # Lint all packages
 pnpm lint
