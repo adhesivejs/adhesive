@@ -27,6 +27,7 @@ This monorepo contains multiple packages for different use cases:
 |---------|-------------|---------|-----|-----
 | [`@adhesivejs/core`](./packages/core) | Core library | [📖 README](./packages/core/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/core?color=4c207d)](https://npmjs.com/package/@adhesivejs/core) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/core?color=4c207d)](https://jsr.io/@adhesivejs/core)
 | [`@adhesivejs/react`](./packages/react) | React adapter | [📖 README](./packages/react/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/react?color=4c207d)](https://npmjs.com/package/@adhesivejs/react) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/react?color=4c207d)](https://jsr.io/@adhesivejs/react)
+| [`@adhesivejs/svelte`](./packages/svelte) | Svelte adapter | [📖 README](./packages/svelte/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/svelte?color=4c207d)](https://npmjs.com/package/@adhesivejs/svelte) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/svelte?color=4c207d)](https://jsr.io/@adhesivejs/svelte)
 | [`@adhesivejs/vue`](./packages/vue) | Vue adapter | [📖 README](./packages/vue/README.md) | [![npm version](https://img.shields.io/npm/v/@adhesivejs/vue?color=4c207d)](https://npmjs.com/package/@adhesivejs/vue) | [![jsr version](https://img.shields.io/jsr/v/@adhesivejs/vue?color=4c207d)](https://jsr.io/@adhesivejs/vue)
 
 ## 🏎️ Quick Install
@@ -37,6 +38,9 @@ npx nypm install @adhesivejs/core
 
 # react
 npx nypm install @adhesivejs/react
+
+# svelte
+npx nypm install @adhesivejs/svelte
 
 # vue
 npx nypm install @adhesivejs/vue
@@ -96,6 +100,24 @@ export function Component() {
     </div>
   );
 }
+```
+
+### Svelte Examples
+
+#### Svelte Attachment Example
+
+```svelte
+<script lang="ts">
+  import { adhesive } from "@adhesivejs/svelte";
+</script>
+
+<header {@attach adhesive({ position: "top" })}>
+  This header will stick to the top
+</header>
+
+<main>
+  <p>Your main content here...</p>
+</main>
 ```
 
 ### Vue Examples

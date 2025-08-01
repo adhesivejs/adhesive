@@ -1,0 +1,17 @@
+{
+  "name": "@adhesivejs/svelte",
+  "version": "0.7.0",
+  "exports": "./src/index.ts",
+  "include": ["LICENSE", "README.md", "src/**/*.ts"],
+  "exclude": [
+    "CHANGELOG.md",
+    "eslint.config.ts",
+    "package.json",
+    "tsconfig.json",
+    "tsdown.config.ts"
+  ],
+  "imports": {
+    "@adhesivejs/core": "jsr:@adhesivejs/core@0.7.0",
+    "svelte": "npm:svelte@^5.29.0"
+  }
+}

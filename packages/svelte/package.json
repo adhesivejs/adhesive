@@ -1,0 +1,54 @@
+{
+  "name": "@adhesivejs/svelte",
+  "version": "0.7.0",
+  "description": "Svelte adapter for Adhesive - A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements",
+  "type": "module",
+  "keywords": [
+    "sticky",
+    "position",
+    "elements",
+    "svelte"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/adhesivejs/adhesive/tree/main/packages/svelte#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adhesivejs/adhesive.git"
+  },
+  "author": {
+    "name": "Daniel Waltz",
+    "email": "danielbwaltz@gmail.com",
+    "url": "https://danielwaltz.me/"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "lint": "eslint",
+    "prepack": "pnpm build",
+    "release:bump": "changelogen --bump && pnpx pkg-to-jsr && pnpx prettier --write jsr.json",
+    "release:publish": "pnpm publish && pnpx jsr publish",
+    "test:attw": "attw --pack --profile esm-only",
+    "test:jsr": "pnpx jsr publish --dry-run --allow-dirty",
+    "test:publint": "publint",
+    "test:publish": "pnpm test:attw && pnpm test:jsr && pnpm test:publint",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "svelte": "^5.29.0"
+  },
+  "dependencies": {
+    "@adhesivejs/core": "workspace:*"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}
