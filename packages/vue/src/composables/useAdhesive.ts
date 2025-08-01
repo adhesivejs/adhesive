@@ -8,8 +8,7 @@ import {
 } from "vue";
 import {
   unwrapElement,
-  type MaybeTemplateRef,
-  type MaybeVueInstanceOrElementOrSelector,
+  type TemplateOrComputedRef,
   type VueInstanceOrElement,
 } from "../utils/unwrapElement.js";
 
@@ -19,10 +18,7 @@ import {
  * Extends the core AdhesiveOptions but omits targetEl since it's provided via the composable parameter.
  * Adds Vue-specific boundingRef option for convenient ref-based boundary selection.
  */
-export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
-  /** Vue template ref for the element that defines sticky boundaries */
-  boundingRef?: MaybeTemplateRef<VueInstanceOrElement>;
-};
+export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
 
 /**
  * Vue composable for adding sticky positioning behavior to DOM elements.
@@ -76,7 +72,7 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
  * ```
  */
 export function useAdhesive(
-  target: MaybeRefOrGetter<MaybeVueInstanceOrElementOrSelector>,
+  target: TemplateOrComputedRef<VueInstanceOrElement | null | undefined>,
   options?: MaybeRefOrGetter<UseAdhesiveOptions>,
 ) {
   let adhesive: Adhesive | null = null;
@@ -90,8 +86,7 @@ export function useAdhesive(
     const optionsValue = toValue(options);
 
     const targetEl = unwrapElement(target);
-    const boundingEl =
-      unwrapElement(optionsValue?.boundingRef) ?? optionsValue?.boundingEl;
+    const boundingEl = optionsValue?.boundingEl;
 
     if (!targetEl) {
       throw new Error("@adhesivejs/vue: target element is not defined");

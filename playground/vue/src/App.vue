@@ -15,7 +15,7 @@ const targetRef = useTemplateRef("target");
 const boundingRef = useTemplateRef("bounding");
 
 useAdhesive(targetRef, () => ({
-  boundingRef: boundingRef.value,
+  boundingEl: boundingRef.value,
   enabled: enabled.value,
   position: position.value,
 }));

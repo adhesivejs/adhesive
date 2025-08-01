@@ -38,7 +38,7 @@ const TestComposableComponent = defineComponent({
     const offset = ref(10);
 
     useAdhesive(targetRef, () => ({
-      boundingRef: boundingRef.value,
+      boundingEl: boundingRef.value,
       enabled: enabled.value,
       position: position.value,
       offset: offset.value,
@@ -216,7 +216,7 @@ describe("Vue Integration", () => {
             const boundingRef = ref<HTMLElement>();
 
             useAdhesive(targetRef, () => ({
-              boundingRef: boundingRef.value,
+              boundingEl: boundingRef.value,
               enabled: false,
             }));
 

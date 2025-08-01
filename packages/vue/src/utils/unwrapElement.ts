@@ -1,7 +1,7 @@
 import {
   toValue,
   type ComponentPublicInstance,
-  type MaybeRefOrGetter,
+  type ComputedRef,
   type TemplateRef,
 } from "vue";
 
@@ -9,22 +9,20 @@ export type VueInstance = ComponentPublicInstance;
 
 export type VueInstanceOrElement = VueInstance | HTMLElement;
 
-export type MaybeTemplateRef<T> = TemplateRef<T> | T | null;
+export type TemplateOrComputedRef<T> = TemplateRef<T> | ComputedRef<T>;
 
-export type MaybeVueInstanceOrElementOrSelector =
+type MaybeVueInstanceOrElementRef =
+  | TemplateOrComputedRef<VueInstanceOrElement | null | undefined>
   | VueInstanceOrElement
-  | string
   | null
   | undefined;
 
-type UnwrapElementReturn = HTMLElement | string | null | undefined;
-
 export function unwrapElement(
-  instanceOrElOrSelectorRef: MaybeRefOrGetter<MaybeVueInstanceOrElementOrSelector>,
-): UnwrapElementReturn {
-  const value = toValue(instanceOrElOrSelectorRef);
-  if (isVueInstance(value)) return value.$el;
-  return value;
+  value: MaybeVueInstanceOrElementRef,
+): HTMLElement | null {
+  const _value = toValue(value);
+  if (isVueInstance(_value)) return _value.$el;
+  return _value ?? null;
 }
 
 function isVueInstance(value: unknown): value is VueInstance {

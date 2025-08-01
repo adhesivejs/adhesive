@@ -72,7 +72,7 @@ const position = ref<AdhesivePosition>('top');
 useAdhesive(
   targetRef,
   () => ({
-    boundingRef: boundingRef.value,
+    boundingEl: boundingRef.value,
     position: position.value,
     offset: 20,
     enabled: enabled.value,
