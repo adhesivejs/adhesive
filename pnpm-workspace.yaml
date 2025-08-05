@@ -15,10 +15,10 @@ catalog:
   '@testing-library/vue': ^8.1.0
   '@tsconfig/node22': ^22.0.2
   '@tsconfig/svelte': ^5.0.4
-  '@types/node': ~22.15.35
+  '@types/node': ~22.17.0
   '@types/react': ^19.1.9
   '@types/react-dom': ^19.1.7
-  '@vitejs/plugin-react': ^4.7.0
+  '@vitejs/plugin-react': ^5.0.0
   '@vitejs/plugin-vue': ^6.0.1
   '@vue/tsconfig': ^0.7.0
   changelogen: ^0.6.2
@@ -28,11 +28,11 @@ catalog:
   publint: ^0.3.12
   react: ^19.1.1
   react-dom: ^19.1.1
-  svelte: ^5.37.2
-  svelte-check: ^4.3.0
-  tsdown: ^0.13.1
+  svelte: ^5.38.0
+  svelte-check: ^4.3.1
+  tsdown: ^0.13.3
   typescript: ~5.9.2
-  vite: ^7.0.6
+  vite: ^7.1.0
   vitest: ^3.2.4
   vue: ^3.5.18
   vue-tsc: ^3.0.5
