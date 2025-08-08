@@ -217,19 +217,18 @@ For more control over the sticky behavior with full Vue reactivity support.
 
 **UseAdhesiveOptions:**
 
-| Option              | Type                                       | Default                | Description                                                     |
-| ------------------- | ------------------------------------------ | ---------------------- | --------------------------------------------------------------- |
-| `boundingRef`       | `TemplateRef` \| `HTMLElement` \| `string` | `document.body`        | The element that defines the sticky boundaries                  |
-| `boundingEl`        | `HTMLElement` \| `string`                  | `document.body`        | Alternative way to specify bounding element (for compatibility) |
-| `position`          | `'top' \| 'bottom'`                        | `'top'`                | Where the element should stick                                  |
-| `offset`            | `number`                                   | `0`                    | Offset in pixels from the position                              |
-| `zIndex`            | `number`                                   | `1`                    | Z-index for the fixed element                                   |
-| `enabled`           | `boolean`                                  | `true`                 | Whether to enable sticky behavior                               |
-| `outerClassName`    | `string`                                   | `'adhesive__outer'`    | Class for the outer wrapper                                     |
-| `innerClassName`    | `string`                                   | `'adhesive__inner'`    | Class for the inner wrapper                                     |
-| `initialClassName`  | `string`                                   | `'adhesive--initial'`  | Class when element is in its initial state                      |
-| `fixedClassName`    | `string`                                   | `'adhesive--fixed'`    | Class when element is sticky                                    |
-| `relativeClassName` | `string`                                   | `'adhesive--relative'` | Class when element reaches its boundary                         |
+| Option              | Type                      | Default                | Description                                                     |
+| ------------------- | ------------------------- | ---------------------- | --------------------------------------------------------------- |
+| `boundingEl`        | `HTMLElement` \| `string` | `document.body`        | Alternative way to specify bounding element (for compatibility) |
+| `position`          | `'top' \| 'bottom'`       | `'top'`                | Where the element should stick                                  |
+| `offset`            | `number`                  | `0`                    | Offset in pixels from the position                              |
+| `zIndex`            | `number`                  | `1`                    | Z-index for the fixed element                                   |
+| `enabled`           | `boolean`                 | `true`                 | Whether to enable sticky behavior                               |
+| `outerClassName`    | `string`                  | `'adhesive__outer'`    | Class for the outer wrapper                                     |
+| `innerClassName`    | `string`                  | `'adhesive__inner'`    | Class for the inner wrapper                                     |
+| `initialClassName`  | `string`                  | `'adhesive--initial'`  | Class when element is in its initial state                      |
+| `fixedClassName`    | `string`                  | `'adhesive--fixed'`    | Class when element is sticky                                    |
+| `relativeClassName` | `string`                  | `'adhesive--relative'` | Class when element reaches its boundary                         |
 
 #### `v-adhesive` Directive
 
@@ -253,7 +252,7 @@ A Vue directive for applying sticky behavior directly to elements with minimal s
 
 **Directive Value:**
 
-The directive accepts the same options as `UseAdhesiveOptions` (excluding `boundingRef`/`boundingEl` which you can provide as options).
+The directive accepts the same options as `UseAdhesiveOptions`.
 
 **Directive Argument:**
 
