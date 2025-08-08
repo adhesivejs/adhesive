@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.7.3
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.2...v0.7.3)
+
+### 📖 Documentation
+
+- **vue:** Remove bounding ref from options reference ([0552b35](https://github.com/adhesivejs/adhesive/commit/0552b35))
+
+### 🏡 Chore
+
+- Update deps ([3da2c59](https://github.com/adhesivejs/adhesive/commit/3da2c59))
+
+### 🤖 CI
+
+- Drop frozen lockfile flag as already enabled in ci ([9478580](https://github.com/adhesivejs/adhesive/commit/9478580))
+- Support trusted publishing ([5f9416d](https://github.com/adhesivejs/adhesive/commit/5f9416d))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.2
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.1...v0.7.2)
