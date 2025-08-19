@@ -1,6 +1,6 @@
 {
   "name": "@adhesivejs/monorepo",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "private": true,
   "packageManager": "pnpm@10.14.0",
   "type": "module",

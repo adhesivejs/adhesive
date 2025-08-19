@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.4
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.3...v0.7.4)
+
+### 📖 Documentation
+
+- **vue:** Update bounding el description ([03d0575](https://github.com/adhesivejs/adhesive/commit/03d0575))
+
+### 🏡 Chore
+
+- Add publish config to each package ([5beb987](https://github.com/adhesivejs/adhesive/commit/5beb987))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.3
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.2...v0.7.3)
