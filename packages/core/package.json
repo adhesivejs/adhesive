@@ -1,6 +1,6 @@
 {
   "name": "@adhesivejs/core",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements",
   "type": "module",
   "keywords": [

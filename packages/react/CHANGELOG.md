@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.5
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.4...v0.7.5)
+
+### 🚀 Enhancements
+
+- **core:** Add data attr for adhesive status ([91e993e](https://github.com/adhesivejs/adhesive/commit/91e993e))
+
+### 🏡 Chore
+
+- Update dev deps ([40e494f](https://github.com/adhesivejs/adhesive/commit/40e494f))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.4
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.3...v0.7.4)
