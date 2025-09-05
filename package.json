@@ -2,7 +2,7 @@
   "name": "@adhesivejs/monorepo",
   "version": "0.7.4",
   "private": true,
-  "packageManager": "pnpm@10.14.0",
+  "packageManager": "pnpm@10.15.1",
   "type": "module",
   "license": "MIT",
   "repository": {
