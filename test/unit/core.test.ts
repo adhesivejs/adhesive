@@ -744,6 +744,30 @@ describe("Core", () => {
         const outerDomClassName = outerDomElement.className;
         expect(outerDomClassName).toBe(`${outerClassName} adhesive--initial`);
       });
+
+      it("sets data attribute for current status on outer wrapper", async () => {
+        const adhesive = createInitializedAdhesive({
+          boundingEl,
+          offset: 10,
+          position: "top",
+        });
+
+        const innerEl = targetEl.parentElement!;
+        const outerEl = innerEl.parentElement!;
+
+        // Initial state
+        expect(outerEl.dataset.adhesiveStatus).toBe("initial");
+
+        // Fixed state
+        await simulateScrollToPosition(200);
+        expect(outerEl.dataset.adhesiveStatus).toBe("fixed");
+
+        // Relative state at boundary
+        await simulateScrollToPosition(2000);
+        expect(outerEl.dataset.adhesiveStatus).toBe("relative");
+
+        adhesive.cleanup();
+      });
     });
   });
 

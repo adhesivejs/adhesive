@@ -120,3 +120,26 @@ adhesive.cleanup();
 #### Static Methods
 
 - `Adhesive.create(options)` - Create and initialize in one call
+
+#### Markup & styling hooks
+
+Adhesive wraps your target element in two divs. The outer wrapper receives a data attribute reflecting the current status so you can style with attribute selectors or utilities:
+
+- `data-adhesive-status="initial"`
+- `data-adhesive-status="fixed"`
+- `data-adhesive-status="relative"`
+
+Example CSS:
+
+```css
+[data-adhesive-status="fixed"] { box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+[data-adhesive-status="relative"] { opacity: .95; }
+```
+
+Tailwind/UnoCSS example (using arbitrary variants):
+
+```html
+<div id="sticky-element">
+  <span class="[[data-adhesive-status=initial]_&]:text-red-500 [[data-adhesive-status=fixed]_&]:text-green-500 [[data-adhesive-status=relative]_&]:text-blue-500">Dynamic styling based on status</span>
+</div>
+```

@@ -261,6 +261,9 @@ const expectNever = (value: never): never => {
  * Adhesive.create({ targetEl: '#target-element' });
  * ```
  *
+ * Styling hook: the outer wrapper gets `data-adhesive-status` with values
+ * `initial` | `fixed` | `relative` to enable attribute-based styling.
+ *
  * @example Advanced configuration
  * ```ts
  * Adhesive.create({
@@ -808,6 +811,7 @@ export class Adhesive {
 
     overwriteClassNames(this.#outerWrapper, outerClasses);
     overwriteClassNames(this.#innerWrapper, innerClasses);
+    this.#outerWrapper.dataset.adhesiveStatus = this.#state.status;
   }
 
   #rerender(): void {
