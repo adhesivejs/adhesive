@@ -1605,7 +1605,7 @@ describe("Core", () => {
         };
         const fixedInnerStyles = {
           position: "fixed",
-          zIndex: "1",
+          zIndex: "var(--adhesive-z-index, 1)",
           transform: "",
           width: "100px",
           top: "0px",
@@ -1615,7 +1615,7 @@ describe("Core", () => {
         const relativeOuterStyles = {};
         const relativeInnerStyles = {
           position: "relative",
-          zIndex: "1",
+          zIndex: "var(--adhesive-z-index, 1)",
           transform: "translate3d(0, 1850px, 0)",
         };
 

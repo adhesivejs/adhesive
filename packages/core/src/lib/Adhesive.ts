@@ -59,7 +59,7 @@ export interface AdhesiveOptions {
   readonly position?: AdhesivePosition;
   /**
    * CSS z-index for the sticky element.
-   * @default 1
+   * @default "var(--adhesive-z-index, 1)"
    */
   readonly zIndex?: number | string;
   /**
@@ -164,9 +164,9 @@ export class AdhesiveError extends Error {
 
 const DEFAULT_OPTIONS = {
   enabled: true as boolean,
-  offset: 0 as number,
+  offset: 0,
   position: ADHESIVE_POSITION.TOP as AdhesivePosition,
-  zIndex: 1 as number,
+  zIndex: "var(--adhesive-z-index, 1)",
   outerClassName: "adhesive__outer",
   innerClassName: "adhesive__inner",
   initialClassName: "adhesive--initial",

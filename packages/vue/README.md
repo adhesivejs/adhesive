@@ -217,20 +217,18 @@ For more control over the sticky behavior with full Vue reactivity support.
 
 **UseAdhesiveOptions:**
 
-| Option              | Type                      | Default                | Description                                              |
-| ------------------- | ------------------------- | ---------------------- | -------------------------------------------------------- |
-| `boundingEl`        | `HTMLElement` \| `string` | `document.body`        | The container element that constrains sticky positioning |
-| `position`          | `'top' \| 'bottom'`       | `'top'`                | Where the element should stick                           |
-| `offset`            | `number`                  | `0`                    | Offset in pixels from the position                       |
-| `zIndex`            | `number` \| `string`      | `1`                    | Z-index for the fixed element                            |
-| `enabled`           | `boolean`                 | `true`                 | Whether to enable sticky behavior                        |
-| `outerClassName`    | `string`                  | `'adhesive__outer'`    | Class for the outer wrapper                              |
-| `innerClassName`    | `string`                  | `'adhesive__inner'`    | Class for the inner wrapper                              |
-| `initialClassName`  | `string`                  | `'adhesive--initial'`  | Class when element is in its initial state               |
-| `fixedClassName`    | `string`                  | `'adhesive--fixed'`    | Class when element is sticky                             |
-| `relativeClassName` | `string`                  | `'adhesive--relative'` | Class when element reaches its boundary                  |
-
-> Note: `zIndex` also accepts a CSS variable string, e.g. `"var(--adhesive-z)"`.
+| Option              | Type                      | Default                      | Description                                              |
+| ------------------- | ------------------------- | ---------------------------- | -------------------------------------------------------- |
+| `boundingEl`        | `HTMLElement` \| `string` | `document.body`              | The container element that constrains sticky positioning |
+| `position`          | `'top' \| 'bottom'`       | `'top'`                      | Where the element should stick                           |
+| `offset`            | `number`                  | `0`                          | Offset in pixels from the position                       |
+| `zIndex`            | `number` \| `string`      | `var(--adhesive-z-index, 1)` | Z-index for the fixed element                            |
+| `enabled`           | `boolean`                 | `true`                       | Whether to enable sticky behavior                        |
+| `outerClassName`    | `string`                  | `'adhesive__outer'`          | Class for the outer wrapper                              |
+| `innerClassName`    | `string`                  | `'adhesive__inner'`          | Class for the inner wrapper                              |
+| `initialClassName`  | `string`                  | `'adhesive--initial'`        | Class when element is in its initial state               |
+| `fixedClassName`    | `string`                  | `'adhesive--fixed'`          | Class when element is sticky                             |
+| `relativeClassName` | `string`                  | `'adhesive--relative'`       | Class when element reaches its boundary                  |
 
 #### `v-adhesive` Directive
 
