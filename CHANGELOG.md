@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.7.6
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.5...v0.7.6)
+
+### 🚀 Enhancements
+
+- Allow passing string as z-index for css computed property support ([a7dd473](https://github.com/adhesivejs/adhesive/commit/a7dd473))
+- **core:** Update default z-index value to use computed property with fallback ([58c4acf](https://github.com/adhesivejs/adhesive/commit/58c4acf))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.5
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.4...v0.7.5)
