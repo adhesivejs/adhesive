@@ -141,10 +141,12 @@ For more control over the sticky behavior.
 | `boundingEl`        | `HTMLElement` \| `string`                      | `document.body`        | Alternative way to specify bounding element (for compatibility) |
 | `position`          | `'top' \| 'bottom'`                            | `'top'`                | Where the element should stick                                  |
 | `offset`            | `number`                                       | `0`                    | Offset in pixels from the position                              |
-| `zIndex`            | `number`                                       | `1`                    | Z-index for the fixed element                                   |
+| `zIndex`            | `number` \| `string`                           | `1`                    | Z-index for the fixed element                                   |
 | `enabled`           | `boolean`                                      | `true`                 | Whether to enable sticky behavior                               |
 | `outerClassName`    | `string`                                       | `'adhesive__outer'`    | Class for the outer wrapper                                     |
 | `innerClassName`    | `string`                                       | `'adhesive__inner'`    | Class for the inner wrapper                                     |
 | `initialClassName`  | `string`                                       | `'adhesive--initial'`  | Class when element is in its initial state                      |
 | `fixedClassName`    | `string`                                       | `'adhesive--fixed'`    | Class when element is sticky                                    |
 | `relativeClassName` | `string`                                       | `'adhesive--relative'` | Class when element reaches its boundary                         |
+
+> Note: `zIndex` also accepts a CSS variable string, e.g. `"var(--adhesive-z)"`.

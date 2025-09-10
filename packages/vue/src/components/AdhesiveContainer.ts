@@ -93,7 +93,7 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
         required: false,
       },
       zIndex: {
-        type: Number as PropType<AdhesiveContainerProps["zIndex"]>,
+        type: [Number, String] as PropType<AdhesiveContainerProps["zIndex"]>,
         required: false,
       },
       outerClass: {

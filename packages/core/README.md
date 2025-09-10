@@ -98,13 +98,15 @@ adhesive.cleanup();
 | `boundingEl`        | `HTMLElement \| string \| null` | `document.body`        | Container that defines sticky boundaries   |
 | `position`          | `'top' \| 'bottom'`             | `'top'`                | Where the element should stick             |
 | `offset`            | `number`                        | `0`                    | Offset in pixels from the position         |
-| `zIndex`            | `number`                        | `1`                    | Z-index for the fixed element              |
+| `zIndex`            | `number` \| `string`            | `1`                    | Z-index for the fixed element              |
 | `enabled`           | `boolean`                       | `true`                 | Whether to enable sticky behavior          |
 | `outerClassName`    | `string`                        | `'adhesive__outer'`    | Class for the outer wrapper                |
 | `innerClassName`    | `string`                        | `'adhesive__inner'`    | Class for the inner wrapper                |
 | `initialClassName`  | `string`                        | `'adhesive--initial'`  | Class when element is in its initial state |
 | `fixedClassName`    | `string`                        | `'adhesive--fixed'`    | Class when element is sticky               |
 | `relativeClassName` | `string`                        | `'adhesive--relative'` | Class when element reaches its boundary    |
+
+> Note: `zIndex` also accepts a CSS variable string, e.g. `"var(--adhesive-z)"`.
 
 #### Methods
 
@@ -132,14 +134,22 @@ Adhesive wraps your target element in two divs. The outer wrapper receives a dat
 Example CSS:
 
 ```css
-[data-adhesive-status="fixed"] { box-shadow: 0 1px 3px rgba(0,0,0,.1); }
-[data-adhesive-status="relative"] { opacity: .95; }
+[data-adhesive-status="fixed"] {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+[data-adhesive-status="relative"] {
+  opacity: 0.95;
+}
 ```
 
 Tailwind/UnoCSS example (using arbitrary variants):
 
 ```html
 <div id="sticky-element">
-  <span class="[[data-adhesive-status=initial]_&]:text-red-500 [[data-adhesive-status=fixed]_&]:text-green-500 [[data-adhesive-status=relative]_&]:text-blue-500">Dynamic styling based on status</span>
+  <span
+    class="[[data-adhesive-status=initial]_&]:text-red-500 [[data-adhesive-status=fixed]_&]:text-green-500 [[data-adhesive-status=relative]_&]:text-blue-500"
+  >
+    Dynamic styling based on status
+  </span>
 </div>
 ```

@@ -177,6 +177,31 @@ describe("Core", () => {
           createAdhesiveInstance({ position: "bottom" }),
         ).not.toThrow();
       });
+
+      it("supports zIndex as a CSS variable string", async () => {
+        const cssVar = "var(--adhesive-z)";
+
+        const adhesive = createInitializedAdhesive({
+          boundingEl,
+          position: "top",
+          offset: 10,
+          zIndex: cssVar,
+        });
+
+        await simulateScrollToPosition(200);
+
+        const innerEl = targetEl.parentElement as HTMLElement;
+        const outerEl = innerEl.parentElement as HTMLElement;
+
+        expect(outerEl.dataset.adhesiveStatus).toBe("fixed");
+        expect(innerEl.style.zIndex).toBe(cssVar);
+
+        await simulateScrollToPosition(2000);
+        expect(outerEl.dataset.adhesiveStatus).toBe("relative");
+        expect(innerEl.style.zIndex).toBe(cssVar);
+
+        adhesive.cleanup();
+      });
     });
 
     describe("dynamic option updates", () => {

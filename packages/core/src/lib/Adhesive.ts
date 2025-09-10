@@ -61,7 +61,7 @@ export interface AdhesiveOptions {
    * CSS z-index for the sticky element.
    * @default 1
    */
-  readonly zIndex?: number;
+  readonly zIndex?: number | string;
   /**
    * CSS class for the outer wrapper element.
    * @default "adhesive__outer"
@@ -93,7 +93,7 @@ interface InternalAdhesiveOptions {
   enabled: boolean;
   offset: number;
   position: AdhesivePosition;
-  zIndex: number;
+  zIndex: number | string;
   outerClassName: string;
   innerClassName: string;
   initialClassName: string;
