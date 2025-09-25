@@ -12,7 +12,8 @@
   "homepage": "https://github.com/adhesivejs/adhesive/tree/main/packages/core#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adhesivejs/adhesive.git"
+    "url": "git+https://github.com/adhesivejs/adhesive.git",
+    "directory": "packages/core"
   },
   "author": {
     "name": "Daniel Waltz",

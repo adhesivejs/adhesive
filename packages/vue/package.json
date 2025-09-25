@@ -13,7 +13,8 @@
   "homepage": "https://github.com/adhesivejs/adhesive/tree/main/packages/vue#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adhesivejs/adhesive.git"
+    "url": "git+https://github.com/adhesivejs/adhesive.git",
+    "directory": "packages/vue"
   },
   "author": {
     "name": "Daniel Waltz",
