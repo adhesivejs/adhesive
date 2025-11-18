@@ -218,7 +218,7 @@ describe("SSR Safety", () => {
 
   describe("Browser Environment Detection", () => {
     it("correctly detects browser environment when globals are present", () => {
-      expect(typeof window).toBe("object");
+      expect(typeof globalThis.window).toBe("object");
       expect(typeof document).toBe("object");
 
       document.body.innerHTML = '<div id="target">Test</div>';

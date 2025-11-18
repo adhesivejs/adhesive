@@ -514,8 +514,8 @@ describe("Core", () => {
         const adhesive = createInitializedAdhesive();
         adhesive.disable();
 
-        window.dispatchEvent(new Event("scroll"));
-        window.dispatchEvent(new Event("resize"));
+        globalThis.dispatchEvent(new Event("scroll"));
+        globalThis.dispatchEvent(new Event("resize"));
 
         expect(adhesive.getState().activated).toBe(false);
         expectElementToBeInState(adhesive, "INITIAL");
@@ -812,7 +812,7 @@ describe("Core", () => {
         const scrollEvent = new Event("scroll");
 
         expect(() => {
-          window.dispatchEvent(scrollEvent);
+          globalThis.dispatchEvent(scrollEvent);
         }).not.toThrow();
 
         expect(adhesive.getState().activated).toBe(true);
@@ -821,7 +821,7 @@ describe("Core", () => {
       it("processes multiple rapid scroll events efficiently", () => {
         for (let i = 0; i < 10; i++) {
           const scrollEvent = new Event("scroll");
-          window.dispatchEvent(scrollEvent);
+          globalThis.dispatchEvent(scrollEvent);
         }
 
         expect(adhesive.getState().activated).toBe(true);
@@ -831,7 +831,7 @@ describe("Core", () => {
         adhesive.disable();
 
         const scrollEvent = new Event("scroll");
-        window.dispatchEvent(scrollEvent);
+        globalThis.dispatchEvent(scrollEvent);
 
         expect(adhesive.getState().activated).toBe(false);
       });
@@ -852,7 +852,7 @@ describe("Core", () => {
         const resizeEvent = new Event("resize");
 
         expect(() => {
-          window.dispatchEvent(resizeEvent);
+          globalThis.dispatchEvent(resizeEvent);
         }).not.toThrow();
 
         expect(adhesive.getState().activated).toBe(true);
@@ -861,13 +861,13 @@ describe("Core", () => {
       it("recalculates dimensions on resize", () => {
         const initialState = adhesive.getState();
 
-        Object.defineProperty(window, "innerHeight", {
+        Object.defineProperty(globalThis, "innerHeight", {
           value: 1000,
           writable: true,
         });
 
         const resizeEvent = new Event("resize");
-        window.dispatchEvent(resizeEvent);
+        globalThis.dispatchEvent(resizeEvent);
 
         expect(adhesive.getState().activated).toBe(true);
         expect(adhesive.getState().elementWidth).toBe(
@@ -886,8 +886,8 @@ describe("Core", () => {
           disconnect: vi.fn(),
         };
 
-        const originalResizeObserver = window.ResizeObserver;
-        window.ResizeObserver = vi.fn((callback) => {
+        const originalResizeObserver = globalThis.ResizeObserver;
+        globalThis.ResizeObserver = vi.fn((callback) => {
           resizeObserverCallback = callback;
           return mockObserver;
         }) as any;
@@ -995,7 +995,7 @@ describe("Core", () => {
 
         adhesive.cleanup();
 
-        window.ResizeObserver = originalResizeObserver;
+        globalThis.ResizeObserver = originalResizeObserver;
         mock.restore();
       });
 
@@ -1070,8 +1070,8 @@ describe("Core", () => {
           disconnect: vi.fn(),
         };
 
-        const originalResizeObserver = window.ResizeObserver;
-        window.ResizeObserver = vi.fn((callback) => {
+        const originalResizeObserver = globalThis.ResizeObserver;
+        globalThis.ResizeObserver = vi.fn((callback) => {
           resizeObserverCallback = callback;
           return mockObserver;
         }) as any;
@@ -1152,13 +1152,13 @@ describe("Core", () => {
         expect(updatedState.elementHeight).toBe(originalHeight);
 
         adhesive.cleanup();
-        window.ResizeObserver = originalResizeObserver;
+        globalThis.ResizeObserver = originalResizeObserver;
       });
     });
 
     describe("event listener lifecycle", () => {
       it("adds event listeners on initialization", () => {
-        const addEventListenerSpy = vi.spyOn(window, "addEventListener");
+        const addEventListenerSpy = vi.spyOn(globalThis, "addEventListener");
 
         const adhesive = createAdhesiveInstance();
         adhesive.init();
@@ -1178,7 +1178,10 @@ describe("Core", () => {
       });
 
       it("removes event listeners on cleanup", () => {
-        const removeEventListenerSpy = vi.spyOn(window, "removeEventListener");
+        const removeEventListenerSpy = vi.spyOn(
+          globalThis,
+          "removeEventListener",
+        );
 
         const adhesive = createInitializedAdhesive();
         adhesive.cleanup();
@@ -1196,7 +1199,7 @@ describe("Core", () => {
 
     describe("ResizeObserver integration", () => {
       it("sets up ResizeObserver when available", () => {
-        expect(window.ResizeObserver).toBeDefined();
+        expect(globalThis.ResizeObserver).toBeDefined();
 
         const adhesive = createInitializedAdhesive();
 
@@ -1206,8 +1209,8 @@ describe("Core", () => {
       });
 
       it("handles missing ResizeObserver gracefully", () => {
-        const originalResizeObserver = window.ResizeObserver;
-        delete (window as any).ResizeObserver;
+        const originalResizeObserver = globalThis.ResizeObserver;
+        delete (globalThis as any).ResizeObserver;
 
         const consoleSpy = vi
           .spyOn(console, "warn")
@@ -1220,7 +1223,7 @@ describe("Core", () => {
 
         adhesive.cleanup();
 
-        window.ResizeObserver = originalResizeObserver;
+        globalThis.ResizeObserver = originalResizeObserver;
         consoleSpy.mockRestore();
       });
 
@@ -1232,13 +1235,13 @@ describe("Core", () => {
           disconnect: vi.fn(),
         };
 
-        const originalResizeObserver = window.ResizeObserver;
-        window.ResizeObserver = vi.fn((callback) => {
+        const originalResizeObserver = globalThis.ResizeObserver;
+        globalThis.ResizeObserver = vi.fn((callback) => {
           capturedCallback = callback;
           return mockObserver;
         }) as any;
 
-        const rafSpy = vi.spyOn(window, "requestAnimationFrame");
+        const rafSpy = vi.spyOn(globalThis, "requestAnimationFrame");
 
         const adhesive = createInitializedAdhesive();
 
@@ -1247,7 +1250,7 @@ describe("Core", () => {
         expect(rafSpy).not.toHaveBeenCalled();
 
         adhesive.cleanup();
-        window.ResizeObserver = originalResizeObserver;
+        globalThis.ResizeObserver = originalResizeObserver;
         rafSpy.mockRestore();
       });
 
@@ -1259,13 +1262,13 @@ describe("Core", () => {
           disconnect: vi.fn(),
         };
 
-        const originalResizeObserver = window.ResizeObserver;
-        window.ResizeObserver = vi.fn((callback) => {
+        const originalResizeObserver = globalThis.ResizeObserver;
+        globalThis.ResizeObserver = vi.fn((callback) => {
           capturedCallback = callback;
           return mockObserver;
         }) as any;
 
-        const rafSpy = vi.spyOn(window, "requestAnimationFrame");
+        const rafSpy = vi.spyOn(globalThis, "requestAnimationFrame");
         const unrelatedElement = document.createElement("div");
 
         const adhesive = createInitializedAdhesive();
@@ -1283,7 +1286,7 @@ describe("Core", () => {
         expect(rafSpy).not.toHaveBeenCalled();
 
         adhesive.cleanup();
-        window.ResizeObserver = originalResizeObserver;
+        globalThis.ResizeObserver = originalResizeObserver;
         rafSpy.mockRestore();
       });
 
@@ -1295,13 +1298,13 @@ describe("Core", () => {
           disconnect: vi.fn(),
         };
 
-        const originalResizeObserver = window.ResizeObserver;
-        window.ResizeObserver = vi.fn((callback) => {
+        const originalResizeObserver = globalThis.ResizeObserver;
+        globalThis.ResizeObserver = vi.fn((callback) => {
           capturedCallback = callback;
           return mockObserver;
         }) as any;
 
-        const rafSpy = vi.spyOn(window, "requestAnimationFrame");
+        const rafSpy = vi.spyOn(globalThis, "requestAnimationFrame");
         const unrelatedElement = document.createElement("div");
 
         const adhesive = createInitializedAdhesive();
@@ -1327,7 +1330,7 @@ describe("Core", () => {
         expect(rafSpy).toHaveBeenCalled();
 
         adhesive.cleanup();
-        window.ResizeObserver = originalResizeObserver;
+        globalThis.ResizeObserver = originalResizeObserver;
         rafSpy.mockRestore();
       });
     });
@@ -1336,7 +1339,10 @@ describe("Core", () => {
   describe("Resource Cleanup", () => {
     describe("complete cleanup process", () => {
       it("removes all event listeners and observers", () => {
-        const removeEventListenerSpy = vi.spyOn(window, "removeEventListener");
+        const removeEventListenerSpy = vi.spyOn(
+          globalThis,
+          "removeEventListener",
+        );
 
         const adhesive = createInitializedAdhesive();
         adhesive.cleanup();
@@ -1352,11 +1358,11 @@ describe("Core", () => {
       });
 
       it("cancels pending RAF operations", () => {
-        vi.spyOn(window, "cancelAnimationFrame");
+        vi.spyOn(globalThis, "cancelAnimationFrame");
 
         const adhesive = createInitializedAdhesive();
 
-        window.dispatchEvent(new Event("scroll"));
+        globalThis.dispatchEvent(new Event("scroll"));
 
         adhesive.cleanup();
 
@@ -1473,8 +1479,8 @@ describe("Core", () => {
         boundingEl.remove();
 
         expect(() => {
-          window.dispatchEvent(new Event("scroll"));
-          window.dispatchEvent(new Event("resize"));
+          globalThis.dispatchEvent(new Event("scroll"));
+          globalThis.dispatchEvent(new Event("resize"));
         }).not.toThrow();
 
         adhesive.cleanup();
@@ -1525,7 +1531,7 @@ describe("Core", () => {
 
         for (let i = 0; i < 20; i++) {
           await simulateScrollToPosition(i * 10);
-          window.dispatchEvent(new Event("resize"));
+          globalThis.dispatchEvent(new Event("resize"));
         }
 
         expect(adhesive.getState().activated).toBe(true);
@@ -1688,16 +1694,16 @@ describe("Core", () => {
         let cancelRafSpy: any;
 
         beforeEach(() => {
-          rafSpy = vi.spyOn(window, "requestAnimationFrame");
-          cancelRafSpy = vi.spyOn(window, "cancelAnimationFrame");
+          rafSpy = vi.spyOn(globalThis, "requestAnimationFrame");
+          cancelRafSpy = vi.spyOn(globalThis, "cancelAnimationFrame");
         });
 
         it("cancels pending RAF callbacks when disabled rapidly", () => {
           const adhesive = createInitializedAdhesive();
 
-          window.dispatchEvent(new Event("scroll"));
-          window.dispatchEvent(new Event("scroll"));
-          window.dispatchEvent(new Event("scroll"));
+          globalThis.dispatchEvent(new Event("scroll"));
+          globalThis.dispatchEvent(new Event("scroll"));
+          globalThis.dispatchEvent(new Event("scroll"));
 
           adhesive.disable();
 
@@ -1709,8 +1715,8 @@ describe("Core", () => {
         it("handles multiple RAF callbacks queued before cleanup", () => {
           const adhesive = createInitializedAdhesive();
 
-          window.dispatchEvent(new Event("scroll"));
-          window.dispatchEvent(new Event("resize"));
+          globalThis.dispatchEvent(new Event("scroll"));
+          globalThis.dispatchEvent(new Event("resize"));
 
           adhesive.cleanup();
 
@@ -1722,7 +1728,7 @@ describe("Core", () => {
 
           for (let i = 0; i < 10; i++) {
             adhesive.enable();
-            window.dispatchEvent(new Event("scroll"));
+            globalThis.dispatchEvent(new Event("scroll"));
             adhesive.disable();
           }
 
@@ -1743,7 +1749,7 @@ describe("Core", () => {
             return 123;
           });
 
-          window.dispatchEvent(new Event("scroll"));
+          globalThis.dispatchEvent(new Event("scroll"));
 
           adhesive.disable();
 
@@ -1773,9 +1779,9 @@ describe("Core", () => {
             return id;
           });
 
-          window.dispatchEvent(new Event("scroll"));
-          window.dispatchEvent(new Event("scroll"));
-          window.dispatchEvent(new Event("resize"));
+          globalThis.dispatchEvent(new Event("scroll"));
+          globalThis.dispatchEvent(new Event("scroll"));
+          globalThis.dispatchEvent(new Event("resize"));
 
           return new Promise<void>((resolve) => {
             setTimeout(() => {

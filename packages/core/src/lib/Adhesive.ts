@@ -175,7 +175,7 @@ const DEFAULT_OPTIONS = {
 } satisfies Omit<AdhesiveOptions, "targetEl" | "boundingEl">;
 
 const isBrowser = () =>
-  typeof window !== "undefined" && typeof document !== "undefined";
+  globalThis.window !== undefined && typeof document !== "undefined";
 
 const resolveElement = (selector: ElementSelector): HTMLElement | null => {
   if (!isBrowser()) return null;
@@ -534,7 +534,7 @@ export class Adhesive {
     window.addEventListener("scroll", this.#onScroll, { passive: true });
     window.addEventListener("resize", this.#onResize, { passive: true });
 
-    if ("ResizeObserver" in window) {
+    if ("ResizeObserver" in globalThis) {
       this.#observer = new ResizeObserver(this.#onElementResize);
       this.#observer.observe(this.#targetEl);
       this.#observer.observe(this.#boundingEl);

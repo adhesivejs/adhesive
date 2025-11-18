@@ -133,33 +133,33 @@ export function commonBeforeEach() {
     },
   });
 
-  Object.defineProperty(window, "innerHeight", {
+  Object.defineProperty(globalThis, "innerHeight", {
     value: TEST_DIMENSIONS.VIEWPORT_HEIGHT,
     writable: true,
   });
 
-  Object.defineProperty(window, "scrollY", {
+  Object.defineProperty(globalThis, "scrollY", {
     value: 0,
     writable: true,
   });
 
-  Object.defineProperty(window, "pageYOffset", {
+  Object.defineProperty(globalThis, "pageYOffset", {
     value: 0,
     writable: true,
   });
 }
 
 export function simulateScrollToPosition(scrollY: number): Promise<void> {
-  Object.defineProperty(window, "scrollY", {
+  Object.defineProperty(globalThis, "scrollY", {
     value: scrollY,
     writable: true,
   });
-  Object.defineProperty(window, "pageYOffset", {
+  Object.defineProperty(globalThis, "pageYOffset", {
     value: scrollY,
     writable: true,
   });
 
-  window.dispatchEvent(new Event("scroll"));
+  globalThis.dispatchEvent(new Event("scroll"));
 
   return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 }
@@ -218,23 +218,23 @@ export function setupTestEnvironment() {
   Element.prototype.getBoundingClientRect = vi.fn(() => DEFAULT_RECT);
 
   // Mock window dimensions
-  Object.defineProperty(window, "innerHeight", {
+  Object.defineProperty(globalThis, "innerHeight", {
     value: TEST_DIMENSIONS.VIEWPORT_HEIGHT,
     writable: true,
   });
 
-  Object.defineProperty(window, "innerWidth", {
+  Object.defineProperty(globalThis, "innerWidth", {
     value: 1024,
     writable: true,
   });
 
   // Mock scroll position
-  Object.defineProperty(window, "scrollY", {
+  Object.defineProperty(globalThis, "scrollY", {
     value: 0,
     writable: true,
   });
 
-  Object.defineProperty(window, "pageYOffset", {
+  Object.defineProperty(globalThis, "pageYOffset", {
     value: 0,
     writable: true,
   });
