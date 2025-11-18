@@ -887,9 +887,12 @@ describe("Core", () => {
         };
 
         const originalResizeObserver = globalThis.ResizeObserver;
-        globalThis.ResizeObserver = vi.fn((callback) => {
+        globalThis.ResizeObserver = vi.fn(function MockResizeObserver(
+          this: ResizeObserver,
+          callback: ResizeObserverCallback,
+        ) {
           resizeObserverCallback = callback;
-          return mockObserver;
+          return mockObserver as unknown as ResizeObserver;
         }) as any;
 
         const adhesive = createInitializedAdhesive();
@@ -1071,9 +1074,12 @@ describe("Core", () => {
         };
 
         const originalResizeObserver = globalThis.ResizeObserver;
-        globalThis.ResizeObserver = vi.fn((callback) => {
+        globalThis.ResizeObserver = vi.fn(function MockResizeObserver(
+          this: ResizeObserver,
+          callback: ResizeObserverCallback,
+        ) {
           resizeObserverCallback = callback;
-          return mockObserver;
+          return mockObserver as unknown as ResizeObserver;
         }) as any;
 
         const adhesive = createInitializedAdhesive();
@@ -1236,9 +1242,12 @@ describe("Core", () => {
         };
 
         const originalResizeObserver = globalThis.ResizeObserver;
-        globalThis.ResizeObserver = vi.fn((callback) => {
+        globalThis.ResizeObserver = vi.fn(function MockResizeObserver(
+          this: ResizeObserver,
+          callback: ResizeObserverCallback,
+        ) {
           capturedCallback = callback;
-          return mockObserver;
+          return mockObserver as unknown as ResizeObserver;
         }) as any;
 
         const rafSpy = vi.spyOn(globalThis, "requestAnimationFrame");
@@ -1263,9 +1272,12 @@ describe("Core", () => {
         };
 
         const originalResizeObserver = globalThis.ResizeObserver;
-        globalThis.ResizeObserver = vi.fn((callback) => {
+        globalThis.ResizeObserver = vi.fn(function MockResizeObserver(
+          this: ResizeObserver,
+          callback: ResizeObserverCallback,
+        ) {
           capturedCallback = callback;
-          return mockObserver;
+          return mockObserver as unknown as ResizeObserver;
         }) as any;
 
         const rafSpy = vi.spyOn(globalThis, "requestAnimationFrame");
@@ -1299,9 +1311,12 @@ describe("Core", () => {
         };
 
         const originalResizeObserver = globalThis.ResizeObserver;
-        globalThis.ResizeObserver = vi.fn((callback) => {
+        globalThis.ResizeObserver = vi.fn(function MockResizeObserver(
+          this: ResizeObserver,
+          callback: ResizeObserverCallback,
+        ) {
           capturedCallback = callback;
-          return mockObserver;
+          return mockObserver as unknown as ResizeObserver;
         }) as any;
 
         const rafSpy = vi.spyOn(globalThis, "requestAnimationFrame");
