@@ -14,7 +14,7 @@ const position = ref<AdhesivePosition>("top");
 const targetRef = useTemplateRef("target");
 const boundingRef = useTemplateRef("bounding");
 
-const { state } = useAdhesive(targetRef, () => ({
+useAdhesive(targetRef, () => ({
   boundingEl: boundingRef.value,
   enabled: enabled.value,
   position: position.value,
@@ -23,7 +23,6 @@ const { state } = useAdhesive(targetRef, () => ({
 
 <template>
   <div>
-    <pre style="position: fixed">{{ state }}</pre>
     <button type="button" @click="enabled = !enabled">
       {{ enabled ? "Disable" : "Enable" }} Sticky
     </button>
