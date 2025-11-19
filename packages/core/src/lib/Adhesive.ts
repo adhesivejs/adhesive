@@ -354,6 +354,8 @@ export class Adhesive {
       options.fixedClassName ?? DEFAULT_OPTIONS.fixedClassName;
     this.#options.relativeClassName =
       options.relativeClassName ?? DEFAULT_OPTIONS.relativeClassName;
+    this.#options.onStateChange =
+      options.onStateChange ?? DEFAULT_OPTIONS.onStateChange;
 
     if (this.#options.enabled) {
       this.#createWrappers();
