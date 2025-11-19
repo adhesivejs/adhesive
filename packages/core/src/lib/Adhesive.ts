@@ -533,6 +533,7 @@ export class Adhesive {
     this.#state.originalZIndex = style.zIndex;
     this.#state.originalTransform = style.transform;
     this.#updateBoundaryState();
+    this.#options.onStateChange?.({ ...this.#state });
   }
 
   #setupListeners(): void {
