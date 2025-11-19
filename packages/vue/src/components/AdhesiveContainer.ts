@@ -129,9 +129,7 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
     } satisfies Required<ComponentObjectPropsOptions<AdhesiveContainerProps>>,
     emits: {
       // eslint-disable-next-line unused-imports/no-unused-vars
-      stateChange(state: AdhesiveState) {
-        return true;
-      },
+      stateChange: (state: AdhesiveState) => true,
     } satisfies AdhesiveContainerEmits,
     setup(props, { emit, slots, expose }) {
       const targetRef = useTemplateRef<HTMLElement>("target");
