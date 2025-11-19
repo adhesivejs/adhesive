@@ -49,6 +49,7 @@ export function AdhesiveContainer({
   initialClassName,
   fixedClassName,
   relativeClassName,
+  onStateChange,
   children,
   ...rest
 }: AdhesiveContainerProps): ReactNode {
@@ -66,6 +67,7 @@ export function AdhesiveContainer({
     initialClassName,
     fixedClassName,
     relativeClassName,
+    onStateChange,
   };
 
   useAdhesive(targetRef, options);
