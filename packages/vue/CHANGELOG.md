@@ -1,6 +1,45 @@
 # Changelog
 
 
+## v0.7.7
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.6...v0.7.7)
+
+### 🚀 Enhancements
+
+- **core:** Add ability to watch state changes ([843d825](https://github.com/adhesivejs/adhesive/commit/843d825))
+- **vue:** Return reactive adhesive state from composable ([578663c](https://github.com/adhesivejs/adhesive/commit/578663c))
+- **react:** Return reactive adhesive state from hook ([aacb88c](https://github.com/adhesivejs/adhesive/commit/aacb88c))
+- **vue:** Emit state changes in adhesive component and expose on instance ([5732a52](https://github.com/adhesivejs/adhesive/commit/5732a52))
+- **react:** Add on state change handler to adhesive component ([6fe798f](https://github.com/adhesivejs/adhesive/commit/6fe798f))
+
+### 🩹 Fixes
+
+- **core:** Init state change option ([a226c2e](https://github.com/adhesivejs/adhesive/commit/a226c2e))
+- **core:** Ensure initial state is filled ([e6b2a75](https://github.com/adhesivejs/adhesive/commit/e6b2a75))
+
+### 💅 Refactors
+
+- **core:** Only expose adhesive status ([aabd26e](https://github.com/adhesivejs/adhesive/commit/aabd26e))
+- Callback only on status change ([93cdae9](https://github.com/adhesivejs/adhesive/commit/93cdae9))
+
+### 🏡 Chore
+
+- Add directory to repository configs ([6d0a22f](https://github.com/adhesivejs/adhesive/commit/6d0a22f))
+- Update dev deps ([b3abc5b](https://github.com/adhesivejs/adhesive/commit/b3abc5b))
+- Update lint issues ([bdc01f9](https://github.com/adhesivejs/adhesive/commit/bdc01f9))
+- **vue:** Update emits style ([341e447](https://github.com/adhesivejs/adhesive/commit/341e447))
+- Revert vue playground ([25d38dd](https://github.com/adhesivejs/adhesive/commit/25d38dd))
+
+### ✅ Tests
+
+- Fix resize observer mocking ([2a1f2a7](https://github.com/adhesivejs/adhesive/commit/2a1f2a7))
+- Update core module mocks ([88ea56d](https://github.com/adhesivejs/adhesive/commit/88ea56d))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.6
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.5...v0.7.6)
