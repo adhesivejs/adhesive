@@ -11,9 +11,11 @@ import {
   useAdhesive,
   type UseAdhesiveOptions,
 } from "../composables/useAdhesive.js";
+import type { AdhesiveState } from "@adhesivejs/core";
 
 type BaseProps = Omit<
   Partial<UseAdhesiveOptions>,
+  | "onStateChange"
   | "outerClassName"
   | "innerClassName"
   | "initialClassName"
@@ -38,6 +40,14 @@ export interface AdhesiveContainerProps extends BaseProps {
   fixedClass?: UseAdhesiveOptions["fixedClassName"];
   /** CSS class applied when the element reaches its boundary. */
   relativeClass?: UseAdhesiveOptions["relativeClassName"];
+}
+
+/**
+ * Emits interface for the AdhesiveContainer component.
+ */
+export interface AdhesiveContainerEmits {
+  /** Emitted when the state of the Adhesive instance changes. */
+  stateChange: (state: AdhesiveState) => void;
 }
 
 /**
@@ -117,8 +127,18 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
         required: false,
       },
     } satisfies Required<ComponentObjectPropsOptions<AdhesiveContainerProps>>,
-    setup(props, { slots }) {
+    emits: {
+      // eslint-disable-next-line unused-imports/no-unused-vars
+      stateChange(state: AdhesiveState) {
+        return true;
+      },
+    } satisfies AdhesiveContainerEmits,
+    setup(props, { emit, slots, expose }) {
       const targetRef = useTemplateRef<HTMLElement>("target");
+
+      const onStateChange = (state: AdhesiveState) => {
+        emit("stateChange", state);
+      };
 
       const options = computed<UseAdhesiveOptions>(() => ({
         boundingEl: props.boundingEl,
@@ -131,9 +151,12 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
         initialClassName: props.initialClass,
         fixedClassName: props.fixedClass,
         relativeClassName: props.relativeClass,
+        onStateChange,
       }));
 
-      useAdhesive(targetRef, options);
+      const { state } = useAdhesive(targetRef, options);
+
+      expose({ state });
 
       return () => h("div", { ref: "target" }, slots.default?.());
     },

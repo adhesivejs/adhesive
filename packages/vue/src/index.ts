@@ -11,6 +11,7 @@ export {
 
 export {
   AdhesiveContainer,
+  type AdhesiveContainerEmits,
   type AdhesiveContainerProps,
 } from "./components/AdhesiveContainer.js";
 
