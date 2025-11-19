@@ -1,10 +1,17 @@
-import { Adhesive, type AdhesiveOptions } from "@adhesivejs/core";
+import {
+  Adhesive,
+  type AdhesiveOptions,
+  type AdhesiveState,
+} from "@adhesivejs/core";
 import {
   onUnmounted,
   onWatcherCleanup,
+  shallowRef,
+  toRef,
   toValue,
   watch,
   type MaybeRefOrGetter,
+  type Ref,
 } from "vue";
 import {
   unwrapElement,
@@ -18,6 +25,12 @@ import {
  * Extends the core AdhesiveOptions but omits targetEl since it's provided via the composable parameter.
  */
 export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
+
+/** Return type for the useAdhesive composable. */
+export type UseAdhesiveReturn = {
+  /** Current state of the Adhesive instance, or null if not initialized */
+  state: Readonly<Ref<AdhesiveState | null>>;
+};
 
 /**
  * Vue composable for adding sticky positioning behavior to DOM elements.
@@ -73,12 +86,22 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
 export function useAdhesive(
   target: TemplateOrComputedRef<VueInstanceOrElement | null | undefined>,
   options?: MaybeRefOrGetter<UseAdhesiveOptions>,
-) {
+): UseAdhesiveReturn {
   let adhesive: Adhesive | null = null;
+
+  const adhesiveState = shallowRef<AdhesiveState | null>(null);
+
+  const onStateChange = (newState: AdhesiveState) => {
+    const optionsValue = toValue(options);
+
+    adhesiveState.value = newState;
+    optionsValue?.onStateChange?.(newState);
+  };
 
   const cleanup = () => {
     adhesive?.cleanup();
     adhesive = null;
+    adhesiveState.value = null;
   };
 
   const getValidatedOptions = () => {
@@ -90,7 +113,11 @@ export function useAdhesive(
       throw new Error("@adhesivejs/vue: target element is not defined");
     }
 
-    return { ...optionsValue, targetEl } satisfies AdhesiveOptions;
+    return {
+      ...optionsValue,
+      targetEl,
+      onStateChange,
+    } satisfies AdhesiveOptions;
   };
 
   watch(
@@ -110,4 +137,6 @@ export function useAdhesive(
     () => toValue(options),
     () => adhesive?.replaceOptions(getValidatedOptions()),
   );
+
+  return { state: toRef(() => adhesiveState.value) } as const;
 }
