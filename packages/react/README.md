@@ -64,7 +64,7 @@ export function Component() {
   const [enabled, setEnabled] = useState(true);
   const [position, setPosition] = useState<AdhesivePosition>("top");
 
-  useAdhesive(targetRef, {
+  const { status } = useAdhesive(targetRef, {
     boundingRef,
     position,
     offset: 20,
@@ -90,7 +90,8 @@ export function Component() {
       <div ref={targetRef} className="sticky-element">
         <h2>Dynamic Sticky Element</h2>
         <p>
-          Position: {position} | Enabled: {enabled ? "Yes" : "No"}
+          Position: {position} | Enabled: {enabled ? "Yes" : "No"} | Status:{" "}
+          {status}
         </p>
       </div>
 
@@ -148,3 +149,4 @@ For more control over the sticky behavior.
 | `initialClassName`  | `string`                                       | `'adhesive--initial'`        | Class when element is in its initial state                      |
 | `fixedClassName`    | `string`                                       | `'adhesive--fixed'`          | Class when element is sticky                                    |
 | `relativeClassName` | `string`                                       | `'adhesive--relative'`       | Class when element reaches its boundary                         |
+| `onStatusChange`    | `(status: AdhesiveStatus) => void`             | `undefined`                  | Callback fired whenever the status updates                      |

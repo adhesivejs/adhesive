@@ -87,8 +87,8 @@ export interface AdhesiveOptions {
    * @default "adhesive--relative"
    */
   readonly relativeClassName?: string;
-  /** Optional callback invoked on state changes. */
-  readonly onStateChange?: (state: AdhesiveState) => void;
+  /** Optional callback invoked on status changes. */
+  readonly onStatusChange?: (status: AdhesiveStatus) => void;
 }
 
 interface InternalAdhesiveOptions {
@@ -101,7 +101,7 @@ interface InternalAdhesiveOptions {
   initialClassName: string;
   fixedClassName: string;
   relativeClassName: string;
-  onStateChange: ((state: AdhesiveState) => void) | undefined;
+  onStatusChange: ((status: AdhesiveStatus) => void) | undefined;
 }
 
 /**
@@ -175,7 +175,7 @@ const DEFAULT_OPTIONS = {
   initialClassName: "adhesive--initial",
   fixedClassName: "adhesive--fixed",
   relativeClassName: "adhesive--relative",
-  onStateChange: undefined,
+  onStatusChange: undefined,
 } satisfies Omit<AdhesiveOptions, "targetEl" | "boundingEl">;
 
 const isBrowser = () =>
@@ -305,7 +305,7 @@ export class Adhesive {
     initialClassName: DEFAULT_OPTIONS.initialClassName,
     fixedClassName: DEFAULT_OPTIONS.fixedClassName,
     relativeClassName: DEFAULT_OPTIONS.relativeClassName,
-    onStateChange: DEFAULT_OPTIONS.onStateChange,
+    onStatusChange: DEFAULT_OPTIONS.onStatusChange,
   };
 
   #state: InternalAdhesiveState = {
@@ -354,8 +354,8 @@ export class Adhesive {
       options.fixedClassName ?? DEFAULT_OPTIONS.fixedClassName;
     this.#options.relativeClassName =
       options.relativeClassName ?? DEFAULT_OPTIONS.relativeClassName;
-    this.#options.onStateChange =
-      options.onStateChange ?? DEFAULT_OPTIONS.onStateChange;
+    this.#options.onStatusChange =
+      options.onStatusChange ?? DEFAULT_OPTIONS.onStatusChange;
 
     if (this.#options.enabled) {
       this.#createWrappers();
@@ -533,7 +533,7 @@ export class Adhesive {
     this.#state.originalZIndex = style.zIndex;
     this.#state.originalTransform = style.transform;
     this.#updateBoundaryState();
-    this.#options.onStateChange?.({ ...this.#state });
+    this.#options.onStatusChange?.(this.#state.status);
   }
 
   #setupListeners(): void {
@@ -846,6 +846,6 @@ export class Adhesive {
   #setState(newState: Partial<InternalAdhesiveState>): void {
     Object.assign(this.#state, newState);
 
-    this.#options.onStateChange?.({ ...this.#state });
+    this.#options.onStatusChange?.(this.#state.status);
   }
 }

@@ -1,7 +1,8 @@
 import {
   Adhesive,
+  ADHESIVE_STATUS,
   type AdhesiveOptions,
-  type AdhesiveState,
+  type AdhesiveStatus,
 } from "@adhesivejs/core";
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { unwrapElement } from "../utils/unwrapElement.js";
@@ -19,8 +20,8 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
 
 /** Return type for the useAdhesive hook. */
 export type UseAdhesiveReturn = {
-  /** Current state of the Adhesive instance, or null if not initialized */
-  state: Readonly<AdhesiveState> | null;
+  /** Current status of the Adhesive instance */
+  status: AdhesiveStatus;
 };
 
 /**
@@ -61,19 +62,17 @@ export function useAdhesive(
 ): UseAdhesiveReturn {
   const adhesive = useRef<Adhesive | null>(null);
 
-  const [adhesiveState, setAdhesiveState] = useState<AdhesiveState | null>(
-    null,
-  );
+  const [status, setStatus] = useState<AdhesiveStatus>(ADHESIVE_STATUS.INITIAL);
 
-  const onStateChange = (newState: AdhesiveState) => {
-    setAdhesiveState(newState);
-    options?.onStateChange?.(newState);
+  const onStatusChange = (newStatus: AdhesiveStatus) => {
+    setStatus(newStatus);
+    options?.onStatusChange?.(newStatus);
   };
 
   const cleanup = () => {
     adhesive.current?.cleanup();
     adhesive.current = null;
-    setAdhesiveState(null);
+    setStatus(ADHESIVE_STATUS.INITIAL);
   };
 
   const memoizedOptions = useMemo(
@@ -90,7 +89,7 @@ export function useAdhesive(
       options?.initialClassName,
       options?.fixedClassName,
       options?.relativeClassName,
-      options?.onStateChange,
+      options?.onStatusChange,
     ],
   );
 
@@ -109,7 +108,7 @@ export function useAdhesive(
       ...optionsValue,
       targetEl,
       boundingEl,
-      onStateChange,
+      onStatusChange,
     } satisfies AdhesiveOptions;
   };
 
@@ -129,5 +128,5 @@ export function useAdhesive(
     adhesive.current?.replaceOptions(getValidatedOptions());
   }, [memoizedOptions]);
 
-  return { state: adhesiveState } as const;
+  return { status } as const;
 }

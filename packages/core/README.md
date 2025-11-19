@@ -57,7 +57,7 @@ const adhesive = new Adhesive({
   initialClassName: "custom-initial",
   fixedClassName: "custom-fixed",
   relativeClassName: "custom-relative",
-  onStateChange: (state) => console.log("Status changed:", state.status),
+  onStatusChange: (status) => console.log("Status changed:", status),
 });
 
 // Initialize the sticky behavior
@@ -93,20 +93,20 @@ adhesive.cleanup();
 
 #### Constructor Options
 
-| Option              | Type                             | Default                      | Description                                |
-| ------------------- | -------------------------------- | ---------------------------- | ------------------------------------------ |
-| `targetEl`          | `HTMLElement \| string`          | Required                     | Element to make sticky or CSS selector     |
-| `boundingEl`        | `HTMLElement \| string \| null`  | `document.body`              | Container that defines sticky boundaries   |
-| `position`          | `'top' \| 'bottom'`              | `'top'`                      | Where the element should stick             |
-| `offset`            | `number`                         | `0`                          | Offset in pixels from the position         |
-| `zIndex`            | `number` \| `string`             | `var(--adhesive-z-index, 1)` | Z-index for the fixed element              |
-| `enabled`           | `boolean`                        | `true`                       | Whether to enable sticky behavior          |
-| `outerClassName`    | `string`                         | `'adhesive__outer'`          | Class for the outer wrapper                |
-| `innerClassName`    | `string`                         | `'adhesive__inner'`          | Class for the inner wrapper                |
-| `initialClassName`  | `string`                         | `'adhesive--initial'`        | Class when element is in its initial state |
-| `fixedClassName`    | `string`                         | `'adhesive--fixed'`          | Class when element is sticky               |
-| `relativeClassName` | `string`                         | `'adhesive--relative'`       | Class when element reaches its boundary    |
-| `onStateChange`     | `(state: AdhesiveState) => void` | `undefined`                  | Callback fired whenever the state updates  |
+| Option              | Type                               | Default                      | Description                                |
+| ------------------- | ---------------------------------- | ---------------------------- | ------------------------------------------ |
+| `targetEl`          | `HTMLElement \| string`            | Required                     | Element to make sticky or CSS selector     |
+| `boundingEl`        | `HTMLElement \| string \| null`    | `document.body`              | Container that defines sticky boundaries   |
+| `position`          | `'top' \| 'bottom'`                | `'top'`                      | Where the element should stick             |
+| `offset`            | `number`                           | `0`                          | Offset in pixels from the position         |
+| `zIndex`            | `number` \| `string`               | `var(--adhesive-z-index, 1)` | Z-index for the fixed element              |
+| `enabled`           | `boolean`                          | `true`                       | Whether to enable sticky behavior          |
+| `outerClassName`    | `string`                           | `'adhesive__outer'`          | Class for the outer wrapper                |
+| `innerClassName`    | `string`                           | `'adhesive__inner'`          | Class for the inner wrapper                |
+| `initialClassName`  | `string`                           | `'adhesive--initial'`        | Class when element is in its initial state |
+| `fixedClassName`    | `string`                           | `'adhesive--fixed'`          | Class when element is sticky               |
+| `relativeClassName` | `string`                           | `'adhesive--relative'`       | Class when element reaches its boundary    |
+| `onStatusChange`    | `(status: AdhesiveStatus) => void` | `undefined`                  | Callback fired whenever the status updates |
 
 #### Methods
 

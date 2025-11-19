@@ -67,7 +67,7 @@ const boundingRef = useTemplateRef("bounding");
 const enabled = ref(true);
 const position = ref<AdhesivePosition>("top");
 
-useAdhesive(targetRef, () => ({
+const { status } = useAdhesive(targetRef, () => ({
   boundingEl: boundingRef.value,
   position: position.value,
   offset: 20,
@@ -94,7 +94,10 @@ useAdhesive(targetRef, () => ({
 
     <div ref="target" class="sticky-element">
       <h2>Dynamic Sticky Element</h2>
-      <p>Position: {{ position }} | Enabled: {{ enabled ? "Yes" : "No" }}</p>
+      <p>
+        Position: {{ position }} | Enabled: {{ enabled ? "Yes" : "No" }} |
+        Status: {{ status }}
+      </p>
     </div>
 
     <div
@@ -217,18 +220,19 @@ For more control over the sticky behavior with full Vue reactivity support.
 
 **UseAdhesiveOptions:**
 
-| Option              | Type                      | Default                      | Description                                              |
-| ------------------- | ------------------------- | ---------------------------- | -------------------------------------------------------- |
-| `boundingEl`        | `HTMLElement` \| `string` | `document.body`              | The container element that constrains sticky positioning |
-| `position`          | `'top' \| 'bottom'`       | `'top'`                      | Where the element should stick                           |
-| `offset`            | `number`                  | `0`                          | Offset in pixels from the position                       |
-| `zIndex`            | `number` \| `string`      | `var(--adhesive-z-index, 1)` | Z-index for the fixed element                            |
-| `enabled`           | `boolean`                 | `true`                       | Whether to enable sticky behavior                        |
-| `outerClassName`    | `string`                  | `'adhesive__outer'`          | Class for the outer wrapper                              |
-| `innerClassName`    | `string`                  | `'adhesive__inner'`          | Class for the inner wrapper                              |
-| `initialClassName`  | `string`                  | `'adhesive--initial'`        | Class when element is in its initial state               |
-| `fixedClassName`    | `string`                  | `'adhesive--fixed'`          | Class when element is sticky                             |
-| `relativeClassName` | `string`                  | `'adhesive--relative'`       | Class when element reaches its boundary                  |
+| Option              | Type                               | Default                      | Description                                              |
+| ------------------- | ---------------------------------- | ---------------------------- | -------------------------------------------------------- |
+| `boundingEl`        | `HTMLElement` \| `string`          | `document.body`              | The container element that constrains sticky positioning |
+| `position`          | `'top' \| 'bottom'`                | `'top'`                      | Where the element should stick                           |
+| `offset`            | `number`                           | `0`                          | Offset in pixels from the position                       |
+| `zIndex`            | `number` \| `string`               | `var(--adhesive-z-index, 1)` | Z-index for the fixed element                            |
+| `enabled`           | `boolean`                          | `true`                       | Whether to enable sticky behavior                        |
+| `outerClassName`    | `string`                           | `'adhesive__outer'`          | Class for the outer wrapper                              |
+| `innerClassName`    | `string`                           | `'adhesive__inner'`          | Class for the inner wrapper                              |
+| `initialClassName`  | `string`                           | `'adhesive--initial'`        | Class when element is in its initial state               |
+| `fixedClassName`    | `string`                           | `'adhesive--fixed'`          | Class when element is sticky                             |
+| `relativeClassName` | `string`                           | `'adhesive--relative'`       | Class when element reaches its boundary                  |
+| `onStatusChange`    | `(status: AdhesiveStatus) => void` | `undefined`                  | Callback fired whenever the status updates               |
 
 #### `v-adhesive` Directive
 

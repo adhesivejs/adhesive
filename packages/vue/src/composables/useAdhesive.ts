@@ -1,7 +1,8 @@
 import {
   Adhesive,
+  ADHESIVE_STATUS,
   type AdhesiveOptions,
-  type AdhesiveState,
+  type AdhesiveStatus,
 } from "@adhesivejs/core";
 import {
   onUnmounted,
@@ -28,8 +29,8 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">>;
 
 /** Return type for the useAdhesive composable. */
 export type UseAdhesiveReturn = {
-  /** Current state of the Adhesive instance, or null if not initialized */
-  state: Readonly<Ref<AdhesiveState | null>>;
+  /** Current status of the Adhesive instance */
+  status: Readonly<Ref<AdhesiveStatus>>;
 };
 
 /**
@@ -89,19 +90,18 @@ export function useAdhesive(
 ): UseAdhesiveReturn {
   let adhesive: Adhesive | null = null;
 
-  const adhesiveState = shallowRef<AdhesiveState | null>(null);
+  const status = shallowRef<AdhesiveStatus>(ADHESIVE_STATUS.INITIAL);
 
-  const onStateChange = (newState: AdhesiveState) => {
+  const onStatusChange = (newStatus: AdhesiveStatus) => {
     const optionsValue = toValue(options);
-
-    adhesiveState.value = newState;
-    optionsValue?.onStateChange?.(newState);
+    status.value = newStatus;
+    optionsValue?.onStatusChange?.(newStatus);
   };
 
   const cleanup = () => {
     adhesive?.cleanup();
     adhesive = null;
-    adhesiveState.value = null;
+    status.value = ADHESIVE_STATUS.INITIAL;
   };
 
   const getValidatedOptions = () => {
@@ -116,7 +116,7 @@ export function useAdhesive(
     return {
       ...optionsValue,
       targetEl,
-      onStateChange,
+      onStatusChange,
     } satisfies AdhesiveOptions;
   };
 
@@ -138,5 +138,5 @@ export function useAdhesive(
     () => adhesive?.replaceOptions(getValidatedOptions()),
   );
 
-  return { state: toRef(() => adhesiveState.value) } as const;
+  return { status: toRef(() => status.value) } as const;
 }

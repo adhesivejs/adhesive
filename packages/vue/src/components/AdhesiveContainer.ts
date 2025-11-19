@@ -11,11 +11,11 @@ import {
   useAdhesive,
   type UseAdhesiveOptions,
 } from "../composables/useAdhesive.js";
-import type { AdhesiveState } from "@adhesivejs/core";
+import type { AdhesiveStatus } from "@adhesivejs/core";
 
 type BaseProps = Omit<
   Partial<UseAdhesiveOptions>,
-  | "onStateChange"
+  | "onStatusChange"
   | "outerClassName"
   | "innerClassName"
   | "initialClassName"
@@ -46,8 +46,8 @@ export interface AdhesiveContainerProps extends BaseProps {
  * Emits interface for the AdhesiveContainer component.
  */
 export interface AdhesiveContainerEmits {
-  /** Emitted when the state of the Adhesive instance changes. */
-  stateChange: (state: AdhesiveState) => void;
+  /** Emitted when the status of the Adhesive instance changes. */
+  statusChange: (status: AdhesiveStatus) => void;
 }
 
 /**
@@ -129,13 +129,13 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
     } satisfies Required<ComponentObjectPropsOptions<AdhesiveContainerProps>>,
     emits: {
       // eslint-disable-next-line unused-imports/no-unused-vars
-      stateChange: (state: AdhesiveState) => true,
+      statusChange: (status: AdhesiveStatus) => true,
     } satisfies AdhesiveContainerEmits,
     setup(props, { emit, slots, expose }) {
       const targetRef = useTemplateRef<HTMLElement>("target");
 
-      const onStateChange = (state: AdhesiveState) => {
-        emit("stateChange", state);
+      const onStatusChange = (status: AdhesiveStatus) => {
+        emit("statusChange", status);
       };
 
       const options = computed<UseAdhesiveOptions>(() => ({
@@ -149,12 +149,12 @@ export const AdhesiveContainer: DefineComponent<AdhesiveContainerProps> =
         initialClassName: props.initialClass,
         fixedClassName: props.fixedClass,
         relativeClassName: props.relativeClass,
-        onStateChange,
+        onStatusChange,
       }));
 
-      const { state } = useAdhesive(targetRef, options);
+      const { status } = useAdhesive(targetRef, options);
 
-      expose({ state });
+      expose({ status });
 
       return () => h("div", { ref: "target" }, slots.default?.());
     },
