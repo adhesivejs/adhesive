@@ -1,5 +1,9 @@
-import { Adhesive, type AdhesiveOptions } from "@adhesivejs/core";
-import { useEffect, useMemo, useRef, type RefObject } from "react";
+import {
+  Adhesive,
+  type AdhesiveOptions,
+  type AdhesiveState,
+} from "@adhesivejs/core";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { unwrapElement } from "../utils/unwrapElement.js";
 
 /**
@@ -11,6 +15,12 @@ import { unwrapElement } from "../utils/unwrapElement.js";
 export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
   /** React ref for the element that defines sticky boundaries */
   boundingRef?: RefObject<HTMLElement | null>;
+};
+
+/** Return type for the useAdhesive hook. */
+export type UseAdhesiveReturn = {
+  /** Current state of the Adhesive instance, or null if not initialized */
+  state: Readonly<AdhesiveState> | null;
 };
 
 /**
@@ -48,12 +58,22 @@ export type UseAdhesiveOptions = Partial<Omit<AdhesiveOptions, "targetEl">> & {
 export function useAdhesive(
   target: RefObject<HTMLElement | null>,
   options?: UseAdhesiveOptions,
-) {
+): UseAdhesiveReturn {
   const adhesive = useRef<Adhesive | null>(null);
+
+  const [adhesiveState, setAdhesiveState] = useState<AdhesiveState | null>(
+    null,
+  );
+
+  const onStateChange = (newState: AdhesiveState) => {
+    setAdhesiveState(newState);
+    options?.onStateChange?.(newState);
+  };
 
   const cleanup = () => {
     adhesive.current?.cleanup();
     adhesive.current = null;
+    setAdhesiveState(null);
   };
 
   const memoizedOptions = useMemo(
@@ -70,6 +90,7 @@ export function useAdhesive(
       options?.initialClassName,
       options?.fixedClassName,
       options?.relativeClassName,
+      options?.onStateChange,
     ],
   );
 
@@ -84,13 +105,20 @@ export function useAdhesive(
       throw new Error("@adhesivejs/react: target element is not defined");
     }
 
-    return { ...optionsValue, targetEl, boundingEl } satisfies AdhesiveOptions;
+    return {
+      ...optionsValue,
+      targetEl,
+      boundingEl,
+      onStateChange,
+    } satisfies AdhesiveOptions;
   };
 
   useEffect(() => {
     if (!unwrapElement(target)) return cleanup();
 
     adhesive.current ??= Adhesive.create(getValidatedOptions());
+
+    adhesive.current.getState();
 
     return cleanup;
   }, [unwrapElement(target)]);
@@ -100,4 +128,6 @@ export function useAdhesive(
 
     adhesive.current?.replaceOptions(getValidatedOptions());
   }, [memoizedOptions]);
+
+  return { state: adhesiveState } as const;
 }
