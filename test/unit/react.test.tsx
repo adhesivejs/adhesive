@@ -17,11 +17,21 @@ import {
 
 const mockAdhesiveInstance = createMockAdhesive();
 
-vi.mock("@adhesivejs/core", () => ({
-  Adhesive: {
+vi.mock("@adhesivejs/core", () => {
+  const MockAdhesive = {
     create: vi.fn(() => mockAdhesiveInstance),
-  },
-}));
+  };
+
+  return {
+    Adhesive: MockAdhesive,
+    default: MockAdhesive,
+    ADHESIVE_STATUS: {
+      INITIAL: "initial",
+      FIXED: "fixed",
+      RELATIVE: "relative",
+    },
+  };
+});
 
 function TestHookComponent() {
   const targetRef = useRef<HTMLDivElement>(null);

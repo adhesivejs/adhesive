@@ -26,6 +26,11 @@ vi.mock("@adhesivejs/core", () => {
   return {
     Adhesive: MockAdhesive,
     default: MockAdhesive,
+    ADHESIVE_STATUS: {
+      INITIAL: "initial",
+      FIXED: "fixed",
+      RELATIVE: "relative",
+    },
   };
 });
 
