@@ -87,6 +87,8 @@ export interface AdhesiveOptions {
    * @default "adhesive--relative"
    */
   readonly relativeClassName?: string;
+  /** Optional callback invoked on state changes. */
+  readonly onStateChange?: (state: AdhesiveState) => void;
 }
 
 interface InternalAdhesiveOptions {
@@ -99,6 +101,7 @@ interface InternalAdhesiveOptions {
   initialClassName: string;
   fixedClassName: string;
   relativeClassName: string;
+  onStateChange: ((state: AdhesiveState) => void) | undefined;
 }
 
 /**
@@ -172,6 +175,7 @@ const DEFAULT_OPTIONS = {
   initialClassName: "adhesive--initial",
   fixedClassName: "adhesive--fixed",
   relativeClassName: "adhesive--relative",
+  onStateChange: undefined,
 } satisfies Omit<AdhesiveOptions, "targetEl" | "boundingEl">;
 
 const isBrowser = () =>
@@ -301,6 +305,7 @@ export class Adhesive {
     initialClassName: DEFAULT_OPTIONS.initialClassName,
     fixedClassName: DEFAULT_OPTIONS.fixedClassName,
     relativeClassName: DEFAULT_OPTIONS.relativeClassName,
+    onStateChange: DEFAULT_OPTIONS.onStateChange,
   };
 
   #state: InternalAdhesiveState = {
@@ -837,5 +842,7 @@ export class Adhesive {
 
   #setState(newState: Partial<InternalAdhesiveState>): void {
     Object.assign(this.#state, newState);
+
+    this.#options.onStateChange?.({ ...this.#state });
   }
 }
