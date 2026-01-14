@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.7.8
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.7...v0.7.8)
+
+### 🏡 Chore
+
+- Add editorconfig file [skip ci] ([18028ea](https://github.com/adhesivejs/adhesive/commit/18028ea))
+- Update dev deps ([aafbf92](https://github.com/adhesivejs/adhesive/commit/aafbf92))
+- Lint fixes ([647a960](https://github.com/adhesivejs/adhesive/commit/647a960))
+- Update tsdown ([bb646b7](https://github.com/adhesivejs/adhesive/commit/bb646b7))
+- Update node to `v24.13.0` ([5b5e247](https://github.com/adhesivejs/adhesive/commit/5b5e247))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.7
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.6...v0.7.7)
