@@ -1,13 +1,13 @@
 {
   "name": "@adhesivejs/core",
+  "type": "module",
   "version": "0.7.7",
   "description": "A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements",
-  "type": "module",
-  "keywords": [
-    "sticky",
-    "position",
-    "elements"
-  ],
+  "author": {
+    "name": "Daniel Waltz",
+    "email": "danielbwaltz@gmail.com",
+    "url": "https://danielwaltz.me/"
+  },
   "license": "MIT",
   "homepage": "https://github.com/adhesivejs/adhesive/tree/main/packages/core#readme",
   "repository": {
@@ -15,25 +15,28 @@
     "url": "git+https://github.com/adhesivejs/adhesive.git",
     "directory": "packages/core"
   },
-  "author": {
-    "name": "Daniel Waltz",
-    "email": "danielbwaltz@gmail.com",
-    "url": "https://danielwaltz.me/"
-  },
-  "files": [
-    "dist"
+  "keywords": [
+    "sticky",
+    "position",
+    "elements"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public",
     "provenance": true,
     "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
     "build": "tsdown",
@@ -46,8 +49,5 @@
     "test:publint": "publint",
     "test:publish": "pnpm test:attw && pnpm test:jsr && pnpm test:publint",
     "type-check": "tsc --noEmit"
-  },
-  "engines": {
-    "node": "^20.19.0 || >=22.12.0"
   }
 }

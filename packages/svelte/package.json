@@ -1,14 +1,13 @@
 {
   "name": "@adhesivejs/svelte",
+  "type": "module",
   "version": "0.7.7",
   "description": "Svelte adapter for Adhesive - A modern, performant, lightweight, dependency free, cross platform solution for flexible sticky positioned elements",
-  "type": "module",
-  "keywords": [
-    "sticky",
-    "position",
-    "elements",
-    "svelte"
-  ],
+  "author": {
+    "name": "Daniel Waltz",
+    "email": "danielbwaltz@gmail.com",
+    "url": "https://danielwaltz.me/"
+  },
   "license": "MIT",
   "homepage": "https://github.com/adhesivejs/adhesive/tree/main/packages/svelte#readme",
   "repository": {
@@ -16,20 +15,24 @@
     "url": "git+https://github.com/adhesivejs/adhesive.git",
     "directory": "packages/svelte"
   },
-  "author": {
-    "name": "Daniel Waltz",
-    "email": "danielbwaltz@gmail.com",
-    "url": "https://danielwaltz.me/"
-  },
-  "files": [
-    "dist"
+  "keywords": [
+    "sticky",
+    "position",
+    "elements",
+    "svelte"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
     "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
     "build": "tsdown",
@@ -48,8 +51,5 @@
   },
   "dependencies": {
     "@adhesivejs/core": "workspace:*"
-  },
-  "engines": {
-    "node": "^20.19.0 || >=22.12.0"
   }
 }

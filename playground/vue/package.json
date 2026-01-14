@@ -1,7 +1,7 @@
 {
   "name": "@adhesivejs/playground-vue",
-  "private": true,
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",

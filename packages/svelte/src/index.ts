@@ -1,4 +1,9 @@
 export {
+  adhesive,
+  type AdhesiveAttachmentOptions,
+} from "./attachments/AdhesiveAttachment.js";
+
+export {
   Adhesive,
   ADHESIVE_POSITION,
   ADHESIVE_STATUS,
@@ -8,8 +13,3 @@ export {
   type AdhesiveState,
   type AdhesiveStatus,
 } from "@adhesivejs/core";
-
-export {
-  adhesive,
-  type AdhesiveAttachmentOptions,
-} from "./attachments/AdhesiveAttachment.js";

@@ -1,15 +1,4 @@
 export {
-  Adhesive,
-  ADHESIVE_POSITION,
-  ADHESIVE_STATUS,
-  AdhesiveError,
-  type AdhesiveOptions,
-  type AdhesivePosition,
-  type AdhesiveState,
-  type AdhesiveStatus,
-} from "@adhesivejs/core";
-
-export {
   AdhesiveContainer,
   type AdhesiveContainerEmits,
   type AdhesiveContainerProps,
@@ -25,3 +14,14 @@ export {
   type AdhesiveDirective,
   type AdhesiveDirectiveBinding,
 } from "./directives/vAdhesive.js";
+
+export {
+  Adhesive,
+  ADHESIVE_POSITION,
+  ADHESIVE_STATUS,
+  AdhesiveError,
+  type AdhesiveOptions,
+  type AdhesivePosition,
+  type AdhesiveState,
+  type AdhesiveStatus,
+} from "@adhesivejs/core";

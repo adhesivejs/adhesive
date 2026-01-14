@@ -1,4 +1,11 @@
 export {
+  AdhesiveContainer,
+  type AdhesiveContainerProps,
+} from "./components/AdhesiveContainer.js";
+
+export { useAdhesive, type UseAdhesiveOptions } from "./hooks/useAdhesive.js";
+
+export {
   Adhesive,
   ADHESIVE_POSITION,
   ADHESIVE_STATUS,
@@ -8,10 +15,3 @@ export {
   type AdhesiveState,
   type AdhesiveStatus,
 } from "@adhesivejs/core";
-
-export {
-  AdhesiveContainer,
-  type AdhesiveContainerProps,
-} from "./components/AdhesiveContainer.js";
-
-export { useAdhesive, type UseAdhesiveOptions } from "./hooks/useAdhesive.js";
