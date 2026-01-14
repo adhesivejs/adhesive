@@ -33,9 +33,9 @@ catalogs:
     '@testing-library/vue':
       specifier: ^8.1.0
       version: 8.1.0
-    '@tsconfig/node22':
-      specifier: ^22.0.5
-      version: 22.0.5
+    '@tsconfig/node24':
+      specifier: ^24.0.3
+      version: 24.0.3
     '@tsconfig/svelte':
       specifier: ^5.0.6
       version: 5.0.6
@@ -113,9 +113,9 @@ importers:
       '@danielwaltz/eslint-config':
         specifier: 'catalog:'
         version: 3.0.1(@typescript-eslint/eslint-plugin@8.53.0(@typescript-eslint/parser@8.53.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/parser@8.53.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(prettier@3.7.4)(typescript@5.9.3)
-      '@tsconfig/node22':
+      '@tsconfig/node24':
         specifier: 'catalog:'
-        version: 22.0.5
+        version: 24.0.3
       '@types/node':
         specifier: 'catalog:'
         version: 24.10.8
@@ -1157,8 +1157,8 @@ packages:
       '@vue/compiler-sfc':
         optional: true
 
-  '@tsconfig/node22@22.0.5':
-    resolution: {integrity: sha512-hLf2ld+sYN/BtOJjHUWOk568dvjFQkHnLNa6zce25GIH+vxKfvTgm3qpaH6ToF5tu/NN0IH66s+Bb5wElHrLcw==}
+  '@tsconfig/node24@24.0.3':
+    resolution: {integrity: sha512-vcERKtKQKHgzt/vfS3Gjasd8SUI2a0WZXpgJURdJsMySpS5+ctgbPfuLj2z/W+w4lAfTWxoN4upKfu2WzIRYnw==}
 
   '@tsconfig/svelte@5.0.6':
     resolution: {integrity: sha512-yGxYL0I9eETH1/DR9qVJey4DAsCdeau4a9wYPKuXfEhm8lFO8wg+LLYJjIpAm6Fw7HSlhepPhYPDop75485yWQ==}
@@ -4187,7 +4187,7 @@ snapshots:
     optionalDependencies:
       '@vue/compiler-sfc': 3.5.26
 
-  '@tsconfig/node22@22.0.5': {}
+  '@tsconfig/node24@24.0.3': {}
 
   '@tsconfig/svelte@5.0.6': {}
 

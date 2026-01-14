@@ -28,7 +28,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",
     "@danielwaltz/eslint-config": "catalog:",
-    "@tsconfig/node22": "catalog:",
+    "@tsconfig/node24": "catalog:",
     "@types/node": "catalog:",
     "changelogen": "catalog:",
     "eslint": "catalog:",
