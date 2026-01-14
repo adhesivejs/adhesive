@@ -5,37 +5,37 @@ packages:
 
 catalog:
   '@arethetypeswrong/cli': ^0.18.2
-  '@danielwaltz/eslint-config': ^2.6.2
-  '@sveltejs/vite-plugin-svelte': ^6.2.1
+  '@danielwaltz/eslint-config': ^3.0.1
+  '@sveltejs/vite-plugin-svelte': ^6.2.4
   '@testing-library/dom': ^10.4.1
   '@testing-library/jest-dom': ^6.9.1
-  '@testing-library/react': ^16.3.0
-  '@testing-library/svelte': ^5.2.9
+  '@testing-library/react': ^16.3.1
+  '@testing-library/svelte': ^5.3.1
   '@testing-library/user-event': ^14.6.1
   '@testing-library/vue': ^8.1.0
   '@tsconfig/node22': ^22.0.5
   '@tsconfig/svelte': ^5.0.6
   '@types/node': ~22.17.2
-  '@types/react': ^19.2.6
+  '@types/react': ^19.2.8
   '@types/react-dom': ^19.2.3
-  '@vitejs/plugin-react': ^5.1.1
-  '@vitejs/plugin-vue': ^6.0.1
+  '@vitejs/plugin-react': ^5.1.2
+  '@vitejs/plugin-vue': ^6.0.3
   '@vue/tsconfig': ^0.8.1
   changelogen: ^0.6.2
-  eslint: ^9.39.1
-  happy-dom: ^20.0.10
-  prettier: ^3.6.2
-  publint: ^0.3.15
-  react: ^19.2.0
-  react-dom: ^19.2.0
-  svelte: ^5.43.11
-  svelte-check: ^4.3.4
-  tsdown: ^0.16.5
+  eslint: ^9.39.2
+  happy-dom: ^20.1.0
+  prettier: ^3.7.4
+  publint: ^0.3.16
+  react: ^19.2.3
+  react-dom: ^19.2.3
+  svelte: ^5.46.3
+  svelte-check: ^4.3.5
+  tsdown: ^0.16.8
   typescript: ~5.9.3
-  vite: ^7.2.2
-  vitest: ^4.0.10
-  vue: ^3.5.24
-  vue-tsc: ^3.1.4
+  vite: ^7.3.1
+  vitest: ^4.0.17
+  vue: ^3.5.26
+  vue-tsc: ^3.2.2
 
 onlyBuiltDependencies:
   - '@parcel/watcher'
