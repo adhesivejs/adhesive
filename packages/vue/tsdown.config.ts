@@ -4,9 +4,9 @@ import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: "src/index.ts",
-  platform: "neutral",
   exports: true,
   dts: true,
+  platform: "neutral",
   hooks: {
     "build:done": async (ctx) => {
       const pkg = ctx.options.pkg;
