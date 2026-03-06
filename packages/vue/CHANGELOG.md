@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.7.9
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.8...v0.7.9)
+
+### 🩹 Fixes
+
+- **core:** Safely attempt to use query selector ([e9700f8](https://github.com/adhesivejs/adhesive/commit/e9700f8))
+
+### 🏡 Chore
+
+- Update tsconfig node version ([db6d5ec](https://github.com/adhesivejs/adhesive/commit/db6d5ec))
+- Sort package json ([310720d](https://github.com/adhesivejs/adhesive/commit/310720d))
+- Update dev deps ([6329902](https://github.com/adhesivejs/adhesive/commit/6329902))
+- Explicitly enable dts generation ([798357f](https://github.com/adhesivejs/adhesive/commit/798357f))
+- Update eslint config ([67a248c](https://github.com/adhesivejs/adhesive/commit/67a248c))
+- Reorder tsdown config entries ([0810bdc](https://github.com/adhesivejs/adhesive/commit/0810bdc))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.8
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.7...v0.7.8)
