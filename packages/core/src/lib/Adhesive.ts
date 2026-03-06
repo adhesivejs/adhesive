@@ -183,9 +183,16 @@ const isBrowser = () =>
 
 const resolveElement = (selector: ElementSelector): HTMLElement | null => {
   if (!isBrowser()) return null;
-  return typeof selector === "string"
-    ? document.querySelector(selector)
-    : selector;
+
+  if (typeof selector !== "string") {
+    return selector;
+  }
+
+  try {
+    return document.querySelector(selector);
+  } catch {
+    return null;
+  }
 };
 
 const assertTargetElement = (
