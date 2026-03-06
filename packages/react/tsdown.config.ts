@@ -6,6 +6,7 @@ export default defineConfig({
   entry: "src/index.ts",
   platform: "neutral",
   exports: true,
+  dts: true,
   hooks: {
     "build:done": async (ctx) => {
       const pkg = ctx.options.pkg;
