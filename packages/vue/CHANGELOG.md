@@ -1,6 +1,27 @@
 # Changelog
 
 
+## v0.7.10
+
+[compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.9...v0.7.10)
+
+### 🏡 Chore
+
+- Use devangines and new pnpm setup action ([3131107](https://github.com/adhesivejs/adhesive/commit/3131107))
+- Update dev deps ([3cfcde7](https://github.com/adhesivejs/adhesive/commit/3cfcde7))
+- Add vscode config ([73b8707](https://github.com/adhesivejs/adhesive/commit/73b8707))
+- Add lint fix script ([23a6371](https://github.com/adhesivejs/adhesive/commit/23a6371))
+- Enable linting pnpm workspace ([725a39a](https://github.com/adhesivejs/adhesive/commit/725a39a))
+
+### 🤖 CI
+
+- Bump action versions ([434d66b](https://github.com/adhesivejs/adhesive/commit/434d66b))
+- Remove pnpm action setup from release ([5845347](https://github.com/adhesivejs/adhesive/commit/5845347))
+
+### ❤️ Contributors
+
+- Daniel Waltz ([@danielwaltz](https://github.com/danielwaltz))
+
 ## v0.7.9
 
 [compare changes](https://github.com/adhesivejs/adhesive/compare/v0.7.8...v0.7.9)
