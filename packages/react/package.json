@@ -39,6 +39,7 @@
   "scripts": {
     "build": "tsdown",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "prepack": "pnpm build",
     "release:bump": "changelogen --bump",
     "release:publish": "pnpm publish && pnpx jsr publish",
