@@ -2,27 +2,24 @@ packages:
   - packages/*
   - playground/*
   - test
-
-catalogMode: 'strict'
-
 catalog:
-  '@arethetypeswrong/cli': ^0.18.4
-  '@danielwaltz/eslint-config': ^3.6.0
-  '@sveltejs/vite-plugin-svelte': ^7.1.2
-  '@testing-library/dom': ^10.4.1
-  '@testing-library/jest-dom': ^6.9.1
-  '@testing-library/react': ^16.3.2
-  '@testing-library/svelte': ^5.4.2
-  '@testing-library/user-event': ^14.6.1
-  '@testing-library/vue': ^8.1.0
-  '@tsconfig/node24': ^24.0.4
-  '@tsconfig/svelte': ^5.0.8
-  '@types/node': ~24.13.2
-  '@types/react': ^19.2.17
-  '@types/react-dom': ^19.2.3
-  '@vitejs/plugin-react': ^6.0.3
-  '@vitejs/plugin-vue': ^6.0.7
-  '@vue/tsconfig': ^0.9.1
+  "@arethetypeswrong/cli": ^0.18.4
+  "@danielwaltz/eslint-config": ^3.6.0
+  "@sveltejs/vite-plugin-svelte": ^7.1.2
+  "@testing-library/dom": ^10.4.1
+  "@testing-library/jest-dom": ^6.9.1
+  "@testing-library/react": ^16.3.2
+  "@testing-library/svelte": ^5.4.2
+  "@testing-library/user-event": ^14.6.1
+  "@testing-library/vue": ^8.1.0
+  "@tsconfig/node24": ^24.0.4
+  "@tsconfig/svelte": ^5.0.8
+  "@types/node": ~24.13.2
+  "@types/react": ^19.2.17
+  "@types/react-dom": ^19.2.3
+  "@vitejs/plugin-react": ^6.0.3
+  "@vitejs/plugin-vue": ^6.0.7
+  "@vue/tsconfig": ^0.9.1
   changelogen: ^0.6.2
   eslint: ^10.5.0
   happy-dom: ^20.10.6
@@ -38,6 +35,6 @@ catalog:
   vitest: ^4.1.9
   vue: ^3.5.39
   vue-tsc: ^3.3.5
-
 allowBuilds:
   esbuild: true
+catalogMode: strict
